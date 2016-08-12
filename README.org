@@ -1,0 +1,22 @@
+#+TITLE: Assessing and comparing resolution in spatial proteomics experiments
+
+* Introduction
+
+- What is spatial proteomics
+- Importance of sub-cellular resolution for reliable assignments, but
+  also for multi- and trans-localisation
+- Visualisation
+
+* Assessment
+
+- Sub-cellular diversity
+- Visual inspection on PCA plot, both with and without annotation
+- Position of clusters on PCA plot
+- Comparing PCA and LDA 
+- Quantifying resolution
+
+* Comparative study
+
+* Conclusions
+
+
