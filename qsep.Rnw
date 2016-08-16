@@ -1,0 +1,161 @@
+\documentclass{article}
+\usepackage{booktabs}
+\usepackage{longtable}
+
+\usepackage[backend=bibtex]{biblatex}
+\bibliography{qsep.bib}
+
+\title{Assessing sub-cellular resolution in  spatial proteomics experiments}
+
+\author{Laurent Gatto}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  A meta-analysis comparing and assessing the sub-cellular resolution
+  of spatial proteomics experiments.
+\end{abstract}
+
+<<setup, include=FALSE>>=
+knitr::opts_chunk$set(echo = FALSE)
+@
+
+
+<<env, warnings = FALSE>>=
+suppressWarnings(suppressPackageStartupMessages(library("MSnbase")))
+suppressWarnings(suppressPackageStartupMessages(library("pRoloc")))
+suppressPackageStartupMessages(library("pRolocdata"))
+suppressPackageStartupMessages(library("knitr"))
+@
+
+<<myfuns>>=
+## a wrapper around sapply to avoid having to 'get' the actual data at
+## every iteration
+pdapply <- function(X, FUN, ..., use.names = TRUE) {
+    ans <- sapply(X, function(x) {
+        x <- get(x)
+        FUN <- match.fun(FUN)
+        do.call(FUN, list(x), ...)
+    })
+    if (!use.names)
+        names(ans) <- NULL
+    ans
+}
+@
+
+\section{Introduction}
+
+What is spatial proteomics
+
+Importance of sub-cellular resolution for reliable assignments, but
+also for multi- and trans-localisation
+
+Visualisation
+
+\section{Spatial proteomics datasets}
+
+<<pdata>>=
+i <- c(2, 6, 10, 14, 15, 20, 22, 28, 36, 37, 39)
+pdata <- pRolocdata()
+pdata <- pdata$results[i, ]
+pdataitems <- pdata[, "Item"]
+data(list = pdataitems)
+@
+
+For this meta-analysis, we make use of \Sexpr{nrow(pdata)} spatial
+proteomics datasets (table 1). These data represent a diverse range of
+species, instruments and methodologies.
+
+<<makepdtab>>=
+pdtab <- data.frame(pdata[, 3:4])
+pdtab$nprot <- pdapply(pdataitems, nrow)
+pdtab$nclust <- pdapply(pdataitems,
+                        function(x) length(unique(fData(markerMSnSet(x))$markers)))
+pdtab <- pdtab[, c(1, 3, 4, 2)]
+names(pdtab) <- c("Data", "Nb proteins", "Nb clusters", "Title")
+@
+
+<<showpdtab>>=
+kable(pdtab, format = "latex",
+      caption = "Summary of the datasets used in this study.",
+      longtable = TRUE, booktabs = TRUE)
+@
+
+We have applied minimal post-processing to the data and have used, as
+far as possible, the data and annotation provided by the original
+authors. The data from \cite{Foster:2006} has been annotated using
+the curated marker list from \cite{Christoforou:2016}.
+
+<<foster2006preproc>>=
+mmu <- pRolocmarkers("mmus")
+fData(foster2006)$markers <- NULL
+foster2006 <- addMarkers(foster2006, mmu, fcol = "UniProt",
+                         verbose = FALSE)
+@
+
+In addition, for dimensionality reduction and visualisation, we have
+systematically replaced missing values by zeros. When caluclation
+distances between protein profiles, however, missing values were
+retained.
+
+\section{Assessment}
+
+Sub-cellular diversity
+
+Visual inspection on PCA plot, both with and without annotation
+
+Position of clusters on PCA plot
+
+Comparing PCA and LDA 
+
+Quantifying resolution
+
+<<qsep>>=
+res <- pdapply(pdataitems,
+       function(x) {
+           stopifnot("markers" %in% fvarLabels(x))
+           summary(QSep(x), verbose = FALSE)
+})
+
+o <- order(sapply(res, median))
+@
+
+
+\begin{figure}[ht]
+  \centering
+<<figqsep>>=
+par(las = 1, mar = c(3, 8, 1, 1))
+boxplot(res[o], horizontal = TRUE, cex.axis = .7, ylim = c(0, 16))
+abline(v = 1, lty = "dotted")
+@  
+  \caption{Quantitative separation assessment}
+  \label{fig:qsep}
+\end{figure}
+
+\begin{figure}[ht]
+  \centering 
+<<figpca>>=
+par(mfrow = c(4, 3), mar = c(2, 2, 2, 2))
+tmp <- sapply(pdataitems[rev(o)], function(x)
+    plot2D(impute(get(x), method = "zero"), main = x,
+           cex.axis = .6, tck = -0.025,
+           dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2))))
+@ 
+  \caption{PCA plots}
+  \label{fig:pca}
+\end{figure}
+
+
+\section{Comparative study}
+
+\section{Conclusions}
+
+\section{Session information}
+
+<<si, results = 'asis'>>=
+toLatex(sessionInfo(), locale = FALSE)
+@
+
+
+\end{document}
