@@ -1,9 +1,9 @@
 \documentclass{article}
 \usepackage{booktabs}
 \usepackage{longtable}
+\usepackage{rotating}
+\usepackage{natbib}
 
-\usepackage[backend=bibtex]{biblatex}
-\bibliography{qsep.bib}
 
 \title{Assessing sub-cellular resolution in  spatial proteomics experiments}
 
@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = FALSE)
 suppressWarnings(suppressPackageStartupMessages(library("MSnbase")))
 suppressWarnings(suppressPackageStartupMessages(library("pRoloc")))
 suppressPackageStartupMessages(library("pRolocdata"))
-suppressPackageStartupMessages(library("knitr"))
+suppressPackageStartupMessages(library("xtable"))
 @
 
 <<myfuns>>=
@@ -36,7 +36,10 @@ pdapply <- function(X, FUN, ..., use.names = TRUE) {
     ans <- sapply(X, function(x) {
         x <- get(x)
         FUN <- match.fun(FUN)
-        do.call(FUN, list(x), ...)
+        args <- list(x)
+        if (!is.null(pairlist(...)))
+            args <- c(args, pairlist(...))
+        do.call(FUN, args)
     })
     if (!use.names)
         names(ans) <- NULL
@@ -46,12 +49,53 @@ pdapply <- function(X, FUN, ..., use.names = TRUE) {
 
 \section{Introduction}
 
-What is spatial proteomics
+In biology, the localisation of a protein to its anticipated
+sub-cellular niche is an necessary condition for it to assume its
+biological function. Indeed, the localisation of a protein will confer
+a specific biochemical environment and a unique set of interaction
+partners. As a result, the same protein can assume different functions
+in different biological contexts and its mis-localisation can lead to
+adverse effects.
 
-Importance of sub-cellular resolution for reliable assignments, but
-also for multi- and trans-localisation
+Spatial proteomics is the systematic and high-throughput study of
+protein sub-cellular localisation. A wide range of techniques
+\citep{Gatto:2010} and computational methods \citep{Gatto:2014} to
+confidently infer the localisation of thousands of proteomics. Most
+techniques rely on some form of sub-cellular fractions using
+differential centrifugation or separation along density gradients and
+the quantitative assessment of relative protein occupancy profiles in
+these sub-cellular fractions. Reciprocally, a wide ranging of
+computational methods have been applied, ranging from clustering
+\citep{Tomizioli:2014}, classification (reviewed in \citep{Gatto:2014},
+semi-supervised learning \citep{Breckels:2013} and, more recently,
+transfer learning \citep{Breckels:2016}.
 
-Visualisation
+Despite these advances, there is surprisingly little agreement in the
+community as to what constitutes are reliable spatial proteomics
+experiment, i.e a dataset that generates confident protein assignment
+results. Is is however implicit that reliability and trust in the
+results is dependent on adequate sub-cellular resolution,
+i.e. \textit{enough} separation between the different sub-cellular
+niches under study. And yet, every spatial proteomics publication will
+claim to have obtain from satisfactory to excellent resolution.
+
+The importance of adequate sub-cellular resolution reaches beyong the
+generation of reliable static spatial maps. It is a necessary quality
+of the data to consider tackling more subtle sub-cellular patterns
+such as multi- and trans-localisation, i.e. the localisation of
+proteins in multiple sub-cellular niches and the relocation of
+proteins upon perturbation \citep{Gatto:2014}.
+
+In this work, we describe how to understand and interprete widely used
+dimensionality reduction methods and visualisations of spatial
+proteomics data to critically assess their resolution and propose a
+simple, yet effective method to quantitatively measure resolution and
+compare it across different experiments. Our recommendations should be
+useful to spatial proteomics practitioners, to assess the sub-cellular
+resolution of their experiments and compare it to similar studies
+while setting up and optimising their experiments, as well biologists
+interested in critically assessing spatial proteomics studies and
+their claims.
 
 \section{Spatial proteomics datasets}
 
@@ -64,28 +108,38 @@ data(list = pdataitems)
 @
 
 For this meta-analysis, we make use of \Sexpr{nrow(pdata)} spatial
-proteomics datasets (table 1). These data represent a diverse range of
-species, instruments and methodologies.
+proteomics datasets (table \ref{tab:pdtab}). These data represent a
+diverse range of species, instruments and methodologies.
 
 <<makepdtab>>=
-pdtab <- data.frame(pdata[, 3:4])
+pdtab <- data.frame(pdata[, 3:4], stringsAsFactors = FALSE)
 pdtab$nprot <- pdapply(pdataitems, nrow)
-pdtab$nclust <- pdapply(pdataitems,
-                        function(x) length(unique(fData(markerMSnSet(x))$markers)))
+pdtab$nclust <- pdapply(pdataitems, function(x)
+    length(unique(fData(markerMSnSet(x))$markers)))
 pdtab <- pdtab[, c(1, 3, 4, 2)]
-names(pdtab) <- c("Data", "Nb proteins", "Nb clusters", "Title")
+names(pdtab) <- c("Data", "Proteins", "Clusters", "Title")
 @
 
-<<showpdtab>>=
-kable(pdtab, format = "latex",
-      caption = "Summary of the datasets used in this study.",
-      longtable = TRUE, booktabs = TRUE)
+
+\begin{sidewaystable}
+<<pdtab, results = 'asis'>>=
+print(xtable(pdtab,
+             label = "tab:pdtab",
+             caption = "Summary of the datasets used in this study. See also figure \\ref{fig:pca} for the individual PCA plots."),
+      include.rownames = FALSE,
+      booktabs = TRUE,
+      floating = FALSE,
+      tabular.environment = "longtable")
 @
+\end{sidewaystable}
 
 We have applied minimal post-processing to the data and have used, as
 far as possible, the data and annotation provided by the original
-authors. The data from \cite{Foster:2006} has been annotated using
-the curated marker list from \cite{Christoforou:2016}.
+authors. The data from \cite{Foster:2006} has been annotated using the
+curated marker list from \cite{Christoforou:2016}, as only a limited
+number of markers was provided by the authors\footnote{This results
+  from the fact that they used a simple distance measurement, termed
+  $\chi^2$ against few markers to base their assignments}.
 
 <<foster2006preproc>>=
 mmu <- pRolocmarkers("mmus")
@@ -99,17 +153,72 @@ systematically replaced missing values by zeros. When caluclation
 distances between protein profiles, however, missing values were
 retained.
 
+It is important to highlight that not all experiments used in this
+study have as main goal the generation of a global sub-cellular
+map. While the works of \citet{Dunkley:2006} (Mapping the Arabidopsis
+organelle proteome), \citet{Hall:2009} (Mapping organelle proteins and
+protein complexes in Drosophila melanogaster) and more recently
+\citet{Christoforou:2016} (A draft map of the mouse pluripotent stem
+cell spatial proteome) and \citet{Itzhak:2016} (Global, quantitative
+and dynamic mapping of protein subcellular localization) explicitly
+state such a goal, other experiments such as \citet{Groen:2014}
+(Identification of trans-golgi network proteins in Arabidopsis
+thaliana root tissue) or \citet{Nikolovski:2014} (Label free protein
+quantification for plant Golgi protein localisation and abundance)
+have a much more targetted goal (trans-Golgi and Golgi apparatus,
+respectively). Hence, it is important to keep the overall aim of the
+studies in mind when assessing their resolution.
+
 \section{Assessment}
 
-Sub-cellular diversity
+\subsection*{Sub-cellular diversity}
 
-Visual inspection on PCA plot, both with and without annotation
+An important assessment that provides an important indication of the
+resolution of the data concerns the number and diversity of
+sub-cellular niches that are annotated. In the \Sexpr{nrow(pdtab)}
+datasets used in this study, this number ranged from
+\Sexpr{min(pdtab$Clusters)} (dataset
+\Sexpr{pdtab[which.min(pdtab$Clusters), 1]}) to
+\Sexpr{max(pdtab$Clusters)} (dataset
+\Sexpr{pdtab[which.max(pdtab$Clusters), 1]}). These numbers can be
+compared to about 25 different organelles documented in all datasets,
+which are still underestimating the biological sub-cellular
+diversity. 
 
-Position of clusters on PCA plot
+\subsection*{Dimensionality reduction and visualisation}
 
-Comparing PCA and LDA 
+Principal component analysis (PCA) is a widely used dimensionality
+rediction technique. It project the protein occupancy profiles into a
+new space in such a way as to maximise the spread of all points
+(i.e. labelled and unlabelled proteins) along the first new dimension
+(principal component, PC). The second PC is then chosen to be
+perpendicular to the first one while maximising the overall
+variability. Each PC (there are as many as there are fractions)
+accounts for a percentage of the total variability and it is not
+uncommon, in well exectuted experiments, that the two first PCs
+summarise over 70% of the total variance in the data.
 
-Quantifying resolution
+By firstly summerising the complete data along PC1 and PC2 (and,
+possibly, another component of interest), it becomes possible to
+visualise the complete dataset in a single figure (as opposed to
+individual sets of profiles - see for example figures 5 in
+\citet{Gatto:2010}). In a first instance, it is advised to visualise
+the data without annotation to confirm the presence of discrete
+clusters, i.e. dense clouds of points that are well separated from the
+rest of the data.
+
+spreading the 
+
+
+
+Visual inspection on PCA plot, both with and without annotation.
+Position of clusters on PCA plot. Comparing PCA and LDA.
+
+\subsection*{Quantifying resolution}
+
+Describe the \texttt{QSep} infrastructure.
+
+\section{Comparative study}
 
 <<qsep>>=
 res <- pdapply(pdataitems,
@@ -147,15 +256,30 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
 \end{figure}
 
 
-\section{Comparative study}
-
 \section{Conclusions}
 
+
+It is important to highlight the importance and effect of marker
+definition on estimating and assessing the resolution of spatial
+proteomics experiments and, of course, assignment of proteins to their
+most likely sub-cellular compartments. In this work, we have used the
+markers provided by the original authors (except for
+\cite{Foster:2006} to assess the data as originally presented.
+
+TODO: Number and tighness of clusters. Cluster boundaries.
+
 \section{Session information}
+
+The software and versions used to produce these work are summarised
+below. In particular, recent versions of \texttt{pRoloc} and
+\texttt{pRolocdata} \citep{Gatto:2014a}, which require versions 1.13.9
+and 1.11.2 or later, respectively.
 
 <<si, results = 'asis'>>=
 toLatex(sessionInfo(), locale = FALSE)
 @
 
+\bibliographystyle{plainnat}
+\bibliography{qsep}
 
 \end{document}
