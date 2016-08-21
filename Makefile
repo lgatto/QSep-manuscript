@@ -11,6 +11,8 @@ qsep.pdf: qsep.tex
 qsep.R: qsep.Rnw
 	R-3.3 --vanilla -e "knitr::purl('qsep.Rnw')"
 
+.PHONY: clean
+
 clean:
 	rm -f .Rhistory qsep-blx.bib qsep.aux qsep.bbl qsep.blg qsep.log qsep.run.xml qsep.tex
 	rm -f *~

@@ -188,15 +188,15 @@ diversity.
 \subsection*{Dimensionality reduction and visualisation}
 
 Principal component analysis (PCA) is a widely used dimensionality
-rediction technique. It project the protein occupancy profiles into a
-new space in such a way as to maximise the spread of all points
-(i.e. labelled and unlabelled proteins) along the first new dimension
-(principal component, PC). The second PC is then chosen to be
-perpendicular to the first one while maximising the overall
-variability. Each PC (there are as many as there are fractions)
-accounts for a percentage of the total variability and it is not
-uncommon, in well exectuted experiments, that the two first PCs
-summarise over 70% of the total variance in the data.
+rediction technique is spatial proteomics. It project the protein
+occupancy profiles into a new space in such a way as to maximise the
+spread of all points (i.e. labelled and unlabelled proteins) along the
+first new dimension (principal component, PC). The second PC is then
+chosen to be perpendicular to the first one while still maximising the
+overall variability. Each PC (there are as many as there are
+fractions) accounts for a percentage of the total variability and it
+is not uncommon, in well exectuted experiments, that the two first PCs
+summarise over 70\% of the total variance in the data.
 
 By firstly summerising the complete data along PC1 and PC2 (and,
 possibly, another component of interest), it becomes possible to
@@ -205,14 +205,45 @@ individual sets of profiles - see for example figures 5 in
 \citet{Gatto:2010}). In a first instance, it is advised to visualise
 the data without annotation to confirm the presence of discrete
 clusters, i.e. dense clouds of points that are well separated from the
-rest of the data.
+rest of the data (see for example data from \citet{Christoforou:2016}
+on figure \ref{fig:density}, left). This can be highlighted by using
+transparency to reflect density (figure \ref{fig:density}, centre) or
+binning plot regions (figure \ref{fig:density}, right).
 
-spreading the 
+<<density, fig.show = 'hide'>>=
+pca <- plot2D(hyperLOPIT2015, fcol = NULL, col = "black")
+plot(pca, col = "#00000020", pch = 19)
+plot(hexbin::hexbin(pca), colramp = colorRampPalette(c("grey90", "blue")))
+@
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 0.3\textwidth]{./figure/density-1.pdf}
+  \includegraphics[width = 0.3\textwidth]{./figure/density-2.pdf}
+  \includegraphics[width = 0.3\textwidth]{./figure/density-3.pdf}
+  \caption{Unsupervised visualisation of spatial resolution}
+  \label{fig:density}
+\end{figure}
 
 
+Considering that the aim of sub-cellular fractions is to maximise
+separation of (some and most) sub-cellular niches, one would expect
+these sub-cellular clusters to be separated optimally in a successfull
+spatial proteomics experiment. In PCA space, this would equate to the
+location of the annotated spatial clusters along the periphery of the
+data points. In other words, the maximum variability of a successfull
+spatial proteomics experiments should be reflected by the separation
+of the spatial clusters.
 
-Visual inspection on PCA plot, both with and without annotation.
-Position of clusters on PCA plot. Comparing PCA and LDA.
+
+Another dimensionality rediction method that is worth mentioning here
+is linear discriminant analysis. LDA will project the protein
+occupancy profiles in a new set of dimension using as criteria the
+maximal separation of marker classes. As opposed to the
+\textit{unsupervised} PCA aboce, the \textit{supervised} LSA can not
+be used to validate the separation of the spatial niches, but can be
+useful to visualise the relative separability of the of spatial
+clusters. 
 
 \subsection*{Quantifying resolution}
 
