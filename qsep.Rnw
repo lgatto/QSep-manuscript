@@ -1,13 +1,16 @@
-\documentclass{article}
+\documentclass[12pt]{article}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{rotating}
 \usepackage{natbib}
-
+\usepackage[affil-it]{authblk}
 
 \title{Assessing sub-cellular resolution in  spatial proteomics experiments}
 
-\author{Laurent Gatto}
+\author{Laurent Gatto\thanks{lg390@cam.ac.uk}~}
+\author{Lisa M. Breckels}
+\affil{Computational Proteomics Unit, University of Cambridge, UK}
+
 
 \begin{document}
 \maketitle
@@ -27,6 +30,7 @@ suppressWarnings(suppressPackageStartupMessages(library("MSnbase")))
 suppressWarnings(suppressPackageStartupMessages(library("pRoloc")))
 suppressPackageStartupMessages(library("pRolocdata"))
 suppressPackageStartupMessages(library("xtable"))
+suppressPackageStartupMessages(library("hexbin"))
 @
 
 <<myfuns>>=
@@ -97,10 +101,10 @@ while setting up and optimising their experiments, as well biologists
 interested in critically assessing spatial proteomics studies and
 their claims.
 
-\section{Spatial proteomics datasets}
+\section{Spatial proteomics datasets}\label{sec:pdata}
 
 <<pdata>>=
-i <- c(2, 6, 10, 14, 15, 20, 22, 28, 36, 37, 39)
+i <- c(2, 6, 10, 14, 15, 20, 22, 24, 28, 36, 37, 39)
 pdata <- pRolocdata()
 pdata <- pdata$results[i, ]
 pdataitems <- pdata[, "Item"]
@@ -108,7 +112,7 @@ data(list = pdataitems)
 @
 
 For this meta-analysis, we make use of \Sexpr{nrow(pdata)} spatial
-proteomics datasets (table \ref{tab:pdtab}). These data represent a
+proteomics datasets (table~\ref{tab:pdtab}). These data represent a
 diverse range of species, instruments and methodologies.
 
 <<makepdtab>>=
@@ -125,7 +129,7 @@ names(pdtab) <- c("Data", "Proteins", "Clusters", "Title")
 <<pdtab, results = 'asis'>>=
 print(xtable(pdtab,
              label = "tab:pdtab",
-             caption = "Summary of the datasets used in this study. See also figure \\ref{fig:pca} for the individual PCA plots."),
+             caption = "Summary of the datasets used in this study. See also figure~\\ref{fig:pca} for the individual PCA plots."),
       include.rownames = FALSE,
       booktabs = TRUE,
       floating = FALSE,
@@ -155,19 +159,20 @@ retained.
 
 It is important to highlight that not all experiments used in this
 study have as main goal the generation of a global sub-cellular
-map. While the works of \citet{Dunkley:2006} (Mapping the Arabidopsis
-organelle proteome), \citet{Hall:2009} (Mapping organelle proteins and
-protein complexes in Drosophila melanogaster) and more recently
-\citet{Christoforou:2016} (A draft map of the mouse pluripotent stem
-cell spatial proteome) and \citet{Itzhak:2016} (Global, quantitative
-and dynamic mapping of protein subcellular localization) explicitly
+map. While the works of \citet{Dunkley:2006} (\textit{Mapping the
+  Arabidopsis organelle proteome}), \citet{Hall:2009} (\textit{Mapping
+  organelle proteins and protein complexes in Drosophila
+  melanogaster}) and more recently \citet{Christoforou:2016}
+(\textit{A draft map of the mouse pluripotent stem cell spatial
+  proteome}) and \citet{Itzhak:2016} (\textit{Global, quantitative and
+  dynamic mapping of protein subcellular localization}) explicitly
 state such a goal, other experiments such as \citet{Groen:2014}
-(Identification of trans-golgi network proteins in Arabidopsis
-thaliana root tissue) or \citet{Nikolovski:2014} (Label free protein
-quantification for plant Golgi protein localisation and abundance)
-have a much more targetted goal (trans-Golgi and Golgi apparatus,
-respectively). Hence, it is important to keep the overall aim of the
-studies in mind when assessing their resolution.
+(\textit{Identification of trans-golgi network proteins in Arabidopsis
+  thaliana root tissue}) or \citet{Nikolovski:2014} (\textit{Label
+  free protein quantification for plant Golgi protein localisation and
+  abundance}) have a much more targetted goal (trans-Golgi and Golgi
+apparatus, respectively). Hence, it is important to keep the overall
+aim of the studies in mind when assessing their resolution.
 
 \section{Assessment}
 
@@ -185,7 +190,7 @@ compared to about 25 different organelles documented in all datasets,
 which are still underestimating the biological sub-cellular
 diversity. 
 
-\subsection*{Dimensionality reduction and visualisation}
+\subsection*{Dimensionality reduction and visualisation}\label{sec:vis}
 
 Principal component analysis (PCA) is a widely used dimensionality
 rediction technique is spatial proteomics. It project the protein
@@ -206,14 +211,15 @@ individual sets of profiles - see for example figures 5 in
 the data without annotation to confirm the presence of discrete
 clusters, i.e. dense clouds of points that are well separated from the
 rest of the data (see for example data from \citet{Christoforou:2016}
-on figure \ref{fig:density}, left). This can be highlighted by using
-transparency to reflect density (figure \ref{fig:density}, centre) or
-binning plot regions (figure \ref{fig:density}, right).
+on figure~\ref{fig:density}, left). This can be highlighted by using
+transparency to reflect density (figure~\ref{fig:density}, centre) or
+binning plot regions (figure~\ref{fig:density}, right).
 
 <<density, fig.show = 'hide'>>=
 pca <- plot2D(hyperLOPIT2015, fcol = NULL, col = "black")
 plot(pca, col = "#00000020", pch = 19)
-plot(hexbin::hexbin(pca), colramp = colorRampPalette(c("grey90", "blue")))
+cramp <- colorRampPalette(c("grey90", "blue"))
+plot(hexbin(pca), colramp = cramp)
 @
 
 \begin{figure}[ht]
@@ -225,6 +231,32 @@ plot(hexbin::hexbin(pca), colramp = colorRampPalette(c("grey90", "blue")))
   \label{fig:density}
 \end{figure}
 
+<<hexbin, fig.show = 'hide'>>=
+suppressMessages(hl <- commonFeatureNames(hyperLOPIT2015, hyperLOPIT2015ms2))
+plot(hexbin(plot2D(hl[[1]], plot = FALSE)), colramp = cramp)
+plot(hexbin(plot2D(hl[[2]], plot = FALSE)), colramp = cramp)
+plot(hexbin(plot2D(hall2009, plot = FALSE)), colramp = cramp)
+@
+
+In figure~\ref{fig:hexbin1} we compare three datasets to illustrate
+differnt levels of cluster density and separation. The figure on the
+left the the hyperLOPIT data from \citet{Christoforou:2016} (as on
+figure~\ref{fig:density}) that used synchronous precursor selection
+(SPS) MS$^3$ on an Orbitrap Fusion. The middle figure represents the
+same experiment and same proteins, analysed using conventional MS$^2$,
+illustrating the effect of reduced quantitation accuracy. Finally, on
+the left, an experiment with considerable less resolution
+\citep{Hall:2009}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 0.3\textwidth]{./figure/hexbin-1.pdf}
+  \includegraphics[width = 0.3\textwidth]{./figure/hexbin-2.pdf}
+  \includegraphics[width = 0.3\textwidth]{./figure/hexbin-3.pdf}
+  \caption{Comparing the cluster density and separation of a very good
+    separation from best (left) to worst (right).}
+  \label{fig:hexbin1}
+\end{figure}
 
 Considering that the aim of sub-cellular fractions is to maximise
 separation of (some and most) sub-cellular niches, one would expect
@@ -235,21 +267,98 @@ data points. In other words, the maximum variability of a successfull
 spatial proteomics experiments should be reflected by the separation
 of the spatial clusters.
 
+\bigskip
 
 Another dimensionality rediction method that is worth mentioning here
 is linear discriminant analysis. LDA will project the protein
-occupancy profiles in a new set of dimension using as criteria the
-maximal separation of marker classes. As opposed to the
-\textit{unsupervised} PCA aboce, the \textit{supervised} LSA can not
-be used to validate the separation of the spatial niches, but can be
-useful to visualise the relative separability of the of spatial
-clusters. 
+occupancy profiles in a new set of dimensions using as criteria the
+maximal separation of marker classes by maximising the between class
+variance to the within calss variance ratio. As opposed to the
+\textit{unsupervised} PCA, the \textit{supervised} LSA should not be
+used as an experiment quality control, but can be useful to assess if
+one or more organelles have been preferentially separated.
 
-\subsection*{Quantifying resolution}
+\subsection*{Quantifying resolution}\label{sec:qsep}
 
-Describe the \texttt{QSep} infrastructure.
+While visualisation of spatial proteomics data remains essential to
+assess the resolution, and hence the success, of a spatial proteomics
+experiment, it is useful to be able to objectively quantify the
+resolution and directly compare different experiments. Here, we
+present a new infrastructure to quantify the resolution in spatial
+proteomics experiments, that relies on the comparison of the average
+euclidean distance within and between sub-cellular clusters. 
 
-\section{Comparative study}
+As illustrated on the heatmaps in figure~\ref{fig:qsep0}, these
+distances always refer to one reference marker cluster. The raw
+distance matrix (figure~\ref{fig:qsep0}, top-left) is symmetrical
+(i.e. the distance beetween cluster 1 and 2 is the same as between
+cluster 2 and 1). Within distances are generally the smallest ones,
+except when two clusters overlap, as the lysosome and endosome in our
+example. To enables the comparion of these distances within and
+between experiements (see section~\ref{sec:compara} for the lattes),
+we further divide each distance be the reference within cluster
+average distance (figure~\ref{fig:qsep0}, top-right). This thus
+informs is as how much the average distance between cluster 1 and 2 is
+greater than the average distance within orgnalle 1 (i.e. the
+tightness of that cluster). At this stage, the distance matrix is not
+symmetrical anymore. To faciliate the comparison of distances between
+organelles, we also illustrate the distance distributions as boxplots
+(figure~\ref{fig:qsep0}, bottom).
+
+<<qsep0>>=
+qh <- QSep(hyperLOPIT2015)
+names(qh) <- sub("/", "\n", names(qh))
+@
+
+<<qsep0lv, fig.width = 8, fig.height = 8, fig.show = 'hide'>>=
+print(levelPlot(qh, norm = FALSE))
+print(levelPlot(qh, norm = TRUE))
+@
+
+<<qsep0bx, fig.show = 'hide'>>=
+par(mar = c(4, 10, 2, 2), cex.axis = .8)
+plot(qh, norm = FALSE)
+plot(qh, norm = TRUE)
+@
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width = 0.45\textwidth]{./figure/qsep0lv-1.pdf}
+  \includegraphics[width = 0.45\textwidth]{./figure/qsep0lv-2.pdf}
+  \includegraphics[width = 0.45\textwidth]{./figure/qsep0bx-1.pdf}
+  \includegraphics[width = 0.45\textwidth]{./figure/qsep0bx-2.pdf}
+  \caption{Quantifying resolution of \citet{Christoforou:2016}. The
+    heatmaps at the top illustrate the raw (left) and average
+    normalised (right) within (along the diagonal) and between
+    euclidean cluster distances. The boxplots at the bottom summarise
+    these same values (raw on the left, normalised on the right) to
+    enable easier comparison between clusters, where the within
+    distances are highligted in red. }
+  \label{fig:qsep0}
+\end{figure}
+
+
+The rational behind these measures is as follows. Intuitively, we
+assess resolution by using speration of clusters (formalised by the
+average distance between two clusters) and tighness of one cluster
+(formalised by the average within cluster distance). Ideal
+sub-cellular fractionation would yield tight and distant clusters,
+represented by a large normalised between cluster distances on figure
+\ref{fig:qsep0}.
+
+\section{Comparative study}\label{sec:compara}
+
+We now apply the quantitative assessment of spatial resolution
+described in section~\ref{sec:qsep} to compare the \Sexpr{nrow(pdata)}
+experiments presented in section~\ref{sec:pdata}. On
+figure~\ref{fig:qsep}, we display the global average normalised
+between cluster distances for all spatial clusters on a single boxplot
+per datasets. The datasets have been ordered using the experiment-wide
+median between distance. It is important to refer back to always refer
+the original data when considering summerising metrics like these, to
+put the resolution into context; the annotated and density PCA plots
+discussed in section~\ref{sec:vis} are also provided in
+figures~\ref{fig:pca} and~\ref{fig:denspca}.
 
 <<qsep>>=
 res <- pdapply(pdataitems,
@@ -261,7 +370,6 @@ res <- pdapply(pdataitems,
 o <- order(sapply(res, median))
 @
 
-
 \begin{figure}[ht]
   \centering
 <<figqsep>>=
@@ -269,11 +377,15 @@ par(las = 1, mar = c(3, 8, 1, 1))
 boxplot(res[o], horizontal = TRUE, cex.axis = .7, ylim = c(0, 16))
 abline(v = 1, lty = "dotted")
 @  
-  \caption{Quantitative separation assessment}
+\caption{Quantitative separation assessment using experiment-wide
+  normalised between cluster distances.}
   \label{fig:qsep}
 \end{figure}
 
-\begin{figure}[ht]
+
+
+
+\begin{figure}[p]
   \centering 
 <<figpca>>=
 par(mfrow = c(4, 3), mar = c(2, 2, 2, 2))
@@ -282,13 +394,44 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
            cex.axis = .6, tck = -0.025,
            dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2))))
 @ 
-  \caption{PCA plots}
+\caption{PCA plots for the \Sexpr{nrow(pdata)} experiments used in
+  this study. The experiments are ordered according to the median
+  average between cluster distance (see figure~\ref{fig:qsep}).}
   \label{fig:pca}
 \end{figure}
 
 
-\section{Conclusions}
 
+<<fighexpca, fig.show = 'hide'>>=
+tmp <- sapply(pdataitems[rev(o)], function(x)
+    plot(hexbin(plot2D(impute(get(x), method = "zero"), plot = FALSE,
+                       dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2)))),
+         main = x,
+         colramp = cramp))
+@
+
+\begin{figure}[p]
+  \centering
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-1.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-2.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-3.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-4.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-5.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-6.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-7.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-8.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-9.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-10.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-11.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-12.pdf}
+  \caption{Density PCA plots for the \Sexpr{nrow(pdata)} experiments
+    used in this study. The experiments are ordered according to the
+    median average between cluster distance (see
+    figure~\ref{fig:qsep}).}
+  \label{fig:denspca}
+\end{figure}
+
+\section{Conclusions}
 
 It is important to highlight the importance and effect of marker
 definition on estimating and assessing the resolution of spatial
@@ -299,9 +442,12 @@ markers provided by the original authors (except for
 
 TODO: Number and tighness of clusters. Cluster boundaries.
 
+
+\clearpage
+
 \section{Session information}
 
-The software and versions used to produce these work are summarised
+The software and versions used to produce this document are summarised
 below. In particular, recent versions of \texttt{pRoloc} and
 \texttt{pRolocdata} \citep{Gatto:2014a}, which require versions 1.13.9
 and 1.11.2 or later, respectively.
