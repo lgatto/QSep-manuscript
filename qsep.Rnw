@@ -442,8 +442,13 @@ markers provided by the original authors (except for
 
 TODO: Number and tighness of clusters. Cluster boundaries.
 
-
 \clearpage
+
+\section*{Acknowledgements}
+
+L.M.B is supported by a Wellcome Trust Technology Development Grant
+(WTxxxxx). L.G. is supported by the BBSRC Strategic Longer and Larger
+grant (Award BB/L002817/1)
 
 \section{Session information}
 
