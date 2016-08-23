@@ -24,7 +24,6 @@
 knitr::opts_chunk$set(echo = FALSE)
 @
 
-
 <<env, warnings = FALSE>>=
 suppressWarnings(suppressPackageStartupMessages(library("MSnbase")))
 suppressWarnings(suppressPackageStartupMessages(library("pRoloc")))
@@ -84,7 +83,7 @@ niches under study. And yet, every spatial proteomics publication will
 claim to have obtain from satisfactory to excellent resolution.
 
 The importance of adequate sub-cellular resolution reaches beyong the
-generation of reliable static spatial maps. It is a necessary quality
+generation of reliable static spatial maps. It is a necessary property
 of the data to consider tackling more subtle sub-cellular patterns
 such as multi- and trans-localisation, i.e. the localisation of
 proteins in multiple sub-cellular niches and the relocation of
@@ -145,7 +144,12 @@ curated marker list from \cite{Christoforou:2016}, as only a limited
 number of markers was provided by the authors\footnote{This results
   from the fact that they used a simple distance measurement, termed
   $\chi^2$ against few markers to base their assignments}. We have
-also only considered clusters that were defined by at least 7 markers. 
+also only considered clusters that were defined by at least 7
+markers\footnote{This number is relatively low, and we would typically
+  recommend at least 13 markers per class to perform cross-validation
+  when optimising classifier parameters.}. When provided by the
+original authors, we have combined multiple replicated experiments to
+improve sub-cellular resolution \citep{Trotter:2010}. 
 
 <<foster2006preproc>>=
 mmu <- pRolocmarkers("mmus")
@@ -170,8 +174,8 @@ tmp <- sapply(pdataitems,
 
 In addition, for dimensionality reduction and visualisation, we have
 systematically replaced missing values by zeros. When caluclation
-distances between protein profiles, however, missing values were
-retained.
+distances between protein profiles (see section~\ref{sec:qsep}),
+however, missing values were retained.
 
 It is important to highlight that not all experiments used in this
 study have as main goal the generation of a global sub-cellular
@@ -289,7 +293,7 @@ Another dimensionality rediction method that is worth mentioning here
 is linear discriminant analysis. LDA will project the protein
 occupancy profiles in a new set of dimensions using as criteria the
 maximal separation of marker classes by maximising the between class
-variance to the within calss variance ratio. As opposed to the
+variance to the within class variance ratio. As opposed to the
 \textit{unsupervised} PCA, the \textit{supervised} LSA should not be
 used as an experiment quality control, but can be useful to assess if
 one or more organelles have been preferentially separated.
@@ -321,7 +325,7 @@ symmetrical anymore. To faciliate the comparison of distances between
 organelles, we also illustrate the distance distributions as boxplots
 (figure~\ref{fig:qsep0}, bottom).
 
-<<qsep0>>=
+<<qsep0, echo=TRUE>>=
 qh <- QSep(hyperLOPIT2015)
 names(qh) <- sub("/", "\n", names(qh))
 @
@@ -401,7 +405,19 @@ abline(v = 1, lty = "dotted")
 The hyperLOPIT experiments \citep{Christoforou:2016} using SPS MS$^3$
 and conventional MS$^2$ show the best global, experiment-wide
 resolution. As documented by the authors, the increased quantitation
-accuracy of the former 
+accuracy of the former result in better sub-cellular resolution.
+
+
+Mention that dunkley, tan and andy2011 were further analysed using
+phenoDisco, which identifies well-defined clusters, which in turn
+favours good resolution scores.
+
+Also mention poor annotation of Hall, which positively influences the
+resolution scoring. 
+
+Mention that groen2014cmb and nikolovski2014 are tagetted, and do not
+aim for best global resolution. Reflected by less annotated clustes.
+
 
 
 \begin{figure}[p]
@@ -459,7 +475,24 @@ markers provided by the original authors (except for
 \cite{Foster:2006} to assess the data as originally presented.
 
 
-TODO: Number and tighness of clusters. Cluster boundaries.
+TODO:
+
+Number and tighness of clusters. Cluster boundaries.
+
+Ordering of comparative study should not be taken as absolute. Useful
+for labs that do spatial studies on different models and with
+different fractionation and/or quantitation methods, to loosely order
+their experiments (for example hyperLOPIT MS2 and MS3).
+
+Useful to roughly assess separation against different labs.
+
+Useful for readers wanting to assess the resolution of new studies,
+and put them into a wider context.
+
+
+Resolution is only one aspect of spatial proteomics, but essential for
+reliable assignment to spatial niches and identification of multi- and
+trans-localisation. 
 
 \clearpage
 
@@ -467,7 +500,7 @@ TODO: Number and tighness of clusters. Cluster boundaries.
 
 L.M.B is supported by a Wellcome Trust Technology Development Grant
 (Grant number 108467/Z/15/Z). L.G. is supported by the BBSRC Strategic
-Longer and Larger grant (Award BB/L002817/1)
+Longer and Larger grant (Award BB/L002817/1).
 
 \section{Session information}
 
