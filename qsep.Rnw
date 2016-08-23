@@ -118,12 +118,13 @@ diverse range of species, instruments and methodologies.
 <<makepdtab>>=
 pdtab <- data.frame(pdata[, 3:4], stringsAsFactors = FALSE)
 pdtab$nprot <- pdapply(pdataitems, nrow)
+pdtab$frac <- pdapply(pdataitems, ncol)
 pdtab$nclust <- pdapply(pdataitems, function(x)
     length(unique(fData(markerMSnSet(x))$markers)))
-pdtab <- pdtab[, c(1, 3, 4, 2)]
-names(pdtab) <- c("Data", "Proteins", "Clusters", "Title")
+pdtab <- pdtab[, c(1, 3:5, 2)]
+names(pdtab) <- c("Data", "Proteins", "Fractions",  "Clusters", "Title")
+pdtab <- pdtab[order(pdtab[, "Clusters"], decreasing = TRUE), ]
 @
-
 
 \begin{sidewaystable}
 <<pdtab, results = 'asis'>>=
@@ -143,13 +144,28 @@ authors. The data from \cite{Foster:2006} has been annotated using the
 curated marker list from \cite{Christoforou:2016}, as only a limited
 number of markers was provided by the authors\footnote{This results
   from the fact that they used a simple distance measurement, termed
-  $\chi^2$ against few markers to base their assignments}.
+  $\chi^2$ against few markers to base their assignments}. We have
+also only considered clusters that were defined by at least 7 markers. 
 
 <<foster2006preproc>>=
 mmu <- pRolocmarkers("mmus")
 fData(foster2006)$markers <- NULL
 foster2006 <- addMarkers(foster2006, mmu, fcol = "UniProt",
                          verbose = FALSE)
+
+@
+
+<<minMarkers5>>=
+
+tmp <- sapply(pdataitems,
+       function(x) {
+           obj <- get(x)
+           obj <- minMarkers(obj, 7)
+           fData(obj)$markers <- fData(obj)$markers7
+           fData(obj)$markers5 <- NULL
+           assign(x, obj, envir = globalenv())
+       })
+
 @
 
 In addition, for dimensionality reduction and visualisation, we have
@@ -382,7 +398,10 @@ abline(v = 1, lty = "dotted")
   \label{fig:qsep}
 \end{figure}
 
-
+The hyperLOPIT experiments \citep{Christoforou:2016} using SPS MS$^3$
+and conventional MS$^2$ show the best global, experiment-wide
+resolution. As documented by the authors, the increased quantitation
+accuracy of the former 
 
 
 \begin{figure}[p]
@@ -391,7 +410,7 @@ abline(v = 1, lty = "dotted")
 par(mfrow = c(4, 3), mar = c(2, 2, 2, 2))
 tmp <- sapply(pdataitems[rev(o)], function(x)
     plot2D(impute(get(x), method = "zero"), main = x,
-           cex.axis = .6, tck = -0.025,
+           cex.axis = .6, tck = -0.025, cex = .7,
            dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2))))
 @ 
 \caption{PCA plots for the \Sexpr{nrow(pdata)} experiments used in
@@ -399,7 +418,6 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
   average between cluster distance (see figure~\ref{fig:qsep}).}
   \label{fig:pca}
 \end{figure}
-
 
 
 <<fighexpca, fig.show = 'hide'>>=
@@ -439,6 +457,7 @@ proteomics experiments and, of course, assignment of proteins to their
 most likely sub-cellular compartments. In this work, we have used the
 markers provided by the original authors (except for
 \cite{Foster:2006} to assess the data as originally presented.
+
 
 TODO: Number and tighness of clusters. Cluster boundaries.
 

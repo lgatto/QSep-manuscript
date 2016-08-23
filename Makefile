@@ -1,6 +1,6 @@
 qsep.tex: qsep.Rnw
 	R-3.3 --vanilla -e "knitr::knit('qsep.Rnw')"
-	perl -pi -e 's/\\begin{longtable}{lrrl}/\\begin{longtable}{lrrp{11cm}}/' qsep.tex
+	perl -pi -e 's/\\begin{longtable}{lrrrl}/\\begin{longtable}{lrrrp{10cm}}/' qsep.tex
 
 qsep.pdf: qsep.tex
 	pdflatex qsep.tex
