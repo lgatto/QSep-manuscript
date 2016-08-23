@@ -466,8 +466,8 @@ TODO: Number and tighness of clusters. Cluster boundaries.
 \section*{Acknowledgements}
 
 L.M.B is supported by a Wellcome Trust Technology Development Grant
-(WTxxxxx). L.G. is supported by the BBSRC Strategic Longer and Larger
-grant (Award BB/L002817/1)
+(Grant number 108467/Z/15/Z). L.G. is supported by the BBSRC Strategic
+Longer and Larger grant (Award BB/L002817/1)
 
 \section{Session information}
 
