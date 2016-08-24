@@ -325,7 +325,7 @@ symmetrical anymore. To faciliate the comparison of distances between
 organelles, we also illustrate the distance distributions as boxplots
 (figure~\ref{fig:qsep0}, bottom).
 
-<<qsep0, echo=TRUE>>=
+<<qsep0>>=
 qh <- QSep(hyperLOPIT2015)
 names(qh) <- sub("/", "\n", names(qh))
 @
@@ -475,24 +475,22 @@ markers provided by the original authors (except for
 \cite{Foster:2006} to assess the data as originally presented.
 
 
-TODO:
-
-Number and tighness of clusters. Cluster boundaries.
-
-Ordering of comparative study should not be taken as absolute. Useful
-for labs that do spatial studies on different models and with
-different fractionation and/or quantitation methods, to loosely order
-their experiments (for example hyperLOPIT MS2 and MS3).
-
-Useful to roughly assess separation against different labs.
-
-Useful for readers wanting to assess the resolution of new studies,
-and put them into a wider context.
+(TODO: Number and tighness of clusters. Cluster boundaries.)
 
 
-Resolution is only one aspect of spatial proteomics, but essential for
-reliable assignment to spatial niches and identification of multi- and
-trans-localisation. 
+The ordering suggested in section~\ref{sec:compara} should not be
+taken as absolute. It only provides a guide to compare different
+experiments. It will be useful for laboratories that do spatial
+studies on different models and with different fractionation and/or
+quantitation methods, to assess the impact of these variables (such
+as, for example hyperLOPIT MS2 and MS3). It will also be useful to
+roughly compare separation betwee different labs, as demonstrated in
+our comparative study (section~\ref{sec:compara}). It will also be
+useful for the researcher wanting to assess the resolution of newly
+published studies, and put them into a wider context. Sub-cellular
+resolution is of course only one aspect of spatial proteomics, albeit
+an essential on for reliable assignment to spatial niches and
+identification of multi- and trans-localisation.
 
 \clearpage
 
