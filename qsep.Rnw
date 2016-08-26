@@ -1,14 +1,15 @@
 \documentclass[12pt]{article}
 \usepackage{booktabs}
 \usepackage{longtable}
+\usepackage{caption}
 \usepackage{rotating}
 \usepackage{hyperref}
 \usepackage{natbib}
 \usepackage[affil-it]{authblk}
 
 
-%% from BiocStyle
-\newcommand{\Rpackage}[1]{\textsl{#1}}
+%% adapted from BiocStyle
+\newcommand{\Rpackage}[1]{\texttt{#1}}
 \newcommand\Biocpkg[1]{%
   {\href{http://bioconductor.org/packages/#1}%
     {\Rpackage{#1}}}}
@@ -25,7 +26,7 @@
 \begin{document}
 \maketitle
 
-\begin{abstract}
+\begin{abstract}  
   A meta-analysis assessing and comparing the sub-cellular resolution
   of spatial proteomics experiments. 
 \end{abstract}
@@ -149,10 +150,11 @@ pdtab <- pdtab[order(pdtab[, "Clusters"], decreasing = TRUE), ]
 
 
 \begin{sidewaystable}
+  \captionsetup{width=\textwidth}
 <<pdtab, results = 'asis'>>=
 print(xtable(pdtab,
              label = "tab:pdtab",
-             caption = "Summary of the datasets used in this study. The percentage along the principal components (PC) related to the PCA plots on figure~\\ref{fig:pca}."),
+             caption = "Summary of the datasets used in this study. The percentage of variance along the principal components (PC) is related to the PCA plots on figure~\\ref{fig:pca}."),
       include.rownames = FALSE,
       booktabs = TRUE,
       floating = FALSE,
@@ -358,17 +360,31 @@ boxplots (figure~\ref{fig:qsep0}, bottom).
 <<qsep0>>=
 qh <- QSep(hyperLOPIT2015)
 names(qh) <- sub("/", "\n", names(qh))
+qi <- QSep(itzhak2016stcSILAC)
+qhmed <- median(summary(qh, verbose = FALSE))
+qimed <- median(summary(qi, verbose = FALSE))
 @
 
 <<qsep0lv, fig.width = 8, fig.height = 8, fig.show = 'hide'>>=
 print(levelPlot(qh, norm = FALSE))
 print(levelPlot(qh, norm = TRUE))
+print(levelPlot(qi))
 @
 
 <<qsep0bx, fig.show = 'hide'>>=
 par(mar = c(4, 10, 2, 2), cex.axis = .8)
 plot(qh, norm = FALSE)
 plot(qh, norm = TRUE)
+@
+
+<<qsepcmp, fig.show = 'hide'>>=
+par(mar = c(2.2, 10, 0, 1), cex.axis = .8)
+plot(qh, ylim = c(0.9, 17))
+abline(v = qhmed, lty = "dashed")
+legend("topright", legend = "hyperLOPIT2015", bty = "n")
+plot(qi, ylim = c(0.9, 17))
+abline(v = qimed, lty = "dashed")
+legend("topright", legend = "itzhak2016stcSILAC", bty = "n")
 @
 
 \begin{figure}[!ht]
@@ -396,6 +412,81 @@ distance). Ideal sub-cellular fractionation would yield tight and
 distant clusters, represented by a large normalised between cluster
 distances on figure \ref{fig:qsep0}.
 
+\clearpage
+
+\subsection*{Application of the assessment criteria}\label{sec:applic}
+
+<<nummarkers>>=
+nmh <- length(getMarkerClasses(hyperLOPIT2015ms2))
+nmi <- length(getMarkerClasses(itzhak2016stcSILAC))
+@
+
+To further demonstrate the interpretation of these resolution metrics,
+we directly compare the two recent global cell maps from
+\citep{Christoforou:2016} (dataset \textit{hyperLOPIT2015}) and
+\citep{Itzhak:2016} (dataset \textit{itzhak2016stcSILAC}). Both
+feature high protein coverage (\Sexpr{nrow(hyperLOPIT2015)} and
+\Sexpr{nrow(itzhak2016stcSILAC)} proteins respectively) and good
+sub-cellular diversity (\Sexpr{nmh} and \Sexpr{nmi} annotated clusters
+respectively). The former contains duplicated experiments, each made
+of 10 fractions and the latter contains 6 replicates with 5 fractions
+each.
+
+
+Figure~\ref{fig:pcacmp} shows the PCA plots applying transparency to
+identify the underlying structure in the quantitative data and the
+annotated versions using the markers provided by the respective
+authors.
+
+\begin{figure}[!h]
+  \centering
+<<pcacmp, fig.width = 8, fig.height = 8, fig.asp = 1/4>>=
+par(mar = c(4, 4, 0, 0), mfrow = c(1, 4))
+plot2D(impute(itzhak2016stcSILAC, "zero"), fcol = NULL, col = "#00000020")
+plot2D(impute(itzhak2016stcSILAC, "zero"))
+plot2D(hyperLOPIT2015, fcol = NULL, col = "#00000020")
+plot2D(hyperLOPIT2015)
+@
+\caption{PCA plots for \textit{itzhak2016stcSILAC} (left) and
+  \textit{hyperLOPIT2015} (right).}
+  \label{fig:pcacmp}
+\end{figure}
+
+
+Figure~\ref{fig:qsepcmp} illustrates the normalised distance heatmaps
+and boxplots for the two datasets (\textit{itzhak2016stcSILAC} at the
+top and \textit{hyperLOPIT2015} at the bottom). The two heatmaps
+display strikingly different colour patterns. The top heatmap shows a
+majority of small normalised distances (blue cells) and with only a
+limited number of large distances (red cells), along the mitochondrial
+reference cluster. Conversely, the bottom heatmap displays a majority
+of average (white cells) and large distances (red cells) accross all
+sub-cellular clusters. The boxplots allow to more directly compare the
+distances accross the two datasets. On the top boxplot, we detect
+relatively short distances for most clusters, with most large
+distances stemming from the mitochondrion, leading to a median distance
+of \Sexpr{round(qimed, 2)}. The distributions on the bottom boxplot
+show larger distances, equally spread among all clusters, with an
+media distance of \Sexpr{round(qhmed, 2)}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = 0.45\textwidth]{./figure/qsep0lv-3.pdf}
+  \includegraphics[width = 0.45\textwidth]{./figure/qsepcmp-2.pdf}
+  \includegraphics[width = 0.45\textwidth]{./figure/qsep0lv-2.pdf}
+  \includegraphics[width = 0.45\textwidth]{./figure/qsepcmp-1.pdf}
+  \caption{Contrasting quantitative separation assessment between the
+    \textit{itzhak2016stcSILAC} \citep{Itzhak:2016} (top) and
+    \textit{hyperLOPIT2015} \citep{Christoforou:2016} (bottom)
+    datasets. The dashed vertical lines on the boxplots represent the
+    overall media between cluster distance, \Sexpr{round(qimed, 2)} and
+    \Sexpr{round(qhmed, 2)} for \textit{itzhak2016stcSILAC} and
+    \textit{hyperLOPIT2015} respectively. }
+  \label{fig:qsepcmp}
+\end{figure}
+
+\clearpage
+
 \section{Comparative study}\label{sec:compara}
 
 We now apply the quantitative assessment of spatial resolution
@@ -422,7 +513,7 @@ o <- order(sapply(res, median))
 
 \begin{figure}[ht]
   \centering
-<<figqsep>>=
+<<figqsep, out.width = '50%'>>=
 par(las = 1, mar = c(3, 8, 1, 1))
 boxplot(res[o], horizontal = TRUE, cex.axis = .7, ylim = c(0, 16))
 abline(v = 1, lty = "dotted")
@@ -447,28 +538,6 @@ resolution scoring.
 
 Mention that groen2014cmb and nikolovski2014 are tagetted, and do not
 aim for best global resolution. Reflected by less annotated clustes.
-
-
-
-\begin{figure}[p]
-  \centering 
-<<figpca>>=
-par(mfrow = c(4, 3), mar = c(2, 2, 2, 2))
-tmp <- sapply(pdataitems[rev(o)], function(x)
-    plot2D(impute(get(x), method = "zero"), main = x,
-           cex.axis = .6, tck = -0.025, cex = .7,
-           dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2))))
-@ 
-\caption{PCA plots for the \Sexpr{nrow(pdata)} experiments used in
-  this study. PC 1 and 2 were used except for
-  \textit{itzhak2016stcSILAC}, were PC 1 and 3 were used to conform to
-  the orignal authors figures. The experiments are ordered according
-  to the median average between cluster distance (see
-  figure~\ref{fig:qsep}). The percentage of variance explained along
-  the 2 PCs on the plots can be found in table~\ref{tab:pdtab}.}
-  \label{fig:pca}
-\end{figure}
-
 
 <<fighexpca, fig.show = 'hide'>>=
 tmp <- sapply(pdataitems[rev(o)], function(x)
@@ -498,6 +567,27 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
     figure~\ref{fig:qsep}).}
   \label{fig:denspca}
 \end{figure}
+
+
+\begin{figure}[p]
+  \centering 
+<<figpca, fig.asp = 4/3>>=
+par(mfrow = c(4, 3), mar = c(2, 2, 2, 2))
+tmp <- sapply(pdataitems[rev(o)], function(x)
+    plot2D(impute(get(x), method = "zero"), main = x,
+           cex.axis = .6, tck = -0.025, cex = .7,
+           dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2))))
+@ 
+\caption{PCA plots for the \Sexpr{nrow(pdata)} experiments used in
+  this study. PC 1 and 2 were used except for
+  \textit{itzhak2016stcSILAC}, were PC 1 and 3 were used to conform to
+  the orignal authors figures. The experiments are ordered according
+  to the median average between cluster distance (see
+  figure~\ref{fig:qsep}). The percentage of variance explained along
+  the 2 PCs on the plots can be found in table~\ref{tab:pdtab}.}
+  \label{fig:pca}
+\end{figure}
+
 
 \section{Conclusions}
 
