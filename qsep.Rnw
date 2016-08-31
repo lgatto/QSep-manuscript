@@ -119,9 +119,12 @@ their claims.
 \section{Spatial proteomics datasets}\label{sec:pdata}
 
 <<pdata>>=
-i <- c(2, 6, 10, 14, 15, 20, 22, 24, 28, 36, 37, 39)
-pdata <- pRolocdata()
-pdata <- pdata$results[i, ]
+.experiments <- c("E14TG2aS1", "andy2011", "andreyev2009rest", "dunkley2006",
+                  "foster2006", "groen2014cmb", "hall2009", "hyperLOPIT2015",
+                  "itzhak2016stcSILAC", "nikolovski2012imp", "nikolovski2014", 
+                  "tan2009r1")
+pdata <- pRolocdata()$results
+pdata <- pdata[pdata[, "Item"] %in% .experiments, ]
 pdataitems <- pdata[, "Item"]
 data(list = pdataitems)
 @
@@ -281,6 +284,7 @@ plot(hexbin(pca), colramp = cramp)
 \end{figure}
 
 <<hexbin, fig.show = 'hide'>>=
+data(hyperLOPIT2015ms2)
 suppressMessages(hl <- commonFeatureNames(hyperLOPIT2015, hyperLOPIT2015ms2))
 plot(hexbin(plot2D(hl[[1]], plot = FALSE)), colramp = cramp)
 plot(hexbin(plot2D(hl[[2]], plot = FALSE)), colramp = cramp)
@@ -528,7 +532,6 @@ and conventional MS$^2$ show the best global, experiment-wide
 resolution. As documented by the authors, the increased quantitation
 accuracy of the former result in better sub-cellular resolution.
 
-
 Mention that dunkley, tan and andy2011 were further analysed using
 phenoDisco, which identifies well-defined clusters, which in turn
 favours good resolution scores.
@@ -536,8 +539,12 @@ favours good resolution scores.
 Also mention poor annotation of Hall, which positively influences the
 resolution scoring. 
 
+Andreyev suffers from very broad clusters (compared to separation
+between clusters).
+
 Mention that groen2014cmb and nikolovski2014 are tagetted, and do not
 aim for best global resolution. Reflected by less annotated clustes.
+
 
 <<fighexpca, fig.show = 'hide'>>=
 tmp <- sapply(pdataitems[rev(o)], function(x)
