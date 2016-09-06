@@ -116,13 +116,20 @@ while setting up and optimising their experiments, as well biologists
 interested in critically assessing spatial proteomics studies and
 their claims.
 
+All the data and software used in the work is available in the
+\Biocpkg{pRoloc} and \Biocexptpkg{pRolocdata} packages
+\citep{Gatto:2014a}. We do not display all detail in this rendering of
+the manuscript, the code to reproduce all results and figures is
+available in the source of this document in the public manuscript
+repository\footnote{\url{https://github.com/ComputationalProteomicsUnit/QSep-manuscript}}.
+
 \section{Spatial proteomics datasets}\label{sec:pdata}
 
 <<pdata>>=
 .experiments <- c("E14TG2aS1", "andy2011", "andreyev2009rest", "dunkley2006",
                   "foster2006", "groen2014cmb", "hall2009", "hyperLOPIT2015",
-                  "itzhak2016stcSILAC", "nikolovski2012imp", "nikolovski2014", 
-                  "tan2009r1")
+                  "hyperLOPIT2015ms2", "itzhak2016stcSILAC", "nikolovski2012imp",
+                  "nikolovski2014", "rodriguez2012r1", "tan2009r1", "trotter2010")
 pdata <- pRolocdata()$results
 pdata <- pdata[pdata[, "Item"] %in% .experiments, ]
 pdataitems <- pdata[, "Item"]
@@ -225,7 +232,7 @@ aim of the studies in mind when assessing their resolution.
 
 \section{Assessment}
 
-\subsection*{Sub-cellular diversity}
+\subsection*{Sub-cellular diversity}\label{sec:sub-cell-divers}
 
 An first assessment that provides an important indication of the
 resolution of the data concerns the number and diversity of
@@ -257,7 +264,7 @@ simplification of the actual data.
 By firstly summarising the occupancy profiles along PC1 and PC2 (and,
 possibly, other components of interest if necessary, it becomes
 possible to visualise the complete dataset in a single figure (as
-opposed to individual sets of profiles - see for example figures 5 in
+opposed to individual sets of profiles - see for example figure 5 in
 \citet{Gatto:2010}). In a first instance, it is advised to visualise
 the data without annotation to confirm the presence of discrete
 clusters, i.e. dense clouds of points that are well separated from the
@@ -268,10 +275,9 @@ binned hexagon plots (figure~\ref{fig:density}, right) to highlight
 density.
 
 <<density, fig.show = 'hide'>>=
-pca <- plot2D(hyperLOPIT2015, fcol = NULL, col = "black")
-plot(pca, col = "#00000020", pch = 19)
-cramp <- colorRampPalette(c("grey90", "blue"))
-plot(hexbin(pca), colramp = cramp)
+plot2D(hyperLOPIT2015, fcol = NULL, col = "black")
+plot2D(hyperLOPIT2015, fcol = NULL, col = "#00000020", pch = 19)
+plot2D(hyperLOPIT2015, method = "hexbin")
 @
 
 \begin{figure}[ht]
@@ -279,16 +285,16 @@ plot(hexbin(pca), colramp = cramp)
   \includegraphics[width = 0.3\textwidth]{./figure/density-1.pdf}
   \includegraphics[width = 0.3\textwidth]{./figure/density-2.pdf}
   \includegraphics[width = 0.3\textwidth]{./figure/density-3.pdf}
-  \caption{Unsupervised visualisation of spatial resolution}
+  \caption{Unsupervised visualisation of spatial resolution using the
+    \texttt{plot2D} function from the \Biocpkg{pRoloc} package. }
   \label{fig:density}
 \end{figure}
 
 <<hexbin, fig.show = 'hide'>>=
-data(hyperLOPIT2015ms2)
 suppressMessages(hl <- commonFeatureNames(hyperLOPIT2015, hyperLOPIT2015ms2))
-plot(hexbin(plot2D(hl[[1]], plot = FALSE)), colramp = cramp)
-plot(hexbin(plot2D(hl[[2]], plot = FALSE)), colramp = cramp)
-plot(hexbin(plot2D(hall2009, plot = FALSE)), colramp = cramp)
+plot2D(hl[[1]], method = "hexbin")
+plot2D(hl[[2]], method = "hexbin")
+plot2D(hall2009, method = "hexbin")
 @
 
 In figure~\ref{fig:hexbin1} we compare three datasets to illustrate
@@ -321,8 +327,6 @@ data points. In other words, the maximum variability of a successful
 spatial proteomics experiments should be reflected by the separation
 of the expected/annotated spatial clusters.
 
-\bigskip
-
 Another dimensionality reduction method that is worth mentioning here
 is linear discriminant analysis. LDA will project the protein
 occupancy profiles in a new set of dimensions using as criterion the
@@ -331,6 +335,28 @@ to the within class variance ratio. As opposed to the
 \textit{unsupervised} PCA, the \textit{supervised} LDA should not be
 used as an experiment quality control, but can be useful to assess if
 one or more organelles have been preferentially separated.
+
+\bigskip
+
+It is important to highlight that these representations, while
+reflecting a major fraction of the variability in the data, are only a
+summary of the total variability. Some sub-cellular niches that
+overlap in 2 dimensions can be separated along further components. It
+is sometimes useful to visualise data in three dimensions (using for
+example the \texttt{plot3D} function in the \Biocpkg{pRoloc} package),
+which still, however, only reflect part of the total variability. When
+assessing the resolution of some organelles of interest, one should
+compare the full occupancy profiles of the marker proteins
+(\Biocpkg{pRoloc}'s \texttt{plotDist} function can be used for that)
+or visualise a dendrogram representing the average distance between
+cluster profiles (the \texttt{mrkHClust} function from
+\Biocpkg{pRoloc} offers this functionality). While detailed
+exploration of a dataset using these and other visualisation (we also
+recommend the interactive visualisation apps from the
+\Biocpkg{pRolocGUI} package \citet{pRolocGUI}) is crucial before
+analysing and interpreting a new spatial proteomics experiment, a
+detailed exploration of each of the \Sexpr{nrow(pdtab)} datasets used
+in this meta-analysis is out of scope.
 
 \subsection*{Quantifying resolution}\label{sec:qsep}
 
@@ -420,6 +446,9 @@ distances on figure \ref{fig:qsep0}.
 
 \subsection*{Application of the assessment criteria}\label{sec:applic}
 
+\textbf{QST:} I am not sure about this section. Does it not feel like
+I am having a go at \citep{Itzhak:2016}?
+
 <<nummarkers>>=
 nmh <- length(getMarkerClasses(hyperLOPIT2015ms2))
 nmi <- length(getMarkerClasses(itzhak2016stcSILAC))
@@ -496,14 +525,14 @@ media distance of \Sexpr{round(qhmed, 2)}.
 We now apply the quantitative assessment of spatial resolution
 described in section~\ref{sec:qsep} to compare the \Sexpr{nrow(pdata)}
 experiments presented in section~\ref{sec:pdata}. On
-figure~\ref{fig:qsep}, we display the global average normalised
-between cluster distances for all spatial clusters on a single boxplot
-per datasets. The datasets have been ordered using the experiment-wide
-median between distance. It is important to refer back to always refer
-the original data when considering summerising metrics like these, to
-put the resolution into context; the annotated and density PCA plots
-discussed in section~\ref{sec:vis} are also provided in
-figures~\ref{fig:pca} and~\ref{fig:denspca}.
+figure~\ref{fig:qsep}, we show, for each dataset, a boxplot
+illustrating the distribution of the global average normalised
+distances for all spatial clusters. The datasets have been ordered
+using the experiment-wide median between distance. It is important to
+refer back to always refer the original data when considering
+summerising metrics like these, to put the resolution into context;
+the annotated and density PCA plots discussed in section~\ref{sec:vis}
+are also provided in figures~\ref{fig:pca} and~\ref{fig:denspca}.
 
 <<qsep>>=
 res <- pdapply(pdataitems,
@@ -517,7 +546,7 @@ o <- order(sapply(res, median))
 
 \begin{figure}[ht]
   \centering
-<<figqsep, out.width = '50%'>>=
+<<figqsep, out.width = '65%'>>=
 par(las = 1, mar = c(3, 8, 1, 1))
 boxplot(res[o], horizontal = TRUE, cex.axis = .7, ylim = c(0, 16))
 abline(v = 1, lty = "dotted")
@@ -527,59 +556,98 @@ abline(v = 1, lty = "dotted")
   \label{fig:qsep}
 \end{figure}
 
-The hyperLOPIT experiments \citep{Christoforou:2016} using SPS MS$^3$
+
+The hyperLOPIT experiments \textit{hyperLOPIT2015} and
+\textit{hyperLOPIT2015ms2} \citet{Christoforou:2016} using SPS MS$^3$
 and conventional MS$^2$ show the best global, experiment-wide
-resolution. As documented by the authors, the increased quantitation
-accuracy of the former result in better sub-cellular resolution.
+resolution. As documented by the authors and illustrated in
+section~\ref{sec:vis}, the increased quantitation accuracy of the
+former result in better sub-cellular resolution.
 
-Mention that dunkley, tan and andy2011 were further analysed using
-phenoDisco, which identifies well-defined clusters, which in turn
-favours good resolution scores.
+The next set of experiment are \textit{tan2009r1},
+\textit{trotter2010}, \textit{dunkley2006}, \textit{hall2009} and
+\textit{E14TG2aS1}. It is important to highlight that most of datasets
+(as well as \textit{andy2011}) have either been directly re-analyses
+using a semi-supervised novelty detection algorithm
+\textit{phenoDisco} \citet{Breckels:2013} (the only exception is
+\textit{hall2009}), or, in the case of \textit{trotter2010}, have been
+annotated using markers based on the \textit{phenoDisco}
+re-analysis. The novelty detection algorithm searches for new clusters
+of unlabelled proteins, using the markers proteins as clustering
+guide. These new clusters, termed \textit{phenotypes}, are then
+validated by the user for coherence with known sub-cellular
+niches. This re-analysis has proven quite successfull
+\citet{Breckels:2013} and has identified previously undetected
+sub-cellular niches that form well-resolved tight clusters (see for
+example ribosomial and trans-golgi network (TGN) in
+\textit{dunkley2006}, or proteasome and nucleus in \textit{hall2009r1}
+to cite only a few), which in turn favour good resolution scores.
 
-Also mention poor annotation of Hall, which positively influences the
-resolution scoring. 
 
-Andreyev suffers from very broad clusters (compared to separation
-between clusters).
+The \textit{hall2009} dataset is relatively poorly annotated (only 5
+sub-cellular clusters, which is the lowest in out test datasets). As
+long as these few clusters are well separated, poor annotation can
+positively influences the resolution scoring. Hence, it is important
+to visualise the data as described in section~\ref{sec:vis} and
+consider the sub-cellular diversity exposed in the analysed data (see
+section~\ref{sec:sub-cell-divers}).
 
-Mention that groen2014cmb and nikolovski2014 are tagetted, and do not
-aim for best global resolution. Reflected by less annotated clustes.
+The next set of experiments that show comparable resolution profiles
+are \textit{andy2011}, \textit{Itzhak:2016} and
+\textit{nikolovski2012imp}. \textbf{TODO:} Say something about these,
+try \textit{Itzhak2016stcsilac} without large protein complex.
+
+As mentioned earlier, the \textit{groen2014cmb} and
+\textit{nikolovski2014} are tagetted experiment, focusing on the
+trans-Golgi and Golgi niches respectively. Such experiments do not aim
+for best global resolution, which is reflected by relatively low
+resolution.
+
+The \textit{foster2006} experiment display relatively poor
+separation. This might be due to the relatively high number of missing
+values (\Sexpr{100*round(sum(is.na(foster2006))/prod(dim(foster2006)),
+  3)} \%). Finally, the \textit{andreyev2009rest} dataset suffers from
+very broad sub-cellular clusters (compared to separation between
+clusters).
 
 
 <<fighexpca, fig.show = 'hide'>>=
 tmp <- sapply(pdataitems[rev(o)], function(x)
-    plot(hexbin(plot2D(impute(get(x), method = "zero"), plot = FALSE,
-                       dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2)))),
-         main = x,
-         colramp = cramp))
+    plot2D(impute(get(x), method = "zero"), method = "hexbin",
+           dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2)),
+           main = x))
 @
 
 \begin{figure}[p]
   \centering
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-1.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-2.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-3.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-4.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-5.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-6.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-7.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-8.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-9.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-10.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-11.pdf}
-  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-12.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-1.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-2.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-3.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-4.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-5.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-6.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-7.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-8.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-9.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-10.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-11.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-12.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-13.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-14.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-15.pdf}
   \caption{Density PCA plots for the \Sexpr{nrow(pdata)} experiments
     used in this study. The experiments are ordered according to the
     median average between cluster distance (see
-    figure~\ref{fig:qsep}).}
+    figure~\ref{fig:qsep}). Figures have been generated using the
+    \texttt{plot2D} function from the \Biocpkg{pRoloc} package.}
   \label{fig:denspca}
 \end{figure}
 
 
 \begin{figure}[p]
   \centering 
-<<figpca, fig.asp = 4/3>>=
-par(mfrow = c(4, 3), mar = c(2, 2, 2, 2))
+<<figpca>>=
+par(mfrow = c(4, 4), mar = c(2, 2, 2, 2))
 tmp <- sapply(pdataitems[rev(o)], function(x)
     plot2D(impute(get(x), method = "zero"), main = x,
            cex.axis = .6, tck = -0.025, cex = .7,
@@ -591,10 +659,18 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
   the orignal authors figures. The experiments are ordered according
   to the median average between cluster distance (see
   figure~\ref{fig:qsep}). The percentage of variance explained along
-  the 2 PCs on the plots can be found in table~\ref{tab:pdtab}.}
+  the 2 PCs on the plots can be found in
+  table~\ref{tab:pdtab}. Figures have been generated using the
+  \texttt{plot2D} function from the \Biocpkg{pRoloc} package.}
   \label{fig:pca}
 \end{figure}
 
+% <<allqseps, echo=FALSE>>=
+% par(mfrow = c(4, 4), mar = c(4, 10, 2, 2), cex.axis = .8)
+% tmp <- sapply(pdataitems[rev(o)], function(x) {
+%     plot(QSep(get(x)), main = x)
+% })
+% @
 
 \section{Conclusions}
 
@@ -636,7 +712,7 @@ Longer and Larger grant (Award BB/L002817/1).
 The software and versions used to produce this document are summarised
 below. In particular, recent versions of \Biocpkg{pRoloc} and
 \Biocexptpkg{pRolocdata} \citep{Gatto:2014a}, which require versions
-1.13.9 and 1.11.2 or later, respectively.
+1.13.9 and 1.11.6 or later, respectively.
 
 <<si, results = 'asis'>>=
 toLatex(sessionInfo(), locale = FALSE)
