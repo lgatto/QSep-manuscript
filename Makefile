@@ -4,6 +4,9 @@ all:
 qsep.tex: qsep.Rnw
 	R-3.3 --vanilla -e "knitr::knit('qsep.Rnw')"
 	perl -pi -e 's/\\begin{longtable}{lrrrrl}/\\begin{longtable}{lrrrrp{8cm}}/' qsep.tex
+	perl -pi -e 's/\$$\\backslash\$$/\\/' qsep.tex
+	perl -pi -e 's/\\{/{/' qsep.tex
+	perl -pi -e 's/\\}/}/' qsep.tex
 
 qsep.pdf: qsep.tex
 	pdflatex qsep.tex

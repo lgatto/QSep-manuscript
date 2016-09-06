@@ -4,9 +4,8 @@
 \usepackage{caption}
 \usepackage{rotating}
 \usepackage{hyperref}
-\usepackage{natbib}
+\usepackage[numbers]{natbib}
 \usepackage[affil-it]{authblk}
-
 
 %% adapted from BiocStyle
 \newcommand{\Rpackage}[1]{\texttt{#1}}
@@ -156,6 +155,17 @@ pdtab <- pdtab[, c(1, 3:6, 2)]
 names(pdtab) <- c("Data", "Proteins", "Fractions",
                   "Clusters", "PC var (%)", "Title")
 pdtab <- pdtab[order(pdtab[, "Clusters"], decreasing = TRUE), ]
+
+## This is added manually and depends on the order set in the previous line
+pdtab$Title <- 
+    paste(pdtab$Title, c("\\citep{Christoforou:2016}", "\\citep{Christoforou:2016}",
+                         "\\citep{Breckels:2013}", "\\citep{Itzhak:2016}",
+                         "\\citep{RodriguezPineiro:2012}", "\\citep{Tan:2009}",
+                         "\\citep{Breckels:2016}", "\\citep{Trotter:2010}",
+                         "\\citep{Dunkley:2006}", "\\citep{Foster:2006}",
+                         "\\citep{Nikolovski:2014}", "\\citep{Groen:2014}",
+                         "\\citep{Nikolovski:2012}", "\\citep{Andreyev:2010}",
+                         "\\citep{Hall:2009}"))
 @
 
 
@@ -164,7 +174,7 @@ pdtab <- pdtab[order(pdtab[, "Clusters"], decreasing = TRUE), ]
 <<pdtab, results = 'asis'>>=
 print(xtable(pdtab,
              label = "tab:pdtab",
-             caption = "Summary of the datasets used in this study. The percentage of variance along the principal components (PC) is related to the PCA plots on figure~\\ref{fig:pca}."),
+             caption = "Summary of the datasets used in this study. The percentage of variance along the principal components (PC) is related to the PCA plots on figure~\\ref{fig:pca}. All datasets are available in the \\Biocexptpkg{pRolocdata} package."),
       include.rownames = FALSE,
       booktabs = TRUE,
       floating = FALSE,
@@ -364,13 +374,13 @@ While visualisation of spatial proteomics data remains essential to
 assess the resolution, and hence the success, of a spatial proteomics
 experiment, it is useful to be able to objectively quantify the
 resolution and directly compare different experiments. Here, we
-present such a new infrastructure, available in the \Biocpkg{pRoloc}
-package \citet{Gatto:2014a}, to quantify the resolution in spatial
-proteomics experiments, that relies on the comparison of the average
-euclidean distance within and between sub-cellular clusters. As
-illustrated on the heatmaps in figure~\ref{fig:qsep0} for the
-\textit{hyperLOPIT2015} data, these distances always refer to one
-reference marker cluster.
+present a new infrastructure, termed \texttt{QSep}, available in the
+\Biocpkg{pRoloc} package \citet{Gatto:2014a}, to quantify the
+separation of clusters in spatial proteomics experiments. It relies on
+the comparison of the average euclidean distance within and between
+sub-cellular clusters. As illustrated on the heatmaps in
+figure~\ref{fig:qsep0} for the \textit{hyperLOPIT2015} data, these
+distances always refer to one reference marker cluster.
 
 The raw distance matrix (figure~\ref{fig:qsep0}, top-left) is
 symmetrical (i.e. the distance beetween cluster 1 and 2 is the same as
