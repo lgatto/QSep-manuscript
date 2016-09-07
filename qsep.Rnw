@@ -79,9 +79,9 @@ of sub-cellular fractionation using differential centrifugation or
 separation along density gradients and the subsequent quantitative
 assessment of relative protein occupancy profiles in these
 sub-cellular fractions. Reciprocally, a wide ranging of computational
-methods have been applied, ranging from clustering
-\citep{Tomizioli:2014}, classification (reviewed in
-\citep{Gatto:2014}, semi-supervised learning \citep{Breckels:2013}
+methods have been applied, ranging from unsupervised learning e.g.clustering
+\citep{Tomizioli:2014}, supervised learning e.g. classification (reviewed in
+\citep{Gatto:2014}, semi-supervised learning and novelty detection \citep{Breckels:2013}
 and, more recently, transfer learning \citep{Breckels:2016}.
 
 Despite these advances, there is surprisingly little agreement in the
@@ -92,7 +92,7 @@ results is dependent on adequate sub-cellular resolution,
 i.e. \textit{enough} separation between the different sub-cellular
 niches under study to be able to confidently discern protein profiles
 originating from different sub-cellular niches. And yet, every spatial
-proteomics publication will somehow arbitrarily claim to have obtain
+proteomics publication will somehow arbitrarily claim to have obtained
 satisfactory resolution.
 
 The importance of adequate sub-cellular resolution reaches beyond the
@@ -105,7 +105,7 @@ proteins upon perturbation \citep{Gatto:2014}.
 \bigskip
 
 In this work, we describe how to understand and interpret widely used
-dimensionality reduction methods and visualisations of spatial
+dimensionality reduction methods and visualise spatial
 proteomics data to critically assess their resolution and propose a
 simple, yet effective method to quantitatively measure resolution and
 compare it across different experiments. Our recommendations should be
@@ -195,9 +195,14 @@ were defined by at least 7 markers\footnote{This number is relatively
   low, and we would typically recommend at least 13 markers per class
   to perform cross-validation when optimising classifier
   parameters. See \citet{Gatto:2014} and the main \Biocpkg{pRoloc}
-  tutorial for details.}. When provided by the original authors, we
-have combined multiple replicated experiments to improve sub-cellular
-resolution \citep{Trotter:2010}. In addition, for dimensionality
+  tutorial for details.}. Where a combined dataset of multiple replicated 
+  experiments are provided by the original authors, we have used the
+  combined dataset, rather than individual replicates, as this generally
+  refers to the dataset with best sub-cellular
+resolution \citep{Trotter:2010}. If there is no combined dataset, or only a
+single replicate is reported we 
+have taken the (only or) first replicate experiment. 
+In addition, for dimensionality
 reduction and visualisation, we have systematically replaced missing
 values by zeros. When calculating distances between protein profiles
 (see section~\ref{sec:qsep}), however, missing values were retained.
@@ -238,15 +243,18 @@ state such goal, other experiments such as \citet{Groen:2014}
 (\textit{Identification of trans-golgi network proteins in Arabidopsis
   thaliana root tissue}) or \citet{Nikolovski:2014} (\textit{Label
   free protein quantification for plant Golgi protein localisation and
-  abundance}) have a much more targeted goal (trans-Golgi and Golgi
-apparatus, respectively). Hence, it is important to keep the overall
+  abundance}) have a much more targeted goal (identification of trans-Golgi
+  -network and Golgi apparatus proteins, respectively). When an experiment
+  is targetted at resolving a particular niche, it
+  is often the case that other sub-compartments are less well-resolved as 
+  a sacrafice and hence, it is important to keep the overall
 aim of the studies in mind when assessing their resolution.
 
 \section{Assessment}
 
 \subsection{Sub-cellular diversity}\label{sec:sub-cell-divers}
 
-An first assessment that provides an important indication of the
+A first assessment that provides an important indication of the
 resolution of the data concerns the number and diversity of
 sub-cellular niches that are annotated. In the \Sexpr{nrow(pdtab)}
 datasets used in this study, this number ranged from
