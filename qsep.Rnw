@@ -279,10 +279,10 @@ fractions) accounts for a percentage of the total variability and it
 is not uncommon, in well executed experiments, that the two first PCs
 summarise over 70\% of the total variance in the data, confirming that
 the resulting visualisation remains a reliable and useful
-simplification of the actual data.
+simplification of the original multidimensional data.
 
 By firstly summarising the occupancy profiles along PC1 and PC2 (and,
-possibly, other components of interest if necessary, it becomes
+possibly, other PCs of interest if necessary, it becomes
 possible to visualise the complete dataset in a single figure (as
 opposed to individual sets of profiles - see for example figure 5 in
 \citet{Gatto:2010}). In a first instance, it is advised to visualise
@@ -318,13 +318,17 @@ plot2D(hall2009, method = "hexbin")
 @
 
 In figure~\ref{fig:hexbin1} we compare three datasets to illustrate
-different levels of cluster density and separation. The figure on the
+different levels of cluster density and separation. We see 
+areas of high density (many proteins per hexaganal area) 
+are highlighted by dark blue, and less 
+dense areas are white/grey, as indicated by the count key on
+the right-hand side of each plot. The figure on the
 left the the hyperLOPIT data from \citet{Christoforou:2016} (as on
 figure~\ref{fig:density}) that used synchronous precursor selection
 (SPS) MS$^3$ on an Orbitrap Fusion. The middle figure represents the
 same experiment and same proteins, analysed using conventional MS$^2$,
 illustrating the effect of reduced quantitation accuracy. Finally, on
-the left, an experiment with considerable less resolution
+the right, an experiment with considerable less resolution
 \citep{Hall:2009}.
 
 \begin{figure}[ht]
@@ -367,7 +371,7 @@ example the \texttt{plot3D} function in the \Biocpkg{pRoloc} package),
 which still, however, only reflect part of the total variability. When
 assessing the resolution of some organelles of interest, one should
 compare the full occupancy profiles of the marker proteins
-(\Biocpkg{pRoloc}'s \texttt{plotDist} function can be used for that)
+(\Biocpkg{pRoloc}'s \texttt{plotDist} function can be used for this)
 or visualise a dendrogram representing the average distance between
 cluster profiles (the \texttt{mrkHClust} function from
 \Biocpkg{pRoloc} offers this functionality). While detailed
