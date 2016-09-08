@@ -79,7 +79,7 @@ of sub-cellular fractionation using differential centrifugation or
 separation along density gradients and the subsequent quantitative
 assessment of relative protein occupancy profiles in these
 sub-cellular fractions. Reciprocally, a wide ranging of computational
-methods have been applied, ranging from unsupervised learning e.g.clustering
+methods have been applied, ranging from unsupervised learning e.g.clustering, dimensionality reduction 
 \citep{Tomizioli:2014}, supervised learning e.g. classification (reviewed in
 \citep{Gatto:2014}, semi-supervised learning and novelty detection \citep{Breckels:2013}
 and, more recently, transfer learning \citep{Breckels:2016}.
@@ -319,11 +319,11 @@ plot2D(hall2009, method = "hexbin")
 
 In figure~\ref{fig:hexbin1} we compare three datasets to illustrate
 different levels of cluster density and separation. We see 
-areas of high density (many proteins per hexaganal area) 
+areas of high density (many proteins per hexagan) 
 are highlighted by dark blue, and less 
 dense areas are white/grey, as indicated by the count key on
 the right-hand side of each plot. The figure on the
-left the the hyperLOPIT data from \citet{Christoforou:2016} (as on
+left is the hyperLOPIT data from \citet{Christoforou:2016} (as on
 figure~\ref{fig:density}) that used synchronous precursor selection
 (SPS) MS$^3$ on an Orbitrap Fusion. The middle figure represents the
 same experiment and same proteins, analysed using conventional MS$^2$,
@@ -380,7 +380,7 @@ recommend the interactive visualisation apps from the
 \Biocpkg{pRolocGUI} package \citet{pRolocGUI}) is crucial before
 analysing and interpreting a new spatial proteomics experiment, a
 detailed exploration of each of the \Sexpr{nrow(pdtab)} datasets used
-in this meta-analysis is out of scope.
+in this meta-analysis is out of the scope of this analysis.
 
 \subsection{Quantifying resolution}\label{sec:qsep}
 
@@ -391,9 +391,9 @@ resolution and directly compare different experiments. Here, we
 present a new infrastructure, termed \texttt{QSep}, available in the
 \Biocpkg{pRoloc} package \citet{Gatto:2014a}, to quantify the
 separation of clusters in spatial proteomics experiments. It relies on
-the comparison of the average euclidean distance within and between
-sub-cellular clusters. As illustrated on the heatmaps in
-figure~\ref{fig:qsep0} for the \textit{hyperLOPIT2015} data, these
+the comparison of the average euclidean distance \textit{within} and 
+\textit{between} sub-cellular clusters. As illustrated on the heatmaps 
+in figure~\ref{fig:qsep0} for the \textit{hyperLOPIT2015} data, these
 distances always refer to one reference marker cluster.
 
 The raw distance matrix (figure~\ref{fig:qsep0}, top-left) is
@@ -402,7 +402,7 @@ between cluster 2 and 1). Within distances are generally the smallest
 ones, except when two clusters overlap, as the lysosome and endosome
 in our example. To enable the comparion of these distances within and
 between experiements (see section~\ref{sec:compara} for the latter),
-we further divide each distance be the reference within cluster
+we further divide each distance by the reference within cluster
 average distance (figure~\ref{fig:qsep0}, top-right). This thus
 informs us as how much the average distance between cluster 1 and 2 is
 greater than the average distance within cluster 1 (i.e. the tightness
