@@ -768,13 +768,13 @@ for (x in pdataitems[rev(o)])
 
 It is necessary to emphasise the importance and effect of marker
 definition on estimating and assessing the resolution of spatial
-proteomics experiments and, of course, assignment of proteins to their
-most likely sub-cellular compartments. In this work, we have used the
-markers provided by the original authors (except for
+proteomics experiments and, of course, the assignment of proteins to
+their most likely sub-cellular compartments. In this work, we have
+used the markers provided by the original authors (except for
 \cite{Foster:2006} to assess the data as originally presented.
 
 
-(\textbf{TODO}: Say someething about number and tighness of
+(\textbf{TODO}: Say something about number and tightness of
 clusters. Cluster boundaries.)
 
 The ordering suggested in section~\ref{sec:compara} should not be
