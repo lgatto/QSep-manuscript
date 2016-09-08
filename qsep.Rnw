@@ -79,10 +79,12 @@ of sub-cellular fractionation using differential centrifugation or
 separation along density gradients and the subsequent quantitative
 assessment of relative protein occupancy profiles in these
 sub-cellular fractions. Reciprocally, a wide ranging of computational
-methods have been applied, ranging from unsupervised learning e.g.clustering, dimensionality reduction 
-\citep{Tomizioli:2014}, supervised learning e.g. classification (reviewed in
-\citep{Gatto:2014}, semi-supervised learning and novelty detection \citep{Breckels:2013}
-and, more recently, transfer learning \citep{Breckels:2016}.
+methods have been applied, ranging from unsupervised learning
+e.g.clustering, dimensionality reduction \citep{Tomizioli:2014},
+supervised learning e.g. classification (reviewed in
+\citep{Gatto:2014}, semi-supervised learning and novelty detection
+\citep{Breckels:2013} and, more recently, transfer learning
+\citep{Breckels:2016}.
 
 Despite these advances, there is surprisingly little agreement in the
 community as to what constitutes a reliable spatial proteomics
@@ -121,7 +123,7 @@ All the data and software used in this work is available in the
 all details in this rendering of the manuscript. Nevertheless, the
 code to reproduce all results and figures is available in the source
 of this document in the public manuscript
-repository\footnote{\url{https://github.com/ComputationalProteomicsUnit/QSep-manuscript}}.
+repository~\cite{qseprepo}.
 
 \section{Spatial proteomics datasets}\label{sec:pdata}
 
@@ -245,9 +247,9 @@ state such goal, other experiments such as \citet{Groen:2014}
   free protein quantification for plant Golgi protein localisation and
   abundance}) have a much more targeted goal (identification of trans-Golgi
   -network and Golgi apparatus proteins, respectively). When an experiment
-  is targetted at resolving a particular niche, it
+  is targeted at resolving a particular niche, it
   is often the case that other sub-compartments are less well-resolved as 
-  a sacrafice and hence, it is important to keep the overall
+  a sacrifice and hence, it is important to keep the overall
 aim of the studies in mind when assessing their resolution.
 
 \section{Assessment}
@@ -319,7 +321,7 @@ plot2D(hall2009, method = "hexbin")
 
 In figure~\ref{fig:hexbin1} we compare three datasets to illustrate
 different levels of cluster density and separation. We see 
-areas of high density (many proteins per hexagan) 
+areas of high density (many proteins per hexagon) 
 are highlighted by dark blue, and less 
 dense areas are white/grey, as indicated by the count key on
 the right-hand side of each plot. The figure on the
@@ -397,17 +399,17 @@ in figure~\ref{fig:qsep0} for the \textit{hyperLOPIT2015} data, these
 distances always refer to one reference marker cluster.
 
 The raw distance matrix (figure~\ref{fig:qsep0}, top-left) is
-symmetrical (i.e. the distance beetween cluster 1 and 2 is the same as
+symmetrical (i.e. the distance bee tween cluster 1 and 2 is the same as
 between cluster 2 and 1). Within distances are generally the smallest
 ones, except when two clusters overlap, as the lysosome and endosome
-in our example. To enable the comparion of these distances within and
-between experiements (see section~\ref{sec:compara} for the latter),
+in our example. To enable the comparison of these distances within and
+between experiments (see section~\ref{sec:compara} for the latter),
 we further divide each distance by the reference within cluster
 average distance (figure~\ref{fig:qsep0}, top-right). This thus
 informs us as how much the average distance between cluster 1 and 2 is
 greater than the average distance within cluster 1 (i.e. the tightness
 of that cluster). At this stage, the distance matrix is not
-symmetrical anymore. To faciliate the comparison of distances between
+symmetrical anymore. To facilitate the comparison of distances between
 organelles, the distance distributions can also be visualised as
 boxplots (figure~\ref{fig:qsep0}, bottom).
 
@@ -453,7 +455,7 @@ legend("topright", legend = "itzhak2016stcSILAC", bty = "n")
     diagonal) and between euclidean cluster distances. The boxplots at
     the bottom summarise these same values (raw on the left,
     normalised on the right) to enable easier comparison between
-    clusters, where the within distances are highligted in red. }
+    clusters, where the within distances are highlighted in red. }
   \label{fig:qsep0}
 \end{figure}
 
@@ -461,7 +463,7 @@ legend("topright", legend = "itzhak2016stcSILAC", bty = "n")
 The rational behind these measures is as follows. Intuitively, we
 assess resolution by contrasting the separation between clusters
 (formalised by the average distance between two clusters) and the
-tighness of single clusters (formalised by the average within cluster
+tightness of single clusters (formalised by the average within cluster
 distance). Ideal sub-cellular fractionation would yield tight and
 distant clusters, represented by a large normalised between cluster
 distances on figure \ref{fig:qsep0}.
@@ -515,7 +517,7 @@ display strikingly different colour patterns. The top heatmap shows a
 majority of small normalised distances (blue cells) and with only a
 limited number of large distances (red cells), along the mitochondrial
 reference cluster. Conversely, the bottom heatmap displays a majority
-of average (white cells) and large distances (red cells) accross all
+of average (white cells) and large distances (red cells) across all
 sub-cellular clusters. The boxplots allow to more directly compare the
 distances across the two datasets. On the top boxplot, we detect
 relatively short distances for most clusters, with most large
@@ -555,7 +557,7 @@ always refer back to the original data when considering
 summarising metrics like these, to put the resolution into context;
 the density and annotated PCA plots discussed in section~\ref{sec:vis}
 are provided in figures~\ref{fig:denspca} and~\ref{fig:pca} and the
-quantitative assement boxplots and heatmaps are shown in
+quantitative assessment boxplots and heatmaps are shown in
 figures~\ref{fig:allqseps} and~\ref{fig:allhmaps}.
 
 <<qsep>>=
@@ -601,7 +603,7 @@ exception here being \textit{hall2009}), or, in the case of
 using the marker proteins to guide the clustering of unlabelled
 features. These new clusters, termed \textit{phenotypes}, are then
 validated by the user for coherence with known sub-cellular niches.
-This re-analysis has proven quite successfull \citep{Breckels:2013}
+This re-analysis has proven quite successful \citep{Breckels:2013}
 and has identified previously undetected sub-cellular niches that form
 tight and well-resolved clusters (see for example ribosomial and
 trans-golgi network (TGN) in \textit{dunkley2006}, or proteasome and
@@ -623,7 +625,7 @@ nitz <- pdtab[pdtab$Data == "itzhak2016stcSILAC", "Clusters"]
 
 The next set of experiments that show comparable resolution profiles
 are \textit{andy2011}, \textit{itzhak2016stcSILAC} and
-\textit{nikolovski2012imp}. Note that the quantiative separation
+\textit{nikolovski2012imp}. Note that the quantitative separation
 measurement is robust to questionable marker annotation. For example,
 the \textit{Large Protein Complex} class defined by the original
 authors in the \textit{itzhak2016stcSILAC} data could be dropped as it
@@ -634,7 +636,7 @@ out of \Sexpr{nitz^2} distances) and as such it would not change its
 rank among the test datasets.
 
 As mentioned earlier, the \textit{groen2014cmb} and
-\textit{nikolovski2014} are tagetted experiment, focusing on the
+\textit{nikolovski2014} are targeted experiment, focusing on the
 trans-Golgi-network and Golgi niches respectively. Such experiments do
 not aim for best global resolution, which is reflected by relatively
 low resolution.
@@ -692,7 +694,7 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
 \caption{PCA plots for the \Sexpr{nrow(pdata)} experiments used in
   this study. PC 1 and 2 were used except for
   \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform to
-  the orignal authors figures. The experiments are ordered according
+  the original authors figures. The experiments are ordered according
   to the median average between cluster distance (see
   figure~\ref{fig:qsep}). The percentage of variance explained along
   the 2 PCs on the plots can be found in
@@ -731,7 +733,7 @@ for (x in pdataitems[rev(o)])
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-13.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-14.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-15.pdf}
-  \caption{Quantiative separation boxplot for the \Sexpr{nrow(pdata)}
+  \caption{Quantitative separation boxplot for the \Sexpr{nrow(pdata)}
     experiments used in this study. The experiments are ordered
     according to the median average between cluster distance (see
     figure~\ref{fig:qsep}). }
@@ -755,7 +757,7 @@ for (x in pdataitems[rev(o)])
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-13.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-14.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-15.pdf}
-  \caption{Quantiative separation heatmaps for the \Sexpr{nrow(pdata)}
+  \caption{Quantitative separation heatmaps for the \Sexpr{nrow(pdata)}
     experiments used in this study. The experiments are ordered
     according to the median average between cluster distance (see
     figure~\ref{fig:qsep}). }
@@ -772,10 +774,6 @@ proteomics experiments and, of course, the assignment of proteins to
 their most likely sub-cellular compartments. In this work, we have
 used the markers provided by the original authors (except for
 \cite{Foster:2006} to assess the data as originally presented.
-
-
-(\textbf{TODO}: Say something about number and tightness of
-clusters. Cluster boundaries.)
 
 The ordering suggested in section~\ref{sec:compara} should not be
 taken as absolute. Its main purpose is to provide a guide to compare
@@ -796,22 +794,27 @@ identification of multi- and trans-localisation events.
 
 \clearpage
 
-\section*{Acknowledgements}
-
-L.M.B is supported by a Wellcome Trust Technology Development Grant
-(Grant number 108467/Z/15/Z). L.G. is supported by the BBSRC Strategic
-Longer and Larger grant (Award BB/L002817/1).
-
 \section{Session information}
 
 The software and versions used to produce this document are summarised
 below. In particular, recent versions of \Biocpkg{pRoloc} and
 \Biocexptpkg{pRolocdata} \citep{Gatto:2014a}, which require versions
-1.13.9 and 1.11.6 or later, respectively.
+1.13.14 and 1.11.7 or later, respectively. The source of this document
+enabling to reproduce all results and figures is available in the
+source of this document in the public manuscript repository~\cite{qseprepo}.
+
 
 <<si, results = 'asis'>>=
 toLatex(sessionInfo(), locale = FALSE)
 @
+
+\section*{Acknowledgements}
+
+L.M.B is supported by a Wellcome Trust Technology Development Grant
+(Grant number 108467/Z/15/Z). L.G. is supported by the BBSRC Strategic
+Longer and Larger grant (Award BB/L002817/1). The authors would like
+to thank Dr Claire M. Mulvey for helpful comments on the quantitative
+assessment.
 
 \bibliographystyle{plainnat}
 \bibliography{qsep}
