@@ -407,7 +407,7 @@ qhmed <- median(summary(qh, verbose = FALSE))
 qimed <- median(summary(qi, verbose = FALSE))
 @
 
-<<qsep0lv, fig.width = 8, fig.height = 8, fig.show = 'hide'>>=
+<<qsep0lv, fig.width = 9, fig.height = 9, fig.show = 'hide'>>=
 print(levelPlot(qh, norm = FALSE))
 print(levelPlot(qh, norm = TRUE))
 print(levelPlot(qi))
