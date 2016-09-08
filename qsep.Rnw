@@ -551,8 +551,8 @@ figure~\ref{fig:qsep}, we show, for each dataset, a boxplot
 illustrating the distribution of the global average normalised
 distances for all spatial clusters. The datasets have been ordered
 using the experiment-wide median between distance. It is important to
-refer back to always refer the original data when considering
-summerising metrics like these, to put the resolution into context;
+always refer back to the original data when considering
+summarising metrics like these, to put the resolution into context;
 the density and annotated PCA plots discussed in section~\ref{sec:vis}
 are provided in figures~\ref{fig:denspca} and~\ref{fig:pca} and the
 quantitative assement boxplots and heatmaps are shown in
@@ -596,23 +596,23 @@ directly re-analysed using a semi-supervised novelty detection
 algorithm \textit{phenoDisco} \citep{Breckels:2013} (the only
 exception here being \textit{hall2009}), or, in the case of
 \textit{trotter2010}, have been annotated using markers based on the
-\textit{phenoDisco} re-analysis. The novelty detection algorithm
-searches for new clusters of unlabelled proteins, using the marker
-proteins to guide the clustering of unlabelled features. These new
-clusters, termed \textit{phenotypes}, are then validated by the user
-for coherence with known sub-cellular niches. This re-analysis has
-proven quite successfull \citep{Breckels:2013} and has identified
-previously undetected sub-cellular niches that form tight and
-well-resolved clusters (see for example ribosomial and trans-golgi
-network (TGN) in \textit{dunkley2006}, or proteasome and nucleus in
-\textit{hall2009r1} to cite only a few), which in turn favour good
-resolution scores.
+\textit{phenoDisco} re-analysis. The novelty detection algorithm,
+\textit{phenoDisco}, searches for new clusters of unlabelled proteins,
+using the marker proteins to guide the clustering of unlabelled
+features. These new clusters, termed \textit{phenotypes}, are then
+validated by the user for coherence with known sub-cellular niches.
+This re-analysis has proven quite successfull \citep{Breckels:2013}
+and has identified previously undetected sub-cellular niches that form
+tight and well-resolved clusters (see for example ribosomial and
+trans-golgi network (TGN) in \textit{dunkley2006}, or proteasome and
+nucleus in \textit{hall2009r1} to cite only a few), which in turn
+favour good resolution scores.
 
 
 The \textit{hall2009} dataset is relatively poorly annotated (only 5
-sub-cellular clusters, which is the lowest in out test datasets). As
+sub-cellular clusters, which is the lowest in all test datasets). As
 long as these few clusters are well separated, poor annotation can
-positively influences the resolution scoring. Hence, it is important
+positively influence the resolution scoring. Hence, it is important
 to visualise the data as described in section~\ref{sec:vis} and
 consider the sub-cellular diversity exposed in the analysed data (see
 section~\ref{sec:sub-cell-divers}).
@@ -626,20 +626,20 @@ are \textit{andy2011}, \textit{itzhak2016stcSILAC} and
 \textit{nikolovski2012imp}. Note that the quantiative separation
 measurement is robust to questionable marker annotation. For example,
 the \textit{Large Protein Complex} class defined by the original
-authors in the \textit{itzhak2016stcSILAC} data could be dropped on
-base on its loose definition and lack of resolution. This would only
+authors in the \textit{itzhak2016stcSILAC} data could be dropped as it
+loosely defines many niches and thus lacks resolution. This would only
 marginally influence the overall assessment metrics as only the
 distances to/from that class are affected (i.e. \Sexpr{2 * nitz - 1}
-out of \Sexpr{nitz^2} distances) and would not change the position of
-the dataset.
+out of \Sexpr{nitz^2} distances) and as such it would not change its
+rank among the test datasets.
 
 As mentioned earlier, the \textit{groen2014cmb} and
 \textit{nikolovski2014} are tagetted experiment, focusing on the
-trans-Golgi and Golgi niches respectively. Such experiments do not aim
-for best global resolution, which is reflected by relatively low
-resolution.
+trans-Golgi-network and Golgi niches respectively. Such experiments do
+not aim for best global resolution, which is reflected by relatively
+low resolution.
 
-The \textit{foster2006} experiment display relatively poor
+The \textit{foster2006} experiment displays relatively poor
 separation. This might be due to the relatively high number of missing
 values (\Sexpr{100*round(sum(is.na(foster2006))/prod(dim(foster2006)),
   3)} \%). Finally, the \textit{andreyev2009rest} dataset suffers from
@@ -691,7 +691,7 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
 @ 
 \caption{PCA plots for the \Sexpr{nrow(pdata)} experiments used in
   this study. PC 1 and 2 were used except for
-  \textit{itzhak2016stcSILAC}, were PC 1 and 3 were used to conform to
+  \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform to
   the orignal authors figures. The experiments are ordered according
   to the median average between cluster distance (see
   figure~\ref{fig:qsep}). The percentage of variance explained along
