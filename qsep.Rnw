@@ -470,9 +470,6 @@ distances on figure \ref{fig:qsep0}.
 
 \subsection{Application of the assessment criteria}\label{sec:applic}
 
-\textbf{QST:} I am not sure about this section. Does it not feel like
-I am having a go at \citet{Itzhak:2016}?
-
 <<nummarkers>>=
 nmh <- length(getMarkerClasses(hyperLOPIT2015ms2))
 nmi <- length(getMarkerClasses(itzhak2016stcSILAC))
@@ -520,7 +517,7 @@ limited number of large distances (red cells), along the mitochondrial
 reference cluster. Conversely, the bottom heatmap displays a majority
 of average (white cells) and large distances (red cells) accross all
 sub-cellular clusters. The boxplots allow to more directly compare the
-distances accross the two datasets. On the top boxplot, we detect
+distances across the two datasets. On the top boxplot, we detect
 relatively short distances for most clusters, with most large
 distances stemming from the mitochondrion, leading to a median distance
 of \Sexpr{round(qimed, 2)}. The distributions on the bottom boxplot
