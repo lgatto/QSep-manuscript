@@ -51,16 +51,22 @@ names(hlmm) <- fData(hlm)$Entry
 
 itzhak2016stcSILAC <- addMarkers(itzhak2016stcSILAC, hlmm, mcol = "markers2")
 
+hyperLOPIT2015 <- fDataToUnknown(hyperLOPIT2015,
+                                 from = "Endoplasmic reticulum/Golgi apparatus", to = "ER/Golgi")
+itzhak2016stcSILAC <- fDataToUnknown(itzhak2016stcSILAC, fcol = "markers2",
+                                 from = "Endoplasmic reticulum/Golgi apparatus", to = "ER/Golgi")
 
 
-pdf("mrkswtch-pca.pdf")
-par(mfrow = c(2, 2))
-plot2D(hyperLOPIT2015, fcol = "markers", main = "hyperLOPIT2015 markers")
-addLegend(hyperLOPIT2015, cex = .6)
-plot2D(hyperLOPIT2015, fcol = "markers2", main = "itzhak2016stcSILAC markers")
-plot2D(impute(itzhak2016stcSILAC, "zero"), fcol = "markers2", main = "hyperLOPIT2015 markers")
-plot2D(impute(itzhak2016stcSILAC, "zero"), fcol = "markers", main = "itzhak2016stcSILAC markers")
-addLegend(itzhak2016stcSILAC, cex = .6)
+pdf("mrkswtch-pca.pdf", width = 10, height = 10)
+par(mfrow = c(2, 2), oma = c(0, 0, 0, 0), mar = c(2, 2, 1, 1))
+plot2D(hyperLOPIT2015, fcol = "markers")
+addLegend(hyperLOPIT2015, cex = .7)
+plot2D(hyperLOPIT2015, fcol = "markers2")
+addLegend(hyperLOPIT2015, fcol = "markers2", cex = .7)
+plot2D(impute(itzhak2016stcSILAC, "zero"), fcol = "markers2")
+addLegend(itzhak2016stcSILAC, fcol = "markers2", cex = .7)
+plot2D(impute(itzhak2016stcSILAC, "zero"), fcol = "markers")
+addLegend(itzhak2016stcSILAC, cex = .7)
 dev.off()
 
 mrkswtch <- list(hl1 = summary(QSep(hyperLOPIT2015, fcol = "markers"), verbose = FALSE),
@@ -76,5 +82,7 @@ mrkdf <- rbind(data_frame(QSep = mrkswtch[[1]], data = "d:hyperLOPIT2015", marke
                data_frame(QSep = mrkswtch[[4]], data = "d:itzhak2016stcSILAC", markers = "m:hyperLOPIT2015"))
 
 pdf("mrkswtch-qsep.pdf")
-ggplot(aes(markers, QSep), data = mrkdf) + geom_boxplot() + facet_wrap(~ data) + xlab("")
+ggplot(aes(markers, QSep), data = mrkdf) +
+    geom_boxplot() + facet_wrap(~ data) +
+    xlab("") + ylim(c(0, 15))
 dev.off()

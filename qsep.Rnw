@@ -810,8 +810,28 @@ classes, the slopes are \Sexpr{round(e14slope, 3)} and
 The definition of marker proteins has of course an effect on the
 assessment metric. Tighter clusters will result in smaller intra-class
 distances and, as a result, in larger normalised inter-class
-distances. 
+distances. To assess the effect of marker definition, we transferred
+the marker annotation between the \textit{hyperLOPIT2015} and
+\textit{itzhak2016stcSILAC} datasets (see PCA plots on
+figure~\ref{fig:mrkswtch-pca}, left) and calculated the quantitative
+resolution metrics (see boxplots on figure~\ref{fig:mrkswtch-pca},
+right). 
 
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = 0.54\textwidth]{mrkswtch-pca.pdf}
+  \raisebox{.1\height}{\includegraphics[width = 0.44\textwidth]{mrkswtch-qsep.pdf}}
+  \caption{Marker transfer between \textit{hyperLOPIT2015} and
+    \textit{itzhak2016stcSILAC}. On the left, the 4 data/marker
+    combinations are displayed on PCA plots: the top and bottom row
+    contains the \textit{hyperLOPIT2015} and
+    \textit{itzhak2016stcSILAC} data respectively, while the left and
+    right columns display the markers from \textit{hyperLOPIT2015} and
+    \textit{itzhak2016stcSILAC} respectively. On the right, the
+    resolution scores have been calculated for the same markers (along
+    the $x$ axis) data (left and right panels). }
+  \label{fig:mrkswtch-pca}
+\end{figure}
 
 \section{Conclusions}
 
