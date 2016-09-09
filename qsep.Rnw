@@ -603,20 +603,18 @@ exception here being \textit{hall2009}), or, in the case of
 using the marker proteins to guide the clustering of unlabelled
 features. These new clusters, termed \textit{phenotypes}, are then
 validated by the user for coherence with known sub-cellular niches.
-This re-analysis has proven quite successful \citep{Breckels:2013}
-and has identified previously undetected sub-cellular niches that form
+This re-analysis has proven quite successful \citep{Breckels:2013} and
+has identified previously undetected sub-cellular niches that form
 tight and well-resolved clusters (see for example ribosomial and
 trans-golgi network (TGN) in \textit{dunkley2006}, or proteasome and
-nucleus in \textit{hall2009r1} to cite only a few), which in turn
-favour good resolution scores.
-
-
-The \textit{hall2009} dataset is relatively poorly annotated (only 5
-sub-cellular clusters, which is the lowest in all test datasets). As
-long as these few clusters are well separated, poor annotation can
-positively influence the resolution scoring. Hence, it is important
-to visualise the data as described in section~\ref{sec:vis} and
-consider the sub-cellular diversity exposed in the analysed data (see
+nucleus in \textit{tan2009r1} to cite only a few), which in turn
+favour good resolution scores. The \textit{hall2009} dataset is
+relatively poorly annotated (only 5 sub-cellular clusters, which is
+the lowest in all test datasets). As long as these few clusters are
+well separated, poor annotation will not negatively influence the
+resolution scoring. Hence, it is important to visualise the data as
+described in section~\ref{sec:vis} and consider the sub-cellular
+diversity exposed in the analysed data (see
 section~\ref{sec:sub-cell-divers}).
 
 <<nitz>>=
@@ -765,6 +763,55 @@ for (x in pdataitems[rev(o)])
 \end{figure}
 
 \clearpage
+
+\section{Assessing the resolution metric}\label{sec:qsepassess}
+
+In this section, we assess the resolution metric itself, and how the
+annotation of the spatial proteomics data influences the metric
+itself.
+
+<<simcoefs>>=
+load("hlsim.rda")
+load("e14sim.rda")
+hllm <- lm(median ~ as.numeric(n), data = hlsim$dd)
+hlslope <- hllm$coefficients[[2]]
+e14lm <- lm(median ~ as.numeric(n), data = e14sim$dd)
+e14slope <- e14lm$coefficients[[2]]
+@
+
+The number of classes does not have any effect the resolution
+assessment scoring. Indeed, dropping any class will result in a
+sub-sample of normalised inter-cluster distances, with random
+variations around the overall median inter-cluster distance. On
+figure~\ref{fig:simn}, we show the distribution of the resolution
+metrics when removing all possibly combinations of 1 to 3 sub-cellular
+classes for the \textit{E14TG2aS1} dataset, that displays an average
+overall resolution, and \textit{hyperLOPIT2015}, that has a highest
+resolution. In both cases, we see that the number of removed classes
+does not influence the overall score distributions. When modelling the
+linear relation between the median scores and the number of removed
+classes, the slopes are \Sexpr{round(e14slope, 3)} and
+\Sexpr{round(hlslope, 3)} respectively.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width = .7\textwidth]{simn.pdf}
+  \caption{Effect of removing sub-cellular clusters on the resolution
+    metric for the \textit{E14TG2aD1} (left) and
+    \textit{hyperLOPIT2015} experiments (right). Each dot represents a
+    median resolution score for the experimental setting (i.e missing
+    $n$ classes). The horizontal lines represents the median resolution
+    metrics for the complete dataset. Note the overall higher median
+    assessment scores for the better \textit{hyperLOPIT2015}
+    experiment }
+  \label{fig:simn}
+\end{figure}
+
+The definition of marker proteins has of course an effect on the
+assessment metric. Tighter clusters will result in smaller intra-class
+distances and, as a result, in larger normalised inter-class
+distances. 
+
 
 \section{Conclusions}
 
