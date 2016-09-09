@@ -813,8 +813,8 @@ distances and, as a result, in larger normalised inter-class
 distances. To assess the effect of marker definition, we transferred
 the marker annotation between the \textit{hyperLOPIT2015} and
 \textit{itzhak2016stcSILAC} datasets (see PCA plots on
-figure~\ref{fig:mrkswtch-pca}, left) and calculated the quantitative
-resolution metrics (see boxplots on figure~\ref{fig:mrkswtch-pca},
+figure~\ref{fig:mrkswtch}, left) and calculated the quantitative
+resolution metrics (see boxplots on figure~\ref{fig:mrkswtch},
 right). 
 
 \begin{figure}[h]
@@ -829,9 +829,14 @@ right).
     right columns display the markers from \textit{hyperLOPIT2015} and
     \textit{itzhak2016stcSILAC} respectively. On the right, the
     resolution scores have been calculated for the same markers (along
-    the $x$ axis) data (left and right panels). }
-  \label{fig:mrkswtch-pca}
+    the $x$ axis) data (left and right panels). Note that the $y$
+    scale has been cut at 15, ignoring outlying scores, to focus on
+    the bulk of the distribution. }
+  \label{fig:mrkswtch}
 \end{figure}
+
+
+As can be seen on figure~\ref{fig:mrkswtch}
 
 \section{Conclusions}
 
@@ -866,9 +871,10 @@ identification of multi- and trans-localisation events.
 The software and versions used to produce this document are summarised
 below. In particular, recent versions of \Biocpkg{pRoloc} and
 \Biocexptpkg{pRolocdata} \citep{Gatto:2014a}, which require versions
-1.13.14 and 1.11.7 or later, respectively. The source of this document
+1.13.15 and 1.11.7 or later, respectively. The source of this document
 enabling to reproduce all results and figures is available in the
-source of this document in the public manuscript repository~\cite{qseprepo}.
+source of this document in the public manuscript
+repository~\cite{qseprepo}.
 
 
 <<si, results = 'asis'>>=
