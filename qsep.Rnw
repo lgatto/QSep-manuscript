@@ -835,8 +835,36 @@ right).
   \label{fig:mrkswtch}
 \end{figure}
 
+<<mrkswtchstats>>=
+load("mrkswtch.rda")
+## +-------------p3-------------+
+## | +---p1----+     +---p2---+ |
+## | |         |     |        | |
+## dhl.mhl dhl.mit dit.mit dit.mhl 
+##     182   | 132  |  132     144  (lengths)
+##           |      |
+##           +--p4--+
+p1 <- t.test(mrkswtch[["dhl.mhl"]], mrkswtch[["dhl.mit"]])$p.value
+p2 <- t.test(mrkswtch[["dit.mhl"]], mrkswtch[["dth.mit"]])$p.value
+p3 <- t.test(mrkswtch[["dhl.mhl"]], mrkswtch[["dit.mhl"]])$p.value
+p4 <- t.test(mrkswtch[["dhl.mit"]], mrkswtch[["dit.mit"]])$p.value
+@
 
-As can be seen on figure~\ref{fig:mrkswtch}
+
+As can be seen on figure~\ref{fig:mrkswtch}, transferring the
+\textit{itzhak2016stcSILAC} markers to the \textit{hyperLOPIT2015}
+dataset has a detrimental effect on the separation (testing the two
+distributions with a t-test produces a p-value of \Sexpr{signif(p1,
+  2)}). Conversely, annotating \textit{itzhak2016stcSILAC} with the
+\textit{hyperLOPIT2015} markers significantly improves its resolution
+metric (p-value of \Sexpr{signif(p2, 2)}). Comparing both dataset
+with the \textit{hyperLOPIT2015} marker set favours the resolution of
+the \textit{hyperLOPIT2015} data (p-value of \Sexpr{signif(p3, 2)})
+while using the \textit{itzhak2016stcSILAC} markers with the two
+datasets substantially reduces their difference in resolution score
+(p-value of \Sexpr{signif(p4, 2)}).
+
+
 
 \section{Conclusions}
 

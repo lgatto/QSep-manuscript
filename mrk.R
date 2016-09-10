@@ -26,7 +26,8 @@ m2 <- m2[!is.na(fData(m2)[, "Entry"]), ]
 mm2 <- getMarkers(m2, verbose = FALSE)
 names(mm2) <- fData(m2)$Entry
 
-hyperLOPIT2015 <- addMarkers(hyperLOPIT2015, mm2, mcol = "markers2")
+hyperLOPIT2015 <- addMarkers(hyperLOPIT2015, mm2,
+                             mcol = "markers2", verbose = FALSE)
 
 ## Mapping from mouse to human
 
@@ -46,10 +47,11 @@ fData(hyperLOPIT2015) <- fd2
 ## create marker vector
 hlm <- markerMSnSet(hyperLOPIT2015)
 hlm <- hlm[!is.na(fData(hlm)[, "Entry"]), ]
-hlmm <- getMarkers(hlm)
+hlmm <- getMarkers(hlm, verbose = FALSE)
 names(hlmm) <- fData(hlm)$Entry
 
-itzhak2016stcSILAC <- addMarkers(itzhak2016stcSILAC, hlmm, mcol = "markers2")
+itzhak2016stcSILAC <- addMarkers(itzhak2016stcSILAC, hlmm,
+                                 mcol = "markers2", verbose = FALSE)
 
 hyperLOPIT2015 <- fDataToUnknown(hyperLOPIT2015,
                                  from = "Endoplasmic reticulum/Golgi apparatus", to = "ER/Golgi")
@@ -69,17 +71,17 @@ plot2D(impute(itzhak2016stcSILAC, "zero"), fcol = "markers")
 addLegend(itzhak2016stcSILAC, cex = .7)
 dev.off()
 
-mrkswtch <- list(hl1 = summary(QSep(hyperLOPIT2015, fcol = "markers"), verbose = FALSE),
-                 hl2 = summary(QSep(hyperLOPIT2015, fcol = "markers2"), verbose = FALSE),
-                 it1 = summary(QSep(itzhak2016stcSILAC, fcol = "markers"), verbose = FALSE),
-                 it2 = summary(QSep(itzhak2016stcSILAC, fcol = "markers2"), verbose = FALSE))
+mrkswtch <- list(dhl.mhl = summary(QSep(hyperLOPIT2015, fcol = "markers"), verbose = FALSE),
+                 dhl.mit = summary(QSep(hyperLOPIT2015, fcol = "markers2"), verbose = FALSE),
+                 dit.mit = summary(QSep(itzhak2016stcSILAC, fcol = "markers"), verbose = FALSE),
+                 dit.mhl = summary(QSep(itzhak2016stcSILAC, fcol = "markers2"), verbose = FALSE))
 
-## boxplot(mrkswtch)
+save(mrkswtch, file = "mrkswtch.rda")
 
-mrkdf <- rbind(data_frame(QSep = mrkswtch[[1]], data = "d:hyperLOPIT2015", markers = "m:hyperLOPIT2015"),
-               data_frame(QSep = mrkswtch[[2]], data = "d:hyperLOPIT2015", markers = "m:itzhak2016stcSILAC"),
-               data_frame(QSep = mrkswtch[[3]], data = "d:itzhak2016stcSILAC", markers = "m:itzhak2016stcSILAC"),
-               data_frame(QSep = mrkswtch[[4]], data = "d:itzhak2016stcSILAC", markers = "m:hyperLOPIT2015"))
+mrkdf <- rbind(data_frame(QSep = mrkswtch[["dhl.mhl"]], data = "d:hyperLOPIT2015", markers = "m:hyperLOPIT2015"),
+               data_frame(QSep = mrkswtch[["dhl.mit"]], data = "d:hyperLOPIT2015", markers = "m:itzhak2016stcSILAC"),
+               data_frame(QSep = mrkswtch[["dit.mit"]], data = "d:itzhak2016stcSILAC", markers = "m:itzhak2016stcSILAC"),
+               data_frame(QSep = mrkswtch[["dit.mhl"]], data = "d:itzhak2016stcSILAC", markers = "m:hyperLOPIT2015"))
 
 pdf("mrkswtch-qsep.pdf")
 ggplot(aes(markers, QSep), data = mrkdf) +
