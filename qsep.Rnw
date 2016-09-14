@@ -128,7 +128,7 @@ repository~\cite{qseprepo}.
 \section{Spatial proteomics datasets}\label{sec:pdata}
 
 <<pdata>>=
-.experiments <- c("E14TG2aS1", "andy2011", "andreyev2009rest", "dunkley2006",
+.experiments <- c("E14TG2aS1", "andy2011", "andreyev2010rest", "dunkley2006",
                   "foster2006", "groen2014cmb", "hall2009", "hyperLOPIT2015",
                   "hyperLOPIT2015ms2", "itzhak2016stcSILAC", "nikolovski2012imp",
                   "nikolovski2014", "rodriguez2012r1", "tan2009r1", "trotter2010")
@@ -263,7 +263,7 @@ tmp <- sapply(pdataitems,
 It is important to highlight that not all experiments used in this
 study have as main goal the generation of a global sub-cellular
 map. While the works of \citet{Dunkley:2006} (\textit{Mapping the
-  Arabidopsis organelle proteome}), \citet{Hall:2009} (\textit{Mapping
+  Arabidopsis organelle proteome}), \citet{Tan:2009} (\textit{Mapping
   organelle proteins and protein complexes in Drosophila
   melanogaster}) and more recently \citet{Christoforou:2016}
 (\textit{A draft map of the mouse pluripotent stem cell spatial
@@ -273,12 +273,12 @@ state such goal, other experiments such as \citet{Groen:2014}
 (\textit{Identification of trans-golgi network proteins in Arabidopsis
   thaliana root tissue}) or \citet{Nikolovski:2014} (\textit{Label
   free protein quantification for plant Golgi protein localisation and
-  abundance}) have a much more targeted goal (identification of trans-Golgi
-  -network and Golgi apparatus proteins, respectively). When an experiment
-  is targeted at resolving a particular niche, it
-  is often the case that other sub-compartments are less well-resolved as 
-  a sacrifice and hence, it is important to keep the overall
-aim of the studies in mind when assessing their resolution.
+  abundance}) have a much more targeted goal (identification of
+trans-Golgi -network and Golgi apparatus proteins, respectively). When
+an experiment is targeted at resolving a particular niche, it is often
+the case that other sub-compartments are less well-resolved as a
+sacrifice and hence, it is important to keep the overall aim of the
+studies in mind when assessing their resolution.
 
 \section{Assessment}
 
@@ -606,7 +606,8 @@ boxplot(res[o], horizontal = TRUE, cex.axis = .7, ylim = c(0, 16))
 abline(v = 1, lty = "dotted")
 @  
 \caption{Quantitative separation assessment using experiment-wide
-  normalised between cluster distances.}
+  normalised between cluster distances. The vertical line represents
+  the normalised intra-cluster distance of 1.}
   \label{fig:qsep}
 \end{figure}
 
@@ -670,7 +671,7 @@ low resolution.
 The \textit{foster2006} experiment displays relatively poor
 separation. This might be due to the relatively high number of missing
 values (\Sexpr{100*round(sum(is.na(foster2006))/prod(dim(foster2006)),
-  3)} \%). Finally, the \textit{andreyev2009rest} dataset suffers from
+  3)} \%). Finally, the \textit{andreyev2010rest} dataset suffers from
 very broad sub-cellular clusters (compared to separation between
 clusters).
 
@@ -892,22 +893,60 @@ while using the \textit{itzhak2016stcSILAC} markers with the two
 datasets substantially reduces their difference in resolution score
 (p-value of \Sexpr{signif(p4, 2)}).
 
-
-
 \section{Conclusions}
 
-It is necessary to emphasise the importance and effect of marker
-definition on estimating and assessing the resolution of spatial
-proteomics experiments and, of course, the assignment of proteins to
-their most likely sub-cellular compartments. 
+In this manuscript, we have described in great detail how to assess
+and quantify the resolution of spatial proteomics experiments. We have
+applied dimensionality reduction and visualisation, as well as a
+simple and intuitive quantitative metric to explore and compare a
+variety of publicly available spatial proteomics using the annotation
+provided by the original authors. We also have assessed the resolution
+metric itself and observed that it was immune to the number of
+clusters used for its computation and remained consistent to different
+marker annotation.
 
+The ordering of the quantitative resolution detailed in
+section~\ref{sec:compara} should not be taken as absolute. Its main
+purpose is to provide a guide to compare different experiments. It
+will be useful for laboratories that do spatial studies on different
+models and with different fractionation and/or quantitation methods,
+to assess the impact of these variables (such as, for example
+hyperLOPIT MS$^2$ and MS$^3$). It is also useful to compare separation
+between different labs, as demonstrated in our comparative study
+(section~\ref{sec:compara}). We anticipate that it will also prove
+useful for the researcher wanting to assess the resolution of newly
+published studies, and put them into a wider context. It is important
+to emphasise that the importance and effect of marker definition on
+estimating and assessing the resolution of spatial proteomics
+experiments (section~\ref{sec:qsepassess}) and, of course, the
+subsequent assignment of proteins to their most likely sub-cellular
+compartments. Sub-cellular resolution is of course only one aspect of
+spatial proteomics, albeit a critical one, that critically determines
+the reliability of protein assignments to spatial niches as well as
+the identification of multi- and trans-localisation events.
 
-Is there an improvement in resolution with time?
+\bigskip
+
+Finally, we reflect on the implications of this work on the spatial
+proteomics community, and more generally the cell biology community
+that relies on protein localisation data. We have assessed dataset
+spanning 16 years of spatial proteomics. Since 2006, the community has
+seen many important improvements: tremendous advances in mass
+spectrometry, improvements in spatial proteomics designs, and
+considerable breakthroughs in data analysis. One might then wonder
+whether these benefits have lead to tangible improvements in
+resolution over time?
+
+On figure~\ref{fig:restime}, we have ordered the datasets' resolution
+metric according to their publication year. Other than the recent
+hyperLOPIT experiments \citet{Christoforou:2016}, that combine
+improved high-resolution mass spectrometry and advanced sub-cellular
+fractionation method, one struggles to detect a positive trend in
+sub-cellular resolution.
 
 \begin{figure}[h]
   \centering
-<<restime>>=
-
+<<restime, out.width = '65%'>>=
 ## re-analysed in Breckels:2013:
 lopit <- c("hyperLOPIT2015", "hyperLOPIT2015ms2", "andy2011", 
            "tan2009r1", "E14TG2aS1", "trotter2010", "dunkley2006",
@@ -926,39 +965,44 @@ text(pdtab$year, mds, pdataitems, cex = .8,
      pos = .pos)
 @  
 \caption{Resolution of spatial proteomics experiments over time. The
-  assigned dates matches either the original publication or, when
-  know, the actual date the data was generated. For publications that
+  assigned dates match either the original publication or, when know,
+  the actual date the data was generated. For publications that
   re-analysed data, the date of the original publication of generation
-  was used.}
+  was used. When publications used several datasets, the date of the
+  most recent one was used.}
   \label{fig:restime}
 \end{figure}
 
 
-The ordering suggested in section~\ref{sec:compara} should not be
-taken as absolute. Its main purpose is to provide a guide to compare
-different experiments. It will be useful for laboratories that do
-spatial studies on different models and with different fractionation
-and/or quantitation methods, to assess the impact of these variables
-(such as, for example hyperLOPIT MS$^2$ and MS$^3$). It is also useful
-to compare separation between different labs, as demonstrated in our
-comparative study (section~\ref{sec:compara}). We anticipate that it
-will also prove useful for the researcher wanting to assess the
-resolution of newly published studies, and put them into a wider
-context. 
+While it is understandable that progress is not continuous, that it
+takes time for improvements in complex experiments to disseminate
+through the community and that resolution is not the only criterion to
+be considered, one could argue that the stagnation of the sub-cellular
+resolution is somewhat disappointing. Indeed, there are various
+aspects that can be worked on to improve resolution: quantitation
+accuracy at the mass spectrometry level (see
+figures~\ref{fig:density} and~\ref{fig:hexbin1} comparing SPS MS$^3$
+and conventional MS$^2$ for an example), optimisations in sub-cellular
+fractionation (as exemplified by the substantial improvement obtained
+by \citep{Christoforou:2016}), improved data annotation (see for
+example figure~\ref{fig:mrkswtch}), as well as superior data analysis
+(for example using semi-supervised learning \citet{Breckels:2013}).
 
-Sub-cellular resolution is of course only one aspect of spatial
-proteomics, albeit an essential one, that critically determines the
-reliability of protein assignments to spatial niches as well as the
-identification of multi- and trans-localisation events.
-
-\clearpage
+Maybe there a need for some standardisation, or some general
+guidelines in assessing spatial proteomics data in the community?
+Shouldn't the community as a whole aim for collective improvement and
+some agreement as to what constitutes a good spatial proteomics?
+Better spatial proteomcis data and more reliable interpretation will
+be of direct benefit to the spatial proteomics researchers themselves,
+and will increase the trust and reliance of the cell biology
+community.
 
 \section{Session information}
 
 The software and versions used to produce this document are summarised
 below. In particular, recent versions of \Biocpkg{pRoloc} and
 \Biocexptpkg{pRolocdata} \citep{Gatto:2014a}, which require versions
-1.13.15 and 1.11.7 or later, respectively. The source of this document
+1.13.15 and 1.11.8 or later, respectively. The source of this document
 enabling to reproduce all results and figures is available in the
 source of this document in the public manuscript
 repository~\cite{qseprepo}.
