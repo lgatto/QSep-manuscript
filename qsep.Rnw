@@ -992,7 +992,7 @@ Maybe there a need for some standardisation, or some general
 guidelines in assessing spatial proteomics data in the community?
 Shouldn't the community as a whole aim for collective improvement and
 some agreement as to what constitutes a good spatial proteomics?
-Better spatial proteomcis data and more reliable interpretation will
+Better spatial proteomics data and more reliable interpretation will
 be of direct benefit to the spatial proteomics researchers themselves,
 and will increase the trust and reliance of the cell biology
 community.
