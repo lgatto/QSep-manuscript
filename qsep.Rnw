@@ -40,6 +40,8 @@ suppressWarnings(suppressPackageStartupMessages(library("pRoloc")))
 suppressPackageStartupMessages(library("pRolocdata"))
 suppressPackageStartupMessages(library("xtable"))
 suppressPackageStartupMessages(library("hexbin"))
+stopifnot(packageVersion("pRolocdata") >= "1.11.9")
+stopifnot(packageVersion("pRoloc") >= "1.13.15")
 @
 
 <<myfuns>>=
@@ -128,7 +130,7 @@ repository~\cite{qseprepo}.
 \section{Spatial proteomics datasets}\label{sec:pdata}
 
 <<pdata>>=
-.experiments <- c("E14TG2aS1", "andy2011", "andreyev2010rest", "dunkley2006",
+.experiments <- c("E14TG2aS1", "HEK293T2011", "andreyev2010rest", "dunkley2006",
                   "foster2006", "groen2014cmb", "hall2009", "hyperLOPIT2015",
                   "hyperLOPIT2015ms2", "itzhak2016stcSILAC", "nikolovski2012imp",
                   "nikolovski2014", "rodriguez2012r1", "tan2009r1", "trotter2010")
@@ -174,7 +176,7 @@ pdtab$Title <- paste(pdtab$Title, cits)
 
 year <- c(2011, ## E14 from Breckels 2016
           2010, ## Andreyev
-          2011, ## andy2011, from Breckels 2013
+          2011, ## HEK293T2011, from Breckels 2013
           2006, ## Dunkley, re-analysed in Breckels 2013
           2006, ## Foster
           2014, ## Groen
@@ -622,7 +624,7 @@ former result in better sub-cellular resolution.
 The next set of experiment are \textit{tan2009r1},
 \textit{trotter2010}, \textit{dunkley2006}, \textit{hall2009} and
 \textit{E14TG2aS1}. It is important to highlight that most of datasets
-(as well as \textit{andy2011}, discussed later) have either been
+(as well as \textit{HEK293T2011}, discussed later) have either been
 directly re-analysed using a semi-supervised novelty detection
 algorithm \textit{phenoDisco} \citep{Breckels:2013} (the only
 exception here being \textit{hall2009}), or, in the case of
@@ -651,7 +653,7 @@ nitz <- pdtab[pdtab$Data == "itzhak2016stcSILAC", "Clusters"]
 @
 
 The next set of experiments that show comparable resolution profiles
-are \textit{andy2011}, \textit{itzhak2016stcSILAC} and
+are \textit{HEK293T2011}, \textit{itzhak2016stcSILAC} and
 \textit{nikolovski2012imp}. Note that the quantitative separation
 measurement is robust to questionable marker annotation. For example,
 the \textit{Large Protein Complex} class defined by the original
@@ -948,7 +950,7 @@ sub-cellular resolution.
   \centering
 <<restime, out.width = '65%'>>=
 ## re-analysed in Breckels:2013:
-lopit <- c("hyperLOPIT2015", "hyperLOPIT2015ms2", "andy2011", 
+lopit <- c("hyperLOPIT2015", "hyperLOPIT2015ms2", "HEK293T2011", 
            "tan2009r1", "E14TG2aS1", "trotter2010", "dunkley2006",
            "groen2014cmb", "nikolovski2012imp", "hall2009")
 
@@ -1002,7 +1004,7 @@ community.
 The software and versions used to produce this document are summarised
 below. In particular, recent versions of \Biocpkg{pRoloc} and
 \Biocexptpkg{pRolocdata} \citep{Gatto:2014a}, which require versions
-1.13.15 and 1.11.8 or later, respectively. The source of this document
+1.13.15 and 1.11.9 or later, respectively. The source of this document
 enabling to reproduce all results and figures is available in the
 source of this document in the public manuscript
 repository~\cite{qseprepo}.
