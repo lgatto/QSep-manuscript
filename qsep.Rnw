@@ -383,6 +383,21 @@ data points. In other words, the maximum variability of a successful
 spatial proteomics experiments should be reflected by the separation
 of the expected/annotated spatial clusters.
 
+As already mentioned in section~\ref{sec:sub-cell-divers},
+sub-cellular niches are observed in spatial proteomics are
+annotated. This annotation comes in the form of marker proteins,
+i.e. well-know and trusted residents of a specific niche. 
+
+\begin{figure}[ht]
+  \centering
+<<pcahl, out.width = '75%'>>=
+plot2D(hyperLOPIT2015)
+addLegend(hyperLOPIT2015, where = "bottomleft", cex = .6)
+@  
+  \caption{Annotated PCA plot of the \textit{hyperLOPIT2015} dataset.}
+  \label{fig:pcahl}
+\end{figure}
+
 Another dimensionality reduction method that is worth mentioning here
 is linear discriminant analysis. LDA will project the protein
 occupancy profiles in a new set of dimensions using as criterion the
@@ -409,7 +424,7 @@ cluster profiles (the \texttt{mrkHClust} function from
 \Biocpkg{pRoloc} offers this functionality). While detailed
 exploration of a dataset using these and other visualisation (we also
 recommend the interactive visualisation apps from the
-\Biocpkg{pRolocGUI} package \citet{pRolocGUI}) is crucial before
+\Biocpkg{pRolocGUI} package \citep{pRolocGUI}) is crucial before
 analysing and interpreting a new spatial proteomics experiment, a
 detailed exploration of each of the \Sexpr{nrow(pdtab)} datasets used
 in this meta-analysis is out of the scope of this analysis.
