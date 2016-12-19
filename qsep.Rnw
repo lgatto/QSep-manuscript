@@ -18,8 +18,8 @@
 \title{Assessing sub-cellular resolution in  spatial proteomics experiments}
 
 \author[1,2]{Laurent Gatto\thanks{\url{lg390@cam.ac.uk}}~}
-\author[2]{Kathryn S. Lilley}
 \author[1,2]{Lisa M. Breckels}
+\author[2]{Kathryn S. Lilley}
 
 \affil[1]{Computational Proteomics Unit, Department of Biochemistry,
 University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
