@@ -145,6 +145,14 @@ pdata <- pdata[pdata[, "Item"] %in% .experiments, ]
 pdataitems <- pdata[, "Item"]
 data(list = pdataitems)
 
+## Let's shorted some marker labels for better visualisation - see issue 
+hyperLOPIT2015 <- fDataToUnknown(hyperLOPIT2015, fcol = "markers", 
+                                 from = "Endoplasmic reticulum/Golgi apparatus",
+                                 to = "ER/GA")
+hyperLOPIT2015ms2 <- fDataToUnknown(hyperLOPIT2015ms2, fcol = "markers", 
+                                    from = "Endoplasmic reticulum/Golgi apparatus",
+                                    to = "ER/GA")
+
 ## make table
 pdtab <- data.frame(pdata[, 3:4], stringsAsFactors = FALSE)
 pdtab$nprot <- pdapply(pdataitems, nrow)
