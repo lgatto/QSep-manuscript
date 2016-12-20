@@ -69,7 +69,7 @@ pdapply <- function(X, FUN, ..., use.names = TRUE) {
 \section{Introduction}
 
 In biology, the localisation of a protein to its intended sub-cellular
-niche is an necessary condition for it to assume its biological
+niche is a necessary condition for it to assume its biological
 function. Indeed, the localisation of a protein will determine its
 specific biochemical environment and its unique set of interaction
 partners. As a result, the same protein can assume different functions
@@ -82,13 +82,13 @@ Spatial proteomics is the systematic and high-throughput study of
 protein sub-cellular localisation. A wide range of techniques
 (reviewed in \citep{Gatto:2010}) and computational methods
 \citep{Gatto:2014} have been documented, that confidently infer the
-localisation of thousands of proteins. have been documented. Most
+localisation of thousands of proteins. Most
 techniques rely on some form of sub-cellular fractionation, many
 employing differential centrifugation or separation along density
 gradients, and the subsequent quantitative assessment of relative
 protein occupancy profiles in these sub-cellular
 fractions. Reciprocally, a broad array of computational methods have
-been applied, ranging from unsupervised learning e.g.clustering,
+been applied, ranging from unsupervised learning e.g. clustering,
 dimensionality reduction \citep{Tomizioli:2014}, supervised learning
 e.g. classification (reviewed in \citep{Gatto:2014}, semi-supervised
 learning and novelty detection \citep{Breckels:2013} and, more
@@ -116,7 +116,7 @@ proteins upon perturbation \citep{Gatto:2014}.
 
 In this work, we describe how to understand and interpret widely used
 dimensionality reduction methods and visualise spatial
-proteomics data to critically assess their resolution and propose a
+proteomics data to critically assess their resolution. We propose a
 simple, yet effective method to quantitatively measure resolution and
 compare it across different experiments. Our recommendations should be
 useful to spatial proteomics practitioners, to assess the sub-cellular
@@ -230,7 +230,7 @@ limited number of markers was provided by the authors\footnote{This
   results from the fact that they used a simple distance measurement,
   termed $\chi^2$, against very few markers to base their sub-cellular
   localisation prediction}. We have also only considered sub-cellular
-niches (also referred to as protein clusters, or only clusters) that
+niches (also referred to as protein clusters, or clusters) that
 were defined by at least 7 protein markers\footnote{This number is
   relatively low, and we would typically recommend at least 13 markers
   per class to perform cross-validation when optimising classifier
@@ -282,7 +282,7 @@ sub-cellular map. While the works of \citet{Dunkley:2006}
 experiments such as \citet{Groen:2014} (\textit{Identification of
   trans-golgi network proteins in Arabidopsis thaliana root tissue})
 or \citet{Nikolovski:2014} (\textit{Label free protein quantification
-  for plant Golgi protein localisation and abundance}) have a much
+  for plant Golgi protein localisation and abundance}) have a
 more targeted goal (identification of trans-Golgi -network and Golgi
 apparatus proteins, respectively). When an experiment is targeted at
 resolving a particular niche, it is often the case that other
@@ -315,7 +315,7 @@ spread of all points (i.e. labelled and unlabelled proteins) along the
 first new dimension (principal component, PC). The second PC is then
 chosen to be perpendicular to the first one while still maximising the
 overall variability. Each PC (there are as many as there are
-fractions) accounts for a percentage of the total variability and it
+channels) accounts for a percentage of the total variability and it
 is not uncommon, in well executed experiments, that the two first PCs
 summarise over 70\% of the total variance in the data, confirming that
 the resulting visualisation remains a reliable and useful
@@ -382,8 +382,8 @@ the right, an experiment with considerable less resolution
   \label{fig:hexbin1}
 \end{figure}
 
-Considering that the aim of sub-cellular fractions is to maximise
-separation of most sub-cellular niches, one would expect these
+Considering that the aim of sub-cellular fractionation is to maximise
+separation of sub-cellular niches, one would expect
 sub-cellular clusters to be separated optimally in a successful
 spatial proteomics experiment. In PCA space, this would equate to the
 location of the annotated spatial clusters along the periphery of the
@@ -392,9 +392,10 @@ spatial proteomics experiments should be reflected by the separation
 of the expected/annotated spatial clusters.
 
 As already mentioned in section~\ref{sec:sub-cell-divers},
-sub-cellular niches are observed in spatial proteomics are
+sub-cellular niches observed in spatial proteomics are usually
 annotated. This annotation comes in the form of marker proteins,
-i.e. well-know and trusted residents of a specific niche. 
+i.e. well-known and trusted residents of a specific niche, for the 
+species and condition of interest. 
 
 \begin{figure}[ht]
   \centering
@@ -426,8 +427,9 @@ example the \texttt{plot3D} function in the \Biocpkg{pRoloc} package),
 which still, however, only reflect part of the total variability. When
 assessing the resolution of some organelles of interest, one should
 compare the full protein profiles of the marker proteins
-(\Biocpkg{pRoloc}'s \texttt{plotDist} function can be used for this)
-or visualise a dendrogram representing the average distance between
+(\Biocpkg{pRoloc}'s \texttt{plotDist} function can be used for this, or
+the interactive application \texttt{pRolocVis} in the \Biocpkg{pRolocGUI}
+package) or visualise a dendrogram representing the average distance between
 cluster profiles (the \texttt{mrkHClust} function from
 \Biocpkg{pRoloc} offers this functionality). While detailed
 exploration of a dataset using these and other visualisation
@@ -819,7 +821,7 @@ for (x in pdataitems[rev(o)])
 
 \section{Assessing the resolution metric}\label{sec:qsepassess}
 
-In this section, we assess the resolution metric itself, and how the
+In this section, we assess the resolution metric, and how the
 annotation of the spatial proteomics data influences the metric
 itself.
 
@@ -832,7 +834,7 @@ e14lm <- lm(median ~ as.numeric(n), data = e14sim$dd)
 e14slope <- e14lm$coefficients[[2]]
 @
 
-The number of classes does not have any effect the resolution
+We find that the number of classes does not have any effect the resolution
 assessment scoring. Indeed, dropping any class will result in a
 sub-sample of normalised inter-cluster distances, with random
 variations around the overall median inter-cluster distance. On
@@ -1015,7 +1017,7 @@ example figure~\ref{fig:mrkswtch}), as well as superior data analysis
 Maybe there a need for some standardisation, or some general
 guidelines in assessing spatial proteomics data in the community?
 Shouldn't the community as a whole aim for collective improvement and
-some agreement as to what constitutes a good spatial proteomics?
+some agreement as to what constitutes a good spatial proteomics experiment?
 Better spatial proteomics data and more reliable interpretation will
 be of direct benefit to the spatial proteomics researchers themselves,
 and will increase the trust and reliance of the cell biology
