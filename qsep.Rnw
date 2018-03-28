@@ -29,13 +29,13 @@ University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
 \begin{document}
 \maketitle
 
-\begin{abstract}  
+\begin{abstract}
   A meta-analysis assessing and comparing the sub-cellular resolution
-  of spatial proteomics experiments. 
+  of spatial proteomics experiments.
 \end{abstract}
 
 <<setup, include=FALSE>>=
-knitr::opts_chunk$set(echo = FALSE, cache = TRUE)
+knitr::opts_chunk$set(echo = FALSE, cache = FALSE)
 @
 
 <<env, warnings = FALSE>>=
@@ -44,7 +44,7 @@ suppressWarnings(suppressPackageStartupMessages(library("pRoloc")))
 suppressPackageStartupMessages(library("pRolocdata"))
 suppressPackageStartupMessages(library("xtable"))
 suppressPackageStartupMessages(library("hexbin"))
-stopifnot(packageVersion("pRolocdata") >= "1.11.9")
+stopifnot(packageVersion("pRolocdata") >= "1.17.2")
 stopifnot(packageVersion("pRoloc") >= "1.13.15")
 @
 
@@ -136,22 +136,32 @@ repository~\cite{qseprepo}.
 \section{Spatial proteomics datasets}\label{sec:pdata}
 
 <<pdata>>=
+
+## NOTES: beltran2016HCMV24 and beltran2016MOCK96 chosen as best mean/median
+## QSep values for each condition. If only best, use beltran2016MOCK96.
 .experiments <- c("E14TG2aS1", "HEK293T2011", "andreyev2010rest", "dunkley2006",
                   "foster2006", "groen2014cmb", "hall2009", "hyperLOPIT2015",
                   "hyperLOPIT2015ms2", "itzhak2016stcSILAC", "nikolovski2012imp",
-                  "nikolovski2014", "rodriguez2012r1", "tan2009r1", "trotter2010")
+                  "nikolovski2014", "rodriguez2012r1", "tan2009r1", "trotter2010",
+                  "beltran2016HCMV24", "beltran2016MOCK96", "hirst2018", "itzhak2017",
+                  "hyperLOPITU2OS2017b")
 pdata <- pRolocdata()$results
 pdata <- pdata[pdata[, "Item"] %in% .experiments, ]
 pdataitems <- pdata[, "Item"]
 data(list = pdataitems)
 
-## Let's shorted some marker labels for better visualisation - see issue 
-hyperLOPIT2015 <- fDataToUnknown(hyperLOPIT2015, fcol = "markers", 
+## Let's shorted some marker labels for better visualisation - see issue
+hyperLOPIT2015 <- fDataToUnknown(hyperLOPIT2015, fcol = "markers",
                                  from = "Endoplasmic reticulum/Golgi apparatus",
                                  to = "ER/GA")
-hyperLOPIT2015ms2 <- fDataToUnknown(hyperLOPIT2015ms2, fcol = "markers", 
+hyperLOPIT2015ms2 <- fDataToUnknown(hyperLOPIT2015ms2, fcol = "markers",
                                     from = "Endoplasmic reticulum/Golgi apparatus",
                                     to = "ER/GA")
+
+## Subset hirst2018, to retain CTRL experiment.
+## All 3 have very similar QSep values; CTRL is top.
+hirst2018 <- split(hirst2018, "sample")[["CTRL"]]
+
 
 ## make table
 pdtab <- data.frame(pdata[, 3:4], stringsAsFactors = FALSE)
@@ -169,35 +179,46 @@ pdtab <- pdtab[, c(1, 3:6, 2)]
 names(pdtab) <- c("Data", "Proteins", "Fractions",
                   "Clusters", "PC var (%)", "Title")
 
-## This is added manually and depends on the order set in the previous line
+## This is added manually and depends on the order of pdtab$Data
 cits <- c("\\citep{Breckels:2016}",
-          "\\citep{Andreyev:2010}",
           "\\citep{Breckels:2013}",
+          "\\citep{Andreyev:2010}",
+          "\\citep{JeanBeltran:2016}",
+          "\\citep{JeanBeltran:2016}",
           "\\citep{Dunkley:2006}",
           "\\citep{Foster:2006}",
           "\\citep{Groen:2014}",
           "\\citep{Hall:2009}",
+          "\\citep{Hirst:2018}",
           "\\citep{Christoforou:2016}",
           "\\citep{Christoforou:2016}",
+          "\\citep{Thul:2017}",
           "\\citep{Itzhak:2016}",
-          "\\citep{Nikolovski:2012}",    
+          "\\citep{Itzhak:2017}",
+          "\\citep{Nikolovski:2012}",
           "\\citep{Nikolovski:2014}",
           "\\citep{RodriguezPineiro:2012}",
           "\\citep{Tan:2009}",
           "\\citep{Trotter:2010}")
+
 stopifnot(identical(length(cits), nrow(pdtab)))
 pdtab$Title <- paste(pdtab$Title, cits)
 
 year <- c(2011, ## E14 from Breckels 2016
-          2010, ## Andreyev
           2011, ## HEK293T2011, from Breckels 2013
+          2010, ## Andreyev
+          2016, ## Beltran 2016
+          2016, ## Beltran 2016
           2006, ## Dunkley, re-analysed in Breckels 2013
           2006, ## Foster
           2014, ## Groen
           2009, ## Hall
+          2018, ## Hirst 2017
           2016, ## hyperLOPIT
           2016, ## hyperLOPIT
-          2016, ## Itzhak
+          2017, ## Thul 2017
+          2016, ## Itzhak 2016
+          2017, ## Itzhak 2017
           2007, ## Nikolovski 2012
           2014, ## Nikolovski 2014
           2012, ## Rodriguez Pineiro
@@ -216,6 +237,7 @@ proteomics datasets, summarised in table~\ref{tab:pdtab}. These data
 represent a diverse range of species, sample types, instruments and
 quantification methodologies.
 
+\begin{tiny}
 \begin{sidewaystable}
   \captionsetup{width=\textwidth}
 <<pdtab, results = 'asis'>>=
@@ -229,6 +251,7 @@ print(xtable(pdtab[, toprint],
       tabular.environment = "longtable")
 @
 \end{sidewaystable}
+\end{tiny}
 
 We have applied minimal post-processing to the data and have used, as
 far as possible, the data and annotation provided by the original
@@ -366,9 +389,9 @@ plot2D(hall2009, method = "hexbin")
 @
 
 In figure~\ref{fig:hexbin1} we compare three datasets to illustrate
-different levels of cluster density and separation. We see 
-areas of high density (many proteins per hexagon) 
-are highlighted by dark blue, and less 
+different levels of cluster density and separation. We see
+areas of high density (many proteins per hexagon)
+are highlighted by dark blue, and less
 dense areas are white/grey, as indicated by the count key on
 the right-hand side of each plot. The figure on the
 left is the hyperLOPIT data from \citet{Christoforou:2016} (as on
@@ -402,15 +425,15 @@ of the expected/annotated spatial clusters.
 As already mentioned in section~\ref{sec:sub-cell-divers},
 sub-cellular niches observed in spatial proteomics are usually
 annotated. This annotation comes in the form of marker proteins,
-i.e. well-known and trusted residents of a specific niche, for the 
-species and condition of interest. 
+i.e. well-known and trusted residents of a specific niche, for the
+species and condition of interest.
 
 \begin{figure}[ht]
   \centering
 <<pcahl, out.width = '75%'>>=
 plot2D(hyperLOPIT2015)
 addLegend(hyperLOPIT2015, where = "bottomleft", cex = .6)
-@  
+@
   \caption{Annotated PCA plot of the \textit{hyperLOPIT2015} dataset.}
   \label{fig:pcahl}
 \end{figure}
@@ -455,8 +478,8 @@ resolution and directly compare different experiments. Here, we
 present a new infrastructure, termed \texttt{QSep}, available in the
 \Biocpkg{pRoloc} package \citet{Gatto:2014a}, to quantify the
 separation of clusters in spatial proteomics experiments. It relies on
-the comparison of the average euclidean distance \textit{within} and 
-\textit{between} sub-cellular clusters. As illustrated on the heatmaps 
+the comparison of the average euclidean distance \textit{within} and
+\textit{between} sub-cellular clusters. As illustrated on the heatmaps
 in figure~\ref{fig:qsep0} for the \textit{hyperLOPIT2015} data, these
 distances always refer to one reference marker cluster.
 
@@ -638,7 +661,7 @@ o <- order(mds <- sapply(res, median))
 par(las = 1, mar = c(3, 8, 1, 1))
 boxplot(res[o], horizontal = TRUE, cex.axis = .7, ylim = c(0, 16))
 abline(v = 1, lty = "dotted")
-@  
+@
 \caption{Quantitative separation assessment using experiment-wide
   normalised distances between cluster distances. The vertical line
   represents the normalised intra-cluster distance of 1.}
@@ -732,6 +755,11 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
   \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-13.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-14.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-15.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-16.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-17.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-18.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-19.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-20.pdf}
   \caption{Density PCA plots for the \Sexpr{nrow(pdata)} experiments
     used in this study. PC 1 and 2 were used except for
     \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform
@@ -744,14 +772,14 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
 
 
 \begin{figure}[p]
-  \centering 
+  \centering
 <<figpca>>=
-par(mfrow = c(4, 4), mar = c(2, 2, 2, 2))
+par(mfrow = c(5, 4), mar = c(2, 2, 2, 2))
 tmp <- sapply(pdataitems[rev(o)], function(x)
     plot2D(impute(get(x), method = "zero"), main = x,
            cex.axis = .6, tck = -0.025, cex = .7,
            dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2))))
-@ 
+@
 \caption{PCA plots for the \Sexpr{nrow(pdata)} experiments used in
   this study. PC 1 and 2 were used except for
   \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform to
@@ -794,6 +822,11 @@ for (x in pdataitems[rev(o)])
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-13.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-14.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-15.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-16.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-17.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-18.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-19.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-20.pdf}
   \caption{Quantitative separation boxplot for the \Sexpr{nrow(pdata)}
     experiments used in this study. The experiments are ordered
     according to the median average between cluster distance (see
@@ -818,6 +851,11 @@ for (x in pdataitems[rev(o)])
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-13.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-14.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-15.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-16.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-17.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-18.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-19.pdf}
+  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-20.pdf}
   \caption{Quantitative separation heatmaps for the \Sexpr{nrow(pdata)}
     experiments used in this study. The experiments are ordered
     according to the median average between cluster distance (see
@@ -878,7 +916,7 @@ the marker annotation between the \textit{hyperLOPIT2015} and
 \textit{itzhak2016stcSILAC} datasets (see PCA plots on
 figure~\ref{fig:mrkswtch}, left) and calculated the quantitative
 resolution metrics (see boxplots on figure~\ref{fig:mrkswtch},
-right). 
+right).
 
 \begin{figure}[h]
   \centering
@@ -903,7 +941,7 @@ load("mrkswtch.rda")
 ## +-------------p3-------------+
 ## | +---p1----+     +---p2---+ |
 ## | |         |     |        | |
-## dhl.mhl dhl.mit dit.mit dit.mhl 
+## dhl.mhl dhl.mit dit.mit dit.mhl
 ##     182   | 132  |  132     144  (lengths)
 ##           |      |
 ##           +--p4--+
@@ -982,22 +1020,30 @@ sub-cellular resolution.
   \centering
 <<restime, out.width = '65%'>>=
 ## re-analysed in Breckels:2013:
-lopit <- c("hyperLOPIT2015", "hyperLOPIT2015ms2", "HEK293T2011", 
+lopit <- c("hyperLOPIT2015", "hyperLOPIT2015ms2", "HEK293T2011",
            "tan2009r1", "E14TG2aS1", "trotter2010", "dunkley2006",
            "groen2014cmb", "nikolovski2012imp", "hall2009")
 
 .pos <- rep(3, length(pdataitems))
+.pos[pdataitems == "tan2009r1"] <- 4
 .pos[pdataitems == "trotter2010"] <- 2
 .pos[pdataitems == "hall2009"] <- 1
+.pos[pdataitems == "dunkley2006"] <- 1
+.pos[pdataitems == "beltran2016HCMV24"] <- 2
+.pos[pdataitems == "beltran2016MOCK96"] <- 2
+.pos[pdataitems == "E14TG2aS1"] <- 4
 .pos[grep("hyperLOPIT", pdataitems)] <- 1
-
-plot(mds ~ pdtab$year, xlim = c(2005, 2017),
+.pos[pdataitems == "hyperLOPIT2015ms2"] <- 2
+.pos[pdataitems == "hyperLOPIT2015"] <- 2
+.pos[pdataitems == "hyperLOPITU2OS2017b"] <- 1
+plot(mds ~ pdtab$year,
+     xlim = c(2005, 2018.5),
      xlab = "Original year of publication",
      ylab = "Quantitative assessment (medians)")
 grid()
-text(pdtab$year, mds, pdataitems, cex = .8, 
+text(pdtab$year, mds, pdataitems, cex = .8,
      pos = .pos)
-@  
+@
 \caption{Resolution of spatial proteomics experiments over time. The
   assigned dates match either the original publication or, when know,
   the actual date the data was generated. For publications that
