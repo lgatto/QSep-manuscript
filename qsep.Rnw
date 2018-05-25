@@ -1032,6 +1032,7 @@ lopit <- c("hyperLOPIT2015", "hyperLOPIT2015ms2", "HEK293T2011",
 .pos[pdataitems == "beltran2016HCMV24"] <- 2
 .pos[pdataitems == "beltran2016MOCK96"] <- 2
 .pos[pdataitems == "E14TG2aS1"] <- 4
+.pos[pdataitems == "HEK293T2011"] <- 1
 .pos[grep("hyperLOPIT", pdataitems)] <- 1
 .pos[pdataitems == "hyperLOPIT2015ms2"] <- 2
 .pos[pdataitems == "hyperLOPIT2015"] <- 2
