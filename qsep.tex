@@ -1,4 +1,54 @@
-\documentclass[12pt]{article}
+\documentclass[12pt]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{caption}
@@ -27,7 +77,7 @@
 %% University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
 %% \affil[2]{Cambridge Centre for Proteomics, Department of Biochemistry,
 %% University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 \maketitle
 
@@ -36,37 +86,11 @@
   of spatial proteomics experiments.
 \end{abstract}
 
-<<setup, include=FALSE>>=
-knitr::opts_chunk$set(echo = FALSE, cache = FALSE)
-@
 
-<<env, warnings = FALSE>>=
-suppressWarnings(suppressPackageStartupMessages(library("MSnbase")))
-suppressWarnings(suppressPackageStartupMessages(library("pRoloc")))
-suppressPackageStartupMessages(library("pRolocdata"))
-suppressPackageStartupMessages(library("xtable"))
-suppressPackageStartupMessages(library("hexbin"))
-stopifnot(packageVersion("pRolocdata") >= "1.17.2")
-stopifnot(packageVersion("pRoloc") >= "1.13.15")
-@
 
-<<myfuns>>=
-## a wrapper around sapply to avoid having to 'get' the actual data at
-## every iteration
-pdapply <- function(X, FUN, ..., use.names = TRUE) {
-    ans <- sapply(X, function(x) {
-        x <- get(x)
-        FUN <- match.fun(FUN)
-        args <- list(x)
-        if (!is.null(pairlist(...)))
-            args <- c(args, pairlist(...))
-        do.call(FUN, args)
-    })
-    if (!use.names)
-        names(ans) <- NULL
-    ans
-}
-@
+
+
+
 
 \section{Introduction}
 
@@ -135,104 +159,9 @@ in the manuscript public repository~\cite{qseprepo}.
 
 \section{Spatial proteomics datasets}\label{sec:pdata}
 
-<<pdata>>=
-
-## NOTES: beltran2016HCMV24 and beltran2016MOCK96 chosen as best mean/median
-## QSep values for each condition. If only best, use beltran2016MOCK96.
-.experiments <- c("E14TG2aS1", "HEK293T2011", "andreyev2010rest", "dunkley2006",
-                  "foster2006", "groen2014cmb", "hall2009", "hyperLOPIT2015",
-                  "hyperLOPIT2015ms2", "itzhak2016stcSILAC", "nikolovski2012imp",
-                  "nikolovski2014", "rodriguez2012r1", "tan2009r1", "trotter2010",
-                  "beltran2016HCMV24", "beltran2016MOCK96", "hirst2018", "itzhak2017",
-                  "hyperLOPITU2OS2017b")
-pdata <- pRolocdata()$results
-pdata <- pdata[pdata[, "Item"] %in% .experiments, ]
-pdataitems <- pdata[, "Item"]
-data(list = pdataitems)
-
-## Let's shorted some marker labels for better visualisation - see issue
-hyperLOPIT2015 <- fDataToUnknown(hyperLOPIT2015, fcol = "markers",
-                                 from = "Endoplasmic reticulum/Golgi apparatus",
-                                 to = "ER/GA")
-hyperLOPIT2015ms2 <- fDataToUnknown(hyperLOPIT2015ms2, fcol = "markers",
-                                    from = "Endoplasmic reticulum/Golgi apparatus",
-                                    to = "ER/GA")
-
-## Subset hirst2018, to retain CTRL experiment.
-## All 3 have very similar QSep values; CTRL is top.
-hirst2018 <- split(hirst2018, "sample")[["CTRL"]]
 
 
-## make table
-pdtab <- data.frame(pdata[, 3:4], stringsAsFactors = FALSE)
-pdtab$nprot <- pdapply(pdataitems, nrow)
-pdtab$frac <- pdapply(pdataitems, ncol)
-pdtab$nclust <- pdapply(pdataitems, function(x)
-    length(unique(fData(markerMSnSet(x))$markers)))
-pdtab$pcvar <- sapply(pdataitems, function(x) {
-    pcvar <- plot2D(impute(get(x), "zero"), plot = FALSE,
-                    dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2)))
-    pcvar <- sub("%\\)", "", sub("^.*\\(", "", colnames(pcvar)))
-    sum(as.numeric(pcvar))
-})
-pdtab <- pdtab[, c(1, 3:6, 2)]
-names(pdtab) <- c("Data", "Proteins", "Fractions",
-                  "Clusters", "PC var (%)", "Title")
-
-## This is added manually and depends on the order of pdtab$Data
-cits <- c("\\citep{Breckels:2016}",
-          "\\citep{Breckels:2013}",
-          "\\citep{Andreyev:2010}",
-          "\\citep{JeanBeltran:2016}",
-          "\\citep{JeanBeltran:2016}",
-          "\\citep{Dunkley:2006}",
-          "\\citep{Foster:2006}",
-          "\\citep{Groen:2014}",
-          "\\citep{Hall:2009}",
-          "\\citep{Hirst:2018}",
-          "\\citep{Christoforou:2016}",
-          "\\citep{Christoforou:2016}",
-          "\\citep{Thul:2017}",
-          "\\citep{Itzhak:2016}",
-          "\\citep{Itzhak:2017}",
-          "\\citep{Nikolovski:2012}",
-          "\\citep{Nikolovski:2014}",
-          "\\citep{RodriguezPineiro:2012}",
-          "\\citep{Tan:2009}",
-          "\\citep{Trotter:2010}")
-
-stopifnot(identical(length(cits), nrow(pdtab)))
-pdtab$Title <- paste(pdtab$Title, cits)
-
-year <- c(2011, ## E14 from Breckels 2016
-          2011, ## HEK293T2011, from Breckels 2013
-          2010, ## Andreyev
-          2016, ## Beltran 2016
-          2016, ## Beltran 2016
-          2006, ## Dunkley, re-analysed in Breckels 2013
-          2006, ## Foster
-          2014, ## Groen
-          2009, ## Hall
-          2018, ## Hirst 2017
-          2016, ## hyperLOPIT
-          2016, ## hyperLOPIT
-          2017, ## Thul 2017
-          2016, ## Itzhak 2016
-          2017, ## Itzhak 2017
-          2007, ## Nikolovski 2012
-          2014, ## Nikolovski 2014
-          2012, ## Rodriguez Pineiro
-          2009, ## Tan, re-analised in Breckels 2013
-          2009) ## Trotter (dunkley/sadowski), with Breckels 2013 clusters
-stopifnot(identical(length(year), nrow(pdtab)))
-pdtab$year <- paste(pdtab$year, year)
-
-o <- order(pdtab[, "Clusters"], decreasing = TRUE)
-pdataitems <- pdataitems[o]
-pdtab <- pdtab[o, ]
-@
-
-For this meta-analysis, we make use of \Sexpr{nrow(pdata)} spatial
+For this meta-analysis, we make use of 20 spatial
 proteomics datasets, summarised in table~\ref{tab:pdtab}. These data
 represent a diverse range of species, sample types, instruments and
 quantification methodologies.
@@ -240,16 +169,37 @@ quantification methodologies.
 \begin{tiny}
 \begin{sidewaystable}
   \captionsetup{width=\textwidth}
-<<pdtab, results = 'asis'>>=
-toprint <- names(pdtab) != "year"
-print(xtable(pdtab[, toprint],
-             label = "tab:pdtab",
-             caption = "Summary of the datasets used in this study. The percentage of variance along the principal components (PC) is related to the PCA plots on figure~\\ref{fig:pca}. All datasets are available in the \\Biocexptpkg{pRolocdata} package."),
-      include.rownames = FALSE,
-      booktabs = TRUE,
-      floating = FALSE,
-      tabular.environment = "longtable")
-@
+% latex table generated in R 3.6.0 by xtable 1.8-2 package
+% Mon Jul 23 11:49:42 2018
+\begin{longtable}{lrrrrp{8cm}}
+  \toprule
+Data & Proteins & Fractions & Clusters & PC var (\%) & Title \\ 
+  \midrule
+hyperLOPIT2015 & 5032 &  20 &  14 & 72.26 & Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016). \citep{Christoforou:2016} \\ 
+  hyperLOPIT2015ms2 & 7114 &  10 &  14 & 74.72 & Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016). \citep{Christoforou:2016} \\ 
+  HEK293T2011 & 1371 &   8 &  12 & 65.04 & LOPIT experiment on Human Embryonic Kidney fibroblast HEK293T cells from Breckels et al. (2013) \citep{Breckels:2013} \\ 
+  hirst2018 & 2046 &  15 &  12 & 82.50 & Data from Hirst et al. 2018 \citep{Hirst:2018} \\ 
+  hyperLOPITU2OS2017b & 5020 &  37 &  12 & 67.68 & 2017 hyperLOPIT on U2OS cells \citep{Thul:2017} \\ 
+  itzhak2016stcSILAC & 5265 &  30 &  12 & 70.61 & Data from Itzhak et al. (2016) \citep{Itzhak:2016} \\ 
+  itzhak2017 & 9201 &  30 &  12 & 31.39 & Data from Itzhak et al. 2017 \citep{Itzhak:2017} \\ 
+  rodriguez2012r1 & 2215 &  11 &  12 & 38.95 & Spatial proteomics of human inducible goblet-like LS174T cells from Rodriguez-Pineiro et al. (2012) \citep{RodriguezPineiro:2012} \\ 
+  tan2009r1 & 888 &   4 &  11 & 88.49 & LOPIT data from Tan et al. (2009) \citep{Tan:2009} \\ 
+  E14TG2aS1 & 1109 &   8 &  10 & 65.98 & LOPIT experiment on Mouse E14TG2a Embryonic Stem Cells from Breckels et al. (2016) \citep{Breckels:2016} \\ 
+  trotter2010 & 347 &  16 &  10 & 81.14 & LOPIT data sets used in Trotter et al. (2010) \citep{Trotter:2010} \\ 
+  beltran2016HCMV24 & 2196 &   6 &   9 & 77.18 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} \\ 
+  beltran2016MOCK96 & 1748 &   6 &   9 & 73.24 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} \\ 
+  dunkley2006 & 689 &  16 &   9 & 86.70 & LOPIT data from Dunkley et al. (2006) \citep{Dunkley:2006} \\ 
+  foster2006 & 1555 &  26 &   8 & 53.13 & PCP data from Foster et al. (2006) \citep{Foster:2006} \\ 
+  nikolovski2014 & 1385 &  20 &   8 & 67.97 & LOPIMS data from Nikolovski et al. (2014) \citep{Nikolovski:2014} \\ 
+  groen2014cmb & 424 &  18 &   7 & 64.30 & LOPIT experiments on Arabidopsis thaliana roots, from Groen et al. (2014) \citep{Groen:2014} \\ 
+  nikolovski2012imp & 1385 &  32 &   7 & 77.82 & Meta-analysis from Nikolovski et al. (2012) \citep{Nikolovski:2012} \\ 
+  andreyev2010rest & 2642 &  36 &   6 & 25.39 & Six sub-cellular fraction data from mouse macrophage-like RAW264.7 cells from Andreyev et al. (2009) \citep{Andreyev:2010} \\ 
+  hall2009 & 1090 &  16 &   5 & 63.45 & LOPIT data from Hall et al. (2009) \citep{Hall:2009} \\ 
+   \bottomrule
+\caption{Summary of the datasets used in this study. The percentage of variance along the principal components (PC) is related to the PCA plots on figure~\ref{fig:pca}. All datasets are available in the \Biocexptpkg{pRolocdata} package.} 
+\label{tab:pdtab}
+\end{longtable}
+
 \end{sidewaystable}
 \end{tiny}
 
@@ -278,26 +228,9 @@ zeros. When calculating distances between protein profiles (see
 section~\ref{sec:qsep}), however, missing values were retained.
 
 
-<<foster2006preproc>>=
-mmu <- pRolocmarkers("mmus")
-fData(foster2006)$markers <- NULL
-foster2006 <- addMarkers(foster2006, mmu, fcol = "UniProt",
-                         verbose = FALSE)
 
-@
 
-<<minMarkers5>>=
 
-tmp <- sapply(pdataitems,
-       function(x) {
-           obj <- get(x)
-           obj <- minMarkers(obj, 7)
-           fData(obj)$markers <- fData(obj)$markers7
-           fData(obj)$markers5 <- NULL
-           assign(x, obj, envir = globalenv())
-       })
-
-@
 
 
 It is important to highlight that not all experiments used in this
@@ -327,14 +260,14 @@ resolution.
 
 A first assessment that provides an important indication of the
 resolution of the data concerns the number and diversity of
-sub-cellular niches that are annotated. In the \Sexpr{nrow(pdtab)}
+sub-cellular niches that are annotated. In the 20
 datasets used in this study, this number ranged from
-\Sexpr{min(pdtab$Clusters)} (dataset
-\textit{\Sexpr{pdtab[which.min(pdtab$Clusters), 1]}}) to
-\Sexpr{max(pdtab$Clusters)} (dataset
-\textit{\Sexpr{pdtab[which.max(pdtab$Clusters), 1]}}). These numbers should be
+5 (dataset
+\textit{hall2009}) to
+14 (dataset
+\textit{hyperLOPIT2015}). These numbers should be
 assessed in the light of about 25 different sub-cellular niches that
-are documented in all \Sexpr{nrow(pdtab)} datasets, which are still
+are documented in all 20 datasets, which are still
 underestimating the biological sub-cellular diversity.
 
 \subsection{Dimensionality reduction and visualisation}\label{sec:vis}
@@ -365,11 +298,7 @@ emphasised by using transparency (figure~\ref{fig:density}, centre) or
 binned hexagon plots (figure~\ref{fig:density}, right) to highlight
 density.
 
-<<density, fig.show = 'hide'>>=
-plot2D(hyperLOPIT2015, fcol = NULL, col = "black")
-plot2D(hyperLOPIT2015, fcol = NULL, col = "#00000020", pch = 19)
-plot2D(hyperLOPIT2015, method = "hexbin")
-@
+
 
 \begin{figure}[ht]
   \centering
@@ -381,12 +310,7 @@ plot2D(hyperLOPIT2015, method = "hexbin")
   \label{fig:density}
 \end{figure}
 
-<<hexbin, fig.show = 'hide'>>=
-suppressMessages(hl <- commonFeatureNames(hyperLOPIT2015, hyperLOPIT2015ms2))
-plot2D(hl[[1]], method = "hexbin")
-plot2D(hl[[2]], method = "hexbin")
-plot2D(hall2009, method = "hexbin")
-@
+
 
 In figure~\ref{fig:hexbin1} we compare three datasets to illustrate
 different levels of cluster density and separation. We see
@@ -430,10 +354,11 @@ species and condition of interest.
 
 \begin{figure}[ht]
   \centering
-<<pcahl, out.width = '75%'>>=
-plot2D(hyperLOPIT2015)
-addLegend(hyperLOPIT2015, where = "bottomleft", cex = .6)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=0.75\linewidth]{figure/pcahl-1} 
+
+\end{knitrout}
   \caption{Annotated PCA plot of the \textit{hyperLOPIT2015} dataset.}
   \label{fig:pcahl}
 \end{figure}
@@ -466,7 +391,7 @@ cluster profiles (the \texttt{mrkHClust} function from
 exploration of a dataset using these and other visualisation
 approaches is crucial before analysing and interpreting a new spatial
 proteomics experiment, a detailed exploration of each of the
-\Sexpr{nrow(pdtab)} datasets used in this meta-analysis is out of the
+20 datasets used in this meta-analysis is out of the
 scope of this analysis.
 
 \subsection{Quantifying resolution}\label{sec:qsep}
@@ -498,35 +423,13 @@ symmetrical. To facilitate the comparison of distances between
 organelles, the distance distributions can also be visualised as
 boxplots (figure~\ref{fig:qsep0}, bottom).
 
-<<qsep0>>=
-qh <- QSep(hyperLOPIT2015)
-names(qh) <- sub("/", "\n", names(qh))
-qi <- QSep(itzhak2016stcSILAC)
-qhmed <- median(summary(qh, verbose = FALSE))
-qimed <- median(summary(qi, verbose = FALSE))
-@
 
-<<qsep0lv, fig.width = 9, fig.height = 9, fig.show = 'hide'>>=
-print(levelPlot(qh, norm = FALSE))
-print(levelPlot(qh, norm = TRUE))
-print(levelPlot(qi))
-@
 
-<<qsep0bx, fig.show = 'hide'>>=
-par(mar = c(4, 10, 2, 2), cex.axis = .8)
-plot(qh, norm = FALSE)
-plot(qh, norm = TRUE)
-@
 
-<<qsepcmp, fig.show = 'hide'>>=
-par(mar = c(2.2, 10, 0, 1), cex.axis = .8)
-plot(qh, ylim = c(0.9, 17))
-abline(v = qhmed, lty = "dashed")
-legend("topright", legend = "hyperLOPIT2015", bty = "n")
-plot(qi, ylim = c(0.9, 17))
-abline(v = qimed, lty = "dashed")
-legend("topright", legend = "itzhak2016stcSILAC", bty = "n")
-@
+
+
+
+
 
 \begin{figure}[!ht]
   \centering
@@ -557,20 +460,15 @@ distances on figure \ref{fig:qsep0}.
 
 \subsection{Application of the assessment criteria}\label{sec:applic}
 
-<<nummarkers>>=
-nmh <- length(getMarkerClasses(hyperLOPIT2015ms2))
-nmi <- length(getMarkerClasses(itzhak2016stcSILAC))
-nrh <- nrow(hyperLOPIT2015ms2)
-nri <- nrow(itzhak2016stcSILAC)
-@
+
 
 To further demonstrate the interpretation of these resolution metrics,
 we directly compare the two recent global cell maps from
 \cite{Christoforou:2016} (dataset \textit{hyperLOPIT2015}) and
 \cite{Itzhak:2016} (dataset \textit{itzhak2016stcSILAC}). Both feature
-high protein coverage (\Sexpr{nrh} and \Sexpr{nri} proteins
-respectively) and good sub-cellular diversity (\Sexpr{nmh} and
-\Sexpr{nmi} annotated clusters respectively). The former contains
+high protein coverage (7114 and 5265 proteins
+respectively) and good sub-cellular diversity (14 and
+12 annotated clusters respectively). The former contains
 duplicated experiments, each made of 10 fractions and the latter
 contains 6 replicates with 5 fractions each. Figure~\ref{fig:pcacmp}
 shows the PCA plots applying transparency to identify the underlying
@@ -579,13 +477,11 @@ the markers provided by the respective authors.
 
 \begin{figure}[!h]
   \centering
-<<pcacmp, fig.width = 8, fig.height = 8, fig.asp = 1/4>>=
-par(mar = c(4, 4, 0, 0), mfrow = c(1, 4))
-plot2D(impute(itzhak2016stcSILAC, "zero"), fcol = NULL, col = "#00000020")
-plot2D(impute(itzhak2016stcSILAC, "zero"))
-plot2D(hyperLOPIT2015, fcol = NULL, col = "#00000020")
-plot2D(hyperLOPIT2015)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/pcacmp-1} 
+
+\end{knitrout}
 \caption{PCA plots for \textit{itzhak2016stcSILAC} (left) and
   \textit{hyperLOPIT2015} (right). Here, we display PC 1 and 2 for
   both datasets for comparability. The original authors displayed PC 1
@@ -607,9 +503,9 @@ sub-cellular clusters. The boxplots allow a more direct comparison of the
 distances across the two datasets. On the top boxplot, we detect
 relatively short distances for most clusters, with most large
 distances stemming from the mitochondria, leading to a median distance
-of \Sexpr{round(qimed, 2)}. The distributions on the bottom boxplot
+of 2.48. The distributions on the bottom boxplot
 show larger distances, equally spread among all clusters, with an
-median distance of \Sexpr{round(qhmed, 2)}.
+median distance of 4.91.
 
 \begin{figure}[h]
   \centering
@@ -621,8 +517,8 @@ median distance of \Sexpr{round(qhmed, 2)}.
     \textit{itzhak2016stcSILAC} \citep{Itzhak:2016} (top) and
     \textit{hyperLOPIT2015} \citep{Christoforou:2016} (bottom)
     datasets. The dashed vertical lines on the boxplots represent the
-    overall media between cluster distance, \Sexpr{round(qimed, 2)} and
-    \Sexpr{round(qhmed, 2)} for \textit{itzhak2016stcSILAC} and
+    overall media between cluster distance, 2.48 and
+    4.91 for \textit{itzhak2016stcSILAC} and
     \textit{hyperLOPIT2015} respectively. }
   \label{fig:qsepcmp}
 \end{figure}
@@ -632,7 +528,7 @@ median distance of \Sexpr{round(qhmed, 2)}.
 \section{Comparative study}\label{sec:compara}
 
 We next apply the quantitative assessment of spatial resolution
-described in section~\ref{sec:qsep} to compare the \Sexpr{nrow(pdata)}
+described in section~\ref{sec:qsep} to compare the 20
 experiments presented in section~\ref{sec:pdata}. On
 figure~\ref{fig:qsep}, we show, for each dataset, a boxplot
 illustrating the distribution of the global average normalised
@@ -645,23 +541,15 @@ are provided in figures~\ref{fig:denspca} and~\ref{fig:pca} and the
 quantitative assessment boxplots and heatmaps are shown in
 figures~\ref{fig:allqseps} and~\ref{fig:allhmaps}.
 
-<<qsep>>=
-res <- pdapply(pdataitems,
-       function(x) {
-           stopifnot("markers" %in% fvarLabels(x))
-           summary(QSep(x), verbose = FALSE)
-})
 
-o <- order(mds <- sapply(res, median))
-@
 
 \begin{figure}[ht]
   \centering
-<<figqsep, out.width = '65%'>>=
-par(las = 1, mar = c(3, 8, 1, 1))
-boxplot(res[o], horizontal = TRUE, cex.axis = .7, ylim = c(0, 16))
-abline(v = 1, lty = "dotted")
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=0.65\linewidth]{figure/figqsep-1} 
+
+\end{knitrout}
 \caption{Quantitative separation assessment using experiment-wide
   normalised distances between cluster distances. The vertical line
   represents the normalised intra-cluster distance of 1.}
@@ -701,9 +589,7 @@ annotation will not negatively influence the resolution scoring,
 emphasising the importance of data visualisation
 (section~\ref{sec:vis}).
 
-<<nitz>>=
-nitz <- pdtab[pdtab$Data == "itzhak2016stcSILAC", "Clusters"]
-@
+
 
 The next set of experiments that show comparable resolution profiles
 are \textit{HEK293T2011}, \textit{itzhak2016stcSILAC} and
@@ -713,8 +599,8 @@ the \textit{Large Protein Complex} class defined by the original
 authors in the \textit{itzhak2016stcSILAC} data could be dropped as it
 loosely defines many niches and thus lacks resolution. This omission only
 marginally influences the overall assessment metrics as only the
-distances to/from that class are affected (i.e. \Sexpr{2 * nitz - 1}
-out of \Sexpr{nitz^2} distances) and as such it would not change its
+distances to/from that class are affected (i.e. 23
+out of 144 distances) and as such it would not change its
 rank among the test datasets.
 
 As mentioned earlier, the \textit{groen2014cmb} and
@@ -725,18 +611,12 @@ low resolution.
 
 The \textit{foster2006} experiment displays relatively poor
 separation. This might be due to the relatively high number of missing
-values (\Sexpr{100*round(sum(is.na(foster2006))/prod(dim(foster2006)),
-  3)} \%). Finally, the \textit{andreyev2010rest} dataset suffers from
+values (42.4 \%). Finally, the \textit{andreyev2010rest} dataset suffers from
 very broad sub-cellular clusters (compared to separation between
 clusters).
 
 
-<<fighexpca, fig.show = 'hide'>>=
-tmp <- sapply(pdataitems[rev(o)], function(x)
-    plot2D(impute(get(x), method = "zero"), method = "hexbin",
-           dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2)),
-           main = x))
-@
+
 
 \begin{figure}[p]
   \centering
@@ -760,7 +640,7 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
   \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-18.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-19.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-20.pdf}
-  \caption{Density PCA plots for the \Sexpr{nrow(pdata)} experiments
+  \caption{Density PCA plots for the 20 experiments
     used in this study. PC 1 and 2 were used except for
     \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform
     to the original authors figures. The experiments are ordered
@@ -773,14 +653,12 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
 
 \begin{figure}[p]
   \centering
-<<figpca>>=
-par(mfrow = c(5, 4), mar = c(2, 2, 2, 2))
-tmp <- sapply(pdataitems[rev(o)], function(x)
-    plot2D(impute(get(x), method = "zero"), main = x,
-           cex.axis = .6, tck = -0.025, cex = .7,
-           dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2))))
-@
-\caption{PCA plots for the \Sexpr{nrow(pdata)} experiments used in
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=\maxwidth]{figure/figpca-1} 
+
+\end{knitrout}
+\caption{PCA plots for the 20 experiments used in
   this study. PC 1 and 2 were used except for
   \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform to
   the original authors figures. The experiments are ordered according
@@ -793,16 +671,9 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
 \end{figure}
 
 
-<<allqseps, fig.show = 'hide'>>=
-par(mar = c(4, 10, 2, 2), cex.axis = .9, cex.main = 2)
-tmp <- sapply(pdataitems[rev(o)],
-              function(x) plot(QSep(get(x)), main = x))
-@
 
-<<allhmaps, fig.show = 'hide'>>=
-for (x in pdataitems[rev(o)])
-    print(levelPlot(QSep(get(x)), main = x))
-@
+
+
 
 
 \begin{figure}[p]
@@ -827,7 +698,7 @@ for (x in pdataitems[rev(o)])
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-18.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-19.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-20.pdf}
-  \caption{Quantitative separation boxplot for the \Sexpr{nrow(pdata)}
+  \caption{Quantitative separation boxplot for the 20
     experiments used in this study. The experiments are ordered
     according to the median average between cluster distance (see
     figure~\ref{fig:qsep}). }
@@ -856,7 +727,7 @@ for (x in pdataitems[rev(o)])
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-18.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-19.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-20.pdf}
-  \caption{Quantitative separation heatmaps for the \Sexpr{nrow(pdata)}
+  \caption{Quantitative separation heatmaps for the 20
     experiments used in this study. The experiments are ordered
     according to the median average between cluster distance (see
     figure~\ref{fig:qsep}). }
@@ -871,14 +742,7 @@ In this section, we assess the resolution metric, and how the
 annotation of the spatial proteomics data influences the metric
 itself.
 
-<<simcoefs>>=
-load("hlsim.rda")
-load("e14sim.rda")
-hllm <- lm(median ~ as.numeric(n), data = hlsim$dd)
-hlslope <- hllm$coefficients[[2]]
-e14lm <- lm(median ~ as.numeric(n), data = e14sim$dd)
-e14slope <- e14lm$coefficients[[2]]
-@
+
 
 We find that the number of classes does not have any effect the resolution
 assessment scoring. Indeed, dropping any class will result in a
@@ -891,8 +755,8 @@ overall resolution, and \textit{hyperLOPIT2015}, that has a highest
 resolution. In both cases, we see that the number of removed classes
 does not influence the overall score distributions. When modelling the
 linear relation between the median scores and the number of removed
-classes, the slopes are \Sexpr{round(e14slope, 3)} and
-\Sexpr{round(hlslope, 3)} respectively.
+classes, the slopes are 0.036 and
+0.01 respectively.
 
 \begin{figure}[h]
   \centering
@@ -936,34 +800,20 @@ right).
   \label{fig:mrkswtch}
 \end{figure}
 
-<<mrkswtchstats>>=
-load("mrkswtch.rda")
-## +-------------p3-------------+
-## | +---p1----+     +---p2---+ |
-## | |         |     |        | |
-## dhl.mhl dhl.mit dit.mit dit.mhl
-##     182   | 132  |  132     144  (lengths)
-##           |      |
-##           +--p4--+
-p1 <- t.test(mrkswtch[["dhl.mhl"]], mrkswtch[["dhl.mit"]])$p.value
-p2 <- t.test(mrkswtch[["dit.mhl"]], mrkswtch[["dth.mit"]])$p.value
-p3 <- t.test(mrkswtch[["dhl.mhl"]], mrkswtch[["dit.mhl"]])$p.value
-p4 <- t.test(mrkswtch[["dhl.mit"]], mrkswtch[["dit.mit"]])$p.value
-@
+
 
 
 As can be seen on figure~\ref{fig:mrkswtch}, transferring the
 \textit{itzhak2016stcSILAC} markers to the \textit{hyperLOPIT2015}
 dataset has a detrimental effect on the separation (testing the two
-distributions with a t-test produces a p-value of \Sexpr{signif(p1,
-  2)}). Conversely, annotating \textit{itzhak2016stcSILAC} with the
+distributions with a t-test produces a p-value of \ensuremath{5.1\times 10^{-10}}). Conversely, annotating \textit{itzhak2016stcSILAC} with the
 \textit{hyperLOPIT2015} markers significantly improves its resolution
-metric (p-value of \Sexpr{signif(p2, 2)}). Comparing both dataset
+metric (p-value of \ensuremath{1.9\times 10^{-10}}). Comparing both dataset
 with the \textit{hyperLOPIT2015} marker set favours the resolution of
-the \textit{hyperLOPIT2015} data (p-value of \Sexpr{signif(p3, 2)})
+the \textit{hyperLOPIT2015} data (p-value of \ensuremath{2.8\times 10^{-4}})
 while using the \textit{itzhak2016stcSILAC} markers with the two
 datasets substantially reduces their difference in resolution score
-(p-value of \Sexpr{signif(p4, 2)}).
+(p-value of 0.023).
 
 \section{Conclusions}
 
@@ -1018,33 +868,11 @@ sub-cellular resolution.
 
 \begin{figure}[h]
   \centering
-<<restime, out.width = '65%'>>=
-## re-analysed in Breckels:2013:
-lopit <- c("hyperLOPIT2015", "hyperLOPIT2015ms2", "HEK293T2011",
-           "tan2009r1", "E14TG2aS1", "trotter2010", "dunkley2006",
-           "groen2014cmb", "nikolovski2012imp", "hall2009")
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\includegraphics[width=0.65\linewidth]{figure/restime-1} 
 
-.pos <- rep(3, length(pdataitems))
-.pos[pdataitems == "tan2009r1"] <- 4
-.pos[pdataitems == "trotter2010"] <- 2
-.pos[pdataitems == "hall2009"] <- 1
-.pos[pdataitems == "dunkley2006"] <- 1
-.pos[pdataitems == "beltran2016HCMV24"] <- 2
-.pos[pdataitems == "beltran2016MOCK96"] <- 2
-.pos[pdataitems == "E14TG2aS1"] <- 4
-.pos[pdataitems == "HEK293T2011"] <- 1
-.pos[grep("hyperLOPIT", pdataitems)] <- 1
-.pos[pdataitems == "hyperLOPIT2015ms2"] <- 2
-.pos[pdataitems == "hyperLOPIT2015"] <- 2
-.pos[pdataitems == "hyperLOPITU2OS2017b"] <- 1
-plot(mds ~ pdtab$year,
-     xlim = c(2005, 2018.5),
-     xlab = "Original year of publication",
-     ylab = "Quantitative assessment (medians)")
-grid()
-text(pdtab$year, mds, pdataitems, cex = .8,
-     pos = .pos)
-@
+\end{knitrout}
 \caption{Resolution of spatial proteomics experiments over time. The
   assigned dates match either the original publication or, when know,
   the actual date the data was generated. For publications that
@@ -1089,9 +917,60 @@ source of this document in the public manuscript
 repository~\cite{qseprepo}.
 
 
-<<si, results = 'asis'>>=
-toLatex(sessionInfo(), locale = FALSE)
-@
+\begin{itemize}\raggedright
+  \item R Under development (unstable) (2018-04-02 r74505), \verb|x86_64-pc-linux-gnu|
+  \item Running under: \verb|Ubuntu 14.04.5 LTS|
+  \item Matrix products: default
+  \item BLAS: \verb|/usr/lib/atlas-base/atlas/libblas.so.3.0|
+  \item LAPACK: \verb|/usr/lib/lapack/liblapack.so.3.0|
+  \item Base packages: base, datasets, graphics, grDevices,
+    methods, parallel, stats, stats4, utils
+  \item Other packages: annotate~1.58.0, AnnotationDbi~1.42.1,
+    Biobase~2.40.0, BiocGenerics~0.26.0, BiocParallel~1.14.2,
+    cluster~2.0.7-1, hexbin~1.27.2, IRanges~2.14.10,
+    MLInterfaces~1.60.1, MSnbase~2.6.1, mzR~2.14.0, pRoloc~1.21.6,
+    pRolocdata~1.18.0, ProtGenerics~1.12.0, Rcpp~0.12.17,
+    S4Vectors~0.18.3, XML~3.98-1.12, xtable~1.8-2
+  \item Loaded via a namespace (and not attached): abind~1.4-5,
+    affy~1.58.0, affyio~1.50.0, assertthat~0.2.0, base64enc~0.1-3,
+    bindr~0.1.1, bindrcpp~0.2.2, BiocInstaller~1.30.0,
+    biomaRt~2.36.1, bit~1.1-14, bit64~0.9-7, bitops~1.0-6,
+    blob~1.1.1, broom~0.4.5, caret~6.0-80, class~7.3-14,
+    coda~0.19-1, codetools~0.2-15, colorspace~1.3-2,
+    compiler~3.6.0, crayon~1.3.4, crosstalk~1.0.0, CVST~0.2-2,
+    DBI~1.0.0, ddalpha~1.3.4, dendextend~1.8.0, DEoptimR~1.0-8,
+    digest~0.6.15, dimRed~0.1.0, diptest~0.75-7,
+    doParallel~1.0.11, dplyr~0.7.6, DRR~0.0.3, e1071~1.6-8,
+    evaluate~0.10.1, flexmix~2.3-14, FNN~1.1, foreach~1.4.4,
+    foreign~0.8-70, fpc~2.1-11, gbm~2.1.3, gdata~2.18.0,
+    genefilter~1.62.0, geometry~0.3-6, ggplot2~3.0.0, ggvis~0.4.3,
+    glue~1.2.0, gower~0.1.2, grid~3.6.0, gridExtra~2.3,
+    gtable~0.2.0, gtools~3.8.1, highr~0.7, hms~0.4.2,
+    htmltools~0.3.6, htmlwidgets~1.2, httpuv~1.4.4.2, httr~1.3.1,
+    hwriter~1.3.2, igraph~1.2.1, impute~1.54.0, ipred~0.9-6,
+    iterators~1.0.10, kernlab~0.9-26, knitr~1.20,
+    LaplacesDemon~16.1.1, later~0.7.3, lattice~0.20-35,
+    lava~1.6.2, lazyeval~0.2.1, limma~3.36.2, lpSolve~5.6.13,
+    lubridate~1.7.4, magic~1.5-8, magrittr~1.5, MALDIquant~1.18,
+    MASS~7.3-50, Matrix~1.2-14, mclust~5.4.1, memoise~1.1.0,
+    mime~0.5, mixtools~1.1.0, mlbench~2.1-1, mnormt~1.5-5,
+    ModelMetrics~1.1.0, modeltools~0.2-22, munsell~0.5.0,
+    mvtnorm~1.0-8, mzID~1.18.0, nlme~3.1-137, nnet~7.3-12,
+    pcaMethods~1.72.0, pillar~1.3.0, pkgconfig~2.0.1, pls~2.6-0,
+    plyr~1.8.4, prabclus~2.2-6, preprocessCore~1.42.0,
+    prettyunits~1.0.2, prodlim~2018.04.18, progress~1.2.0,
+    promises~1.0.1, proxy~0.4-22, psych~1.8.4, purrr~0.2.5,
+    R6~2.2.2, randomForest~4.6-14, RColorBrewer~1.1-2,
+    RcppRoll~0.3.0, RCurl~1.95-4.11, rda~1.0.2-2, recipes~0.1.3,
+    reshape2~1.4.3, rlang~0.2.1, robustbase~0.93-1, rpart~4.1-13,
+    RSQLite~2.1.1, sampling~2.8, scales~0.5.0, segmented~0.5-3.0,
+    sfsmisc~1.1-2, shiny~1.1.0, splines~3.6.0, stringi~1.2.3,
+    stringr~1.3.1, survival~2.42-4, threejs~0.3.1, tibble~1.4.2,
+    tidyr~0.8.1, tidyselect~0.2.4, timeDate~3043.102, tools~3.6.0,
+    trimcluster~0.1-2, viridis~0.5.1, viridisLite~0.3.0,
+    vsn~3.48.1, whisker~0.3-2, withr~2.1.2, zlibbioc~1.26.0
+\end{itemize}
+
 
 \section*{Acknowledgements}
 
