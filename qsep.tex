@@ -49,8 +49,10 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
+\usepackage[toc,page]{appendix}
 \usepackage{booktabs}
 \usepackage{longtable}
+\usepackage{pdflscape}
 \usepackage{caption}
 \usepackage{rotating}
 \usepackage{hyperref}
@@ -161,16 +163,16 @@ in the manuscript public repository~\cite{qseprepo}.
 
 
 
-For this meta-analysis, we make use of 20 spatial
+For this meta-analysis, we make use of 29 spatial
 proteomics datasets, summarised in table~\ref{tab:pdtab}. These data
 represent a diverse range of species, sample types, instruments and
 quantification methodologies.
 
-\begin{tiny}
-\begin{sidewaystable}
+\begin{footnotesize}
+\begin{landscape}
   \captionsetup{width=\textwidth}
 % latex table generated in R 3.6.0 by xtable 1.8-2 package
-% Mon Jul 23 11:49:42 2018
+% Tue Jul 24 19:39:23 2018
 \begin{longtable}{lrrrrp{8cm}}
   \toprule
 Data & Proteins & Fractions & Clusters & PC var (\%) & Title \\ 
@@ -179,6 +181,7 @@ hyperLOPIT2015 & 5032 &  20 &  14 & 72.26 & Protein and PMS-level hyperLOPIT dat
   hyperLOPIT2015ms2 & 7114 &  10 &  14 & 74.72 & Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016). \citep{Christoforou:2016} \\ 
   HEK293T2011 & 1371 &   8 &  12 & 65.04 & LOPIT experiment on Human Embryonic Kidney fibroblast HEK293T cells from Breckels et al. (2013) \citep{Breckels:2013} \\ 
   hirst2018 & 2046 &  15 &  12 & 82.50 & Data from Hirst et al. 2018 \citep{Hirst:2018} \\ 
+  hyperLOPITU2OS2017 & 5020 &  40 &  12 & 63.29 & 2017 hyperLOPIT on U2OS cells \citep{Thul:2017} \\ 
   hyperLOPITU2OS2017b & 5020 &  37 &  12 & 67.68 & 2017 hyperLOPIT on U2OS cells \citep{Thul:2017} \\ 
   itzhak2016stcSILAC & 5265 &  30 &  12 & 70.61 & Data from Itzhak et al. (2016) \citep{Itzhak:2016} \\ 
   itzhak2017 & 9201 &  30 &  12 & 31.39 & Data from Itzhak et al. 2017 \citep{Itzhak:2017} \\ 
@@ -186,8 +189,16 @@ hyperLOPIT2015 & 5032 &  20 &  14 & 72.26 & Protein and PMS-level hyperLOPIT dat
   tan2009r1 & 888 &   4 &  11 & 88.49 & LOPIT data from Tan et al. (2009) \citep{Tan:2009} \\ 
   E14TG2aS1 & 1109 &   8 &  10 & 65.98 & LOPIT experiment on Mouse E14TG2a Embryonic Stem Cells from Breckels et al. (2016) \citep{Breckels:2016} \\ 
   trotter2010 & 347 &  16 &  10 & 81.14 & LOPIT data sets used in Trotter et al. (2010) \citep{Trotter:2010} \\ 
-  beltran2016HCMV24 & 2196 &   6 &   9 & 77.18 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} \\ 
-  beltran2016MOCK96 & 1748 &   6 &   9 & 73.24 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} \\ 
+  beltran2016HCMV120 & 2045 &   6 &   9 & 79.36 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} HCMV infection, 120 hpi (hours post-infection) \\ 
+  beltran2016HCMV24 & 2196 &   6 &   9 & 77.18 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} HCMV infection, 24 hpi \\ 
+  beltran2016HCMV48 & 2206 &   6 &   9 & 74.95 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} HCMV infection, 48 hpi \\ 
+  beltran2016HCMV72 & 2062 &   6 &   9 & 75.32 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} HCMV infection, 72 hpi \\ 
+  beltran2016HCMV96 & 1868 &   6 &   9 & 76.59 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} HCMV infection, 96 hpi \\ 
+  beltran2016MOCK120 & 1757 &   6 &   9 & 71.84 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} MOCK, 120 hpi \\ 
+  beltran2016MOCK24 & 2220 &   6 &   9 & 80.12 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} MOCK, 24 hpi \\ 
+  beltran2016MOCK48 & 2181 &   6 &   9 & 68.90 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} MOCK, 48 hpi \\ 
+  beltran2016MOCK72 & 2161 &   6 &   9 & 68.83 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} MOCK, 72 hpi \\ 
+  beltran2016MOCK96 & 1748 &   6 &   9 & 73.24 & Data from Beltran et al. 2016 \citep{JeanBeltran:2016} MOCK, 96 hpi \\ 
   dunkley2006 & 689 &  16 &   9 & 86.70 & LOPIT data from Dunkley et al. (2006) \citep{Dunkley:2006} \\ 
   foster2006 & 1555 &  26 &   8 & 53.13 & PCP data from Foster et al. (2006) \citep{Foster:2006} \\ 
   nikolovski2014 & 1385 &  20 &   8 & 67.97 & LOPIMS data from Nikolovski et al. (2014) \citep{Nikolovski:2014} \\ 
@@ -200,33 +211,31 @@ hyperLOPIT2015 & 5032 &  20 &  14 & 72.26 & Protein and PMS-level hyperLOPIT dat
 \label{tab:pdtab}
 \end{longtable}
 
-\end{sidewaystable}
-\end{tiny}
+\end{landscape}
+\end{footnotesize}
+
 
 We have applied minimal post-processing to the data and have used, as
 far as possible, the data and annotation provided by the original
 authors. The data from \citet{Foster:2006} have been annotated using
 the curated marker list from \citet{Christoforou:2016}, as only a
-limited number of markers was provided by the authors\footnote{This
+limited number of markers were provided by the authors\footnote{This
   results from the fact that they used a simple distance measurement,
   termed $\chi^2$, against very few markers to base their sub-cellular
   localisation prediction}. We have also only considered sub-cellular
-niches (also referred to as protein clusters, or clusters) that
-were defined by at least 7 protein markers\footnote{This number is
+niches (also referred to as protein clusters, or clusters) that were
+defined by at least 7 protein markers\footnote{This number is
   relatively low, and we would typically recommend at least 13 markers
   per class to perform cross-validation when optimising classifier
   parameters. See \citet{Gatto:2014} and the main \Biocpkg{pRoloc}
-  tutorial for details.}. Where a combined dataset of multiple
-replicated experiments are provided by the original authors, we have
-used the combined dataset, rather than individual replicates, as this
-generally refers to the dataset with best sub-cellular resolution
-\citep{Trotter:2010}. If there is no combined dataset, or only a
-single replicate is reported we have taken the (only or) first
-replicate experiment.  In addition, for dimensionality reduction and
-visualisation, we have systematically replaced missing values by
-zeros. When calculating distances between protein profiles (see
-section~\ref{sec:qsep}), however, missing values were retained.
-
+  tutorial for details.}. We used combined dataset of multiple
+replicated experiments, when provided by the original authors, rather
+than individual replicates, as combining data often leads to better
+sub-cellular resolution \citep{Trotter:2010}.  In addition, for
+dimensionality reduction and visualisation, we have systematically
+replaced missing values by zeros. When calculating distances between
+protein profiles (see section~\ref{sec:qsep}), however, missing values
+were retained.
 
 
 
@@ -260,14 +269,14 @@ resolution.
 
 A first assessment that provides an important indication of the
 resolution of the data concerns the number and diversity of
-sub-cellular niches that are annotated. In the 20
+sub-cellular niches that are annotated. In the 29
 datasets used in this study, this number ranged from
 5 (dataset
 \textit{hall2009}) to
 14 (dataset
 \textit{hyperLOPIT2015}). These numbers should be
 assessed in the light of about 25 different sub-cellular niches that
-are documented in all 20 datasets, which are still
+are documented in all 29 datasets, which are still
 underestimating the biological sub-cellular diversity.
 
 \subsection{Dimensionality reduction and visualisation}\label{sec:vis}
@@ -278,9 +287,9 @@ occupancy profiles into a new space in such a way as to maximise the
 spread of all points (i.e. labelled and unlabelled proteins) along the
 first new dimension (principal component, PC). The second PC is then
 chosen to be perpendicular to the first one while still maximising the
-overall variability. Each PC (there are as many as there are
-channels) accounts for a percentage of the total variability and it
-is not uncommon, in well executed experiments, that the two first PCs
+remaining variability. Each PC (there are as many as there are
+channels) accounts for a percentage of the total variability and it is
+not uncommon, in well executed experiments, that the two first PCs
 summarise over 70\% of the total variance in the data, confirming that
 the resulting visualisation remains a reliable and useful
 simplification of the original multidimensional data.
@@ -338,13 +347,14 @@ the right, an experiment with considerable less resolution
 \end{figure}
 
 Considering that the aim of sub-cellular fractionation is to maximise
-separation of sub-cellular niches, one would expect
-sub-cellular clusters to be separated optimally in a successful
-spatial proteomics experiment. In PCA space, this would equate to the
-location of the annotated spatial clusters along the periphery of the
-data points. In other words, the maximum variability of a successful
-spatial proteomics experiments should be reflected by the separation
-of the expected/annotated spatial clusters.
+separation of sub-cellular niches, one would expect sub-cellular
+clusters to be separated optimally in a successful spatial proteomics
+experiment. In PCA space, this would equate to the location of the
+annotated spatial clusters along the periphery of the data points. In
+other words, the maximum variability of a successful spatial
+proteomics experiments should be reflected by the separation of the
+expected/annotated spatial clusters, as illustrated on figure
+\ref{fig:pcahl}.
 
 As already mentioned in section~\ref{sec:sub-cell-divers},
 sub-cellular niches observed in spatial proteomics are usually
@@ -391,7 +401,7 @@ cluster profiles (the \texttt{mrkHClust} function from
 exploration of a dataset using these and other visualisation
 approaches is crucial before analysing and interpreting a new spatial
 proteomics experiment, a detailed exploration of each of the
-20 datasets used in this meta-analysis is out of the
+29 datasets used in this meta-analysis is out of the
 scope of this analysis.
 
 \subsection{Quantifying resolution}\label{sec:qsep}
@@ -528,7 +538,7 @@ median distance of 4.91.
 \section{Comparative study}\label{sec:compara}
 
 We next apply the quantitative assessment of spatial resolution
-described in section~\ref{sec:qsep} to compare the 20
+described in section~\ref{sec:qsep} to compare the 29
 experiments presented in section~\ref{sec:pdata}. On
 figure~\ref{fig:qsep}, we show, for each dataset, a boxplot
 illustrating the distribution of the global average normalised
@@ -640,7 +650,7 @@ clusters).
   \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-18.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-19.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-20.pdf}
-  \caption{Density PCA plots for the 20 experiments
+  \caption{Density PCA plots for the 29 experiments
     used in this study. PC 1 and 2 were used except for
     \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform
     to the original authors figures. The experiments are ordered
@@ -657,8 +667,10 @@ clusters).
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
 \includegraphics[width=\maxwidth]{figure/figpca-1} 
 
+\includegraphics[width=\maxwidth]{figure/figpca-2} 
+
 \end{knitrout}
-\caption{PCA plots for the 20 experiments used in
+\caption{PCA plots for the 29 experiments used in
   this study. PC 1 and 2 were used except for
   \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform to
   the original authors figures. The experiments are ordered according
@@ -698,7 +710,7 @@ clusters).
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-18.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-19.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allqseps-20.pdf}
-  \caption{Quantitative separation boxplot for the 20
+  \caption{Quantitative separation boxplot for the 29
     experiments used in this study. The experiments are ordered
     according to the median average between cluster distance (see
     figure~\ref{fig:qsep}). }
@@ -727,7 +739,7 @@ clusters).
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-18.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-19.pdf}
   \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-20.pdf}
-  \caption{Quantitative separation heatmaps for the 20
+  \caption{Quantitative separation heatmaps for the 29
     experiments used in this study. The experiments are ordered
     according to the median average between cluster distance (see
     figure~\ref{fig:qsep}). }
@@ -870,7 +882,7 @@ sub-cellular resolution.
   \centering
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=0.65\linewidth]{figure/restime-1} 
+\includegraphics[width=0.8\linewidth]{figure/restime-1} 
 
 \end{knitrout}
 \caption{Resolution of spatial proteomics experiments over time. The
@@ -906,15 +918,29 @@ be of direct benefit to the spatial proteomics researchers themselves,
 and will increase the trust and reliance of the cell biology
 community.
 
+\section*{Acknowledgements}
+
+LG is supported by the BBSRC Strategic Longer and Larger grant (Award
+BB/L002817/1).
+%% LMB is supported by a Wellcome Trust Technology Development Grant
+%% (Grant number 108441/Z/15/Z). KSL is a Wellcome Trust Joint
+%% Investigator (110170/Z/15/Z).
+The authors would like to thank Dr Claire M. Mulvey for helpful
+comments on the quantitative assessment.
+
+\section*{Authors' contributions}
+
+
+\begin{appendices}
+
+
 \section{Session information}
 
 The software and versions used to produce this document are summarised
-below. In particular, recent versions of \Biocpkg{pRoloc} and
-\Biocexptpkg{pRolocdata} \citep{Gatto:2014a}, which require versions
-1.13.15 and 1.11.9 or later, respectively. The source of this document
-enabling to reproduce all results and figures is available in the
-source of this document in the public manuscript
-repository~\cite{qseprepo}.
+below. The source of this document enabling to reproduce all results
+and figures is available in the source of this document in the public
+manuscript repository~\cite{qseprepo}
+\url{https://github.com/lgatto/QSep-manuscript/}.
 
 
 \begin{itemize}\raggedright
@@ -927,62 +953,52 @@ repository~\cite{qseprepo}.
     methods, parallel, stats, stats4, utils
   \item Other packages: annotate~1.58.0, AnnotationDbi~1.42.1,
     Biobase~2.40.0, BiocGenerics~0.26.0, BiocParallel~1.14.2,
-    cluster~2.0.7-1, hexbin~1.27.2, IRanges~2.14.10,
-    MLInterfaces~1.60.1, MSnbase~2.6.1, mzR~2.14.0, pRoloc~1.21.6,
-    pRolocdata~1.18.0, ProtGenerics~1.12.0, Rcpp~0.12.17,
-    S4Vectors~0.18.3, XML~3.98-1.12, xtable~1.8-2
+    cluster~2.0.7-1, ggplot2~3.0.0, ggrepel~0.8.0, hexbin~1.27.2,
+    IRanges~2.14.10, MLInterfaces~1.60.1, MSnbase~2.7.3,
+    mzR~2.15.2, pRoloc~1.21.6, pRolocdata~1.18.0,
+    ProtGenerics~1.12.0, Rcpp~0.12.18, S4Vectors~0.18.3,
+    XML~3.98-1.12, xtable~1.8-2
   \item Loaded via a namespace (and not attached): abind~1.4-5,
-    affy~1.58.0, affyio~1.50.0, assertthat~0.2.0, base64enc~0.1-3,
-    bindr~0.1.1, bindrcpp~0.2.2, BiocInstaller~1.30.0,
-    biomaRt~2.36.1, bit~1.1-14, bit64~0.9-7, bitops~1.0-6,
-    blob~1.1.1, broom~0.4.5, caret~6.0-80, class~7.3-14,
-    coda~0.19-1, codetools~0.2-15, colorspace~1.3-2,
+    affy~1.58.0, affyio~1.50.0, assertthat~0.2.0, backports~1.1.2,
+    base64enc~0.1-3, bindr~0.1.1, bindrcpp~0.2.2,
+    BiocInstaller~1.30.0, biomaRt~2.36.1, bit~1.1-14, bit64~0.9-7,
+    bitops~1.0-6, blob~1.1.1, broom~0.5.0, caret~6.0-80,
+    class~7.3-14, coda~0.19-1, codetools~0.2-15, colorspace~1.3-2,
     compiler~3.6.0, crayon~1.3.4, crosstalk~1.0.0, CVST~0.2-2,
     DBI~1.0.0, ddalpha~1.3.4, dendextend~1.8.0, DEoptimR~1.0-8,
     digest~0.6.15, dimRed~0.1.0, diptest~0.75-7,
     doParallel~1.0.11, dplyr~0.7.6, DRR~0.0.3, e1071~1.6-8,
-    evaluate~0.10.1, flexmix~2.3-14, FNN~1.1, foreach~1.4.4,
-    foreign~0.8-70, fpc~2.1-11, gbm~2.1.3, gdata~2.18.0,
-    genefilter~1.62.0, geometry~0.3-6, ggplot2~3.0.0, ggvis~0.4.3,
-    glue~1.2.0, gower~0.1.2, grid~3.6.0, gridExtra~2.3,
-    gtable~0.2.0, gtools~3.8.1, highr~0.7, hms~0.4.2,
-    htmltools~0.3.6, htmlwidgets~1.2, httpuv~1.4.4.2, httr~1.3.1,
-    hwriter~1.3.2, igraph~1.2.1, impute~1.54.0, ipred~0.9-6,
-    iterators~1.0.10, kernlab~0.9-26, knitr~1.20,
-    LaplacesDemon~16.1.1, later~0.7.3, lattice~0.20-35,
-    lava~1.6.2, lazyeval~0.2.1, limma~3.36.2, lpSolve~5.6.13,
-    lubridate~1.7.4, magic~1.5-8, magrittr~1.5, MALDIquant~1.18,
-    MASS~7.3-50, Matrix~1.2-14, mclust~5.4.1, memoise~1.1.0,
-    mime~0.5, mixtools~1.1.0, mlbench~2.1-1, mnormt~1.5-5,
+    evaluate~0.11, flexmix~2.3-14, FNN~1.1, foreach~1.4.4,
+    fpc~2.1-11.1, gbm~2.1.3, gdata~2.18.0, genefilter~1.62.0,
+    geometry~0.3-6, ggvis~0.4.3, glue~1.3.0, gower~0.1.2,
+    grid~3.6.0, gridExtra~2.3, gtable~0.2.0, gtools~3.8.1,
+    highr~0.7, hms~0.4.2, htmltools~0.3.6, htmlwidgets~1.2,
+    httpuv~1.4.5, httr~1.3.1, hwriter~1.3.2, igraph~1.2.1,
+    impute~1.54.0, ipred~0.9-6, iterators~1.0.10, kernlab~0.9-26,
+    knitr~1.20, labeling~0.3, LaplacesDemon~16.1.1, later~0.7.3,
+    lattice~0.20-35, lava~1.6.2, lazyeval~0.2.1, limma~3.36.2,
+    lpSolve~5.6.13, lubridate~1.7.4, magic~1.5-8, magrittr~1.5,
+    MALDIquant~1.18, MASS~7.3-50, Matrix~1.2-14, mclust~5.4.1,
+    memoise~1.1.0, mime~0.5, mixtools~1.1.0, mlbench~2.1-1,
     ModelMetrics~1.1.0, modeltools~0.2-22, munsell~0.5.0,
     mvtnorm~1.0-8, mzID~1.18.0, nlme~3.1-137, nnet~7.3-12,
     pcaMethods~1.72.0, pillar~1.3.0, pkgconfig~2.0.1, pls~2.6-0,
     plyr~1.8.4, prabclus~2.2-6, preprocessCore~1.42.0,
     prettyunits~1.0.2, prodlim~2018.04.18, progress~1.2.0,
-    promises~1.0.1, proxy~0.4-22, psych~1.8.4, purrr~0.2.5,
-    R6~2.2.2, randomForest~4.6-14, RColorBrewer~1.1-2,
-    RcppRoll~0.3.0, RCurl~1.95-4.11, rda~1.0.2-2, recipes~0.1.3,
-    reshape2~1.4.3, rlang~0.2.1, robustbase~0.93-1, rpart~4.1-13,
-    RSQLite~2.1.1, sampling~2.8, scales~0.5.0, segmented~0.5-3.0,
-    sfsmisc~1.1-2, shiny~1.1.0, splines~3.6.0, stringi~1.2.3,
-    stringr~1.3.1, survival~2.42-4, threejs~0.3.1, tibble~1.4.2,
-    tidyr~0.8.1, tidyselect~0.2.4, timeDate~3043.102, tools~3.6.0,
-    trimcluster~0.1-2, viridis~0.5.1, viridisLite~0.3.0,
+    promises~1.0.1, proxy~0.4-22, purrr~0.2.5, R6~2.2.2,
+    randomForest~4.6-14, RColorBrewer~1.1-2, RcppRoll~0.3.0,
+    RCurl~1.95-4.11, rda~1.0.2-2.1, recipes~0.1.3, reshape2~1.4.3,
+    rlang~0.2.1, robustbase~0.93-1.1, rpart~4.1-13, RSQLite~2.1.1,
+    sampling~2.8, scales~0.5.0, segmented~0.5-3.0, sfsmisc~1.1-2,
+    shiny~1.1.0, splines~3.6.0, stringi~1.2.4, stringr~1.3.1,
+    survival~2.42-4, threejs~0.3.1, tibble~1.4.2, tidyr~0.8.1,
+    tidyselect~0.2.4, timeDate~3043.102, tools~3.6.0,
+    trimcluster~0.1-2.1, viridis~0.5.1, viridisLite~0.3.0,
     vsn~3.48.1, whisker~0.3-2, withr~2.1.2, zlibbioc~1.26.0
 \end{itemize}
 
 
-\section*{Acknowledgements}
-
-LG is supported by the BBSRC Strategic Longer and Larger grant (Award
-BB/L002817/1).
-%% LMB is supported by a Wellcome Trust Technology Development Grant
-%% (Grant number 108441/Z/15/Z). KSL is a Wellcome Trust Joint
-%% Investigator (110170/Z/15/Z).
-The authors would like to thank Dr Claire M. Mulvey for helpful
-comments on the quantitative assessment.
-
-\section*{Authors' contributions}
+\end{appendices}
 
 \bibliographystyle{plainnat}
 \bibliography{qsep}

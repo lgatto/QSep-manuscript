@@ -1,6 +1,8 @@
 \documentclass[12pt]{article}
+\usepackage[toc,page]{appendix}
 \usepackage{booktabs}
 \usepackage{longtable}
+\usepackage{pdflscape}
 \usepackage{caption}
 \usepackage{rotating}
 \usepackage{hyperref}
@@ -48,6 +50,8 @@ suppressPackageStartupMessages(library("xtable"))
 suppressPackageStartupMessages(library("hexbin"))
 stopifnot(packageVersion("pRolocdata") >= "1.17.2")
 stopifnot(packageVersion("pRoloc") >= "1.13.15")
+suppressPackageStartupMessages(library("ggrepel"))
+suppressPackageStartupMessages(library("ggplot2"))
 @
 
 <<myfuns>>=
@@ -137,14 +141,15 @@ in the manuscript public repository~\cite{qseprepo}.
 
 <<pdata>>=
 
-## NOTES: beltran2016HCMV24 and beltran2016MOCK96 chosen as best mean/median
-## QSep values for each condition. If only best, use beltran2016MOCK96.
 .experiments <- c("E14TG2aS1", "HEK293T2011", "andreyev2010rest", "dunkley2006",
                   "foster2006", "groen2014cmb", "hall2009", "hyperLOPIT2015",
                   "hyperLOPIT2015ms2", "itzhak2016stcSILAC", "nikolovski2012imp",
                   "nikolovski2014", "rodriguez2012r1", "tan2009r1", "trotter2010",
-                  "beltran2016HCMV24", "beltran2016MOCK96", "hirst2018", "itzhak2017",
-                  "hyperLOPITU2OS2017b")
+                  "beltran2016HCMV120", "beltran2016HCMV72", "beltran2016MOCK24",
+                  "beltran2016MOCK96", "beltran2016HCMV24", "beltran2016HCMV96",
+                  "beltran2016MOCK48", "beltran2016HCMV48", "beltran2016MOCK120",
+                  "beltran2016MOCK72", "hirst2018", "itzhak2017",
+                  "hyperLOPITU2OS2017", "hyperLOPITU2OS2017b")
 pdata <- pRolocdata()$results
 pdata <- pdata[pdata[, "Item"] %in% .experiments, ]
 pdataitems <- pdata[, "Item"]
@@ -183,8 +188,16 @@ names(pdtab) <- c("Data", "Proteins", "Fractions",
 cits <- c("\\citep{Breckels:2016}",
           "\\citep{Breckels:2013}",
           "\\citep{Andreyev:2010}",
-          "\\citep{JeanBeltran:2016}",
-          "\\citep{JeanBeltran:2016}",
+          "\\citep{JeanBeltran:2016} HCMV infection, 120 hpi (hours post-infection)",
+          "\\citep{JeanBeltran:2016} HCMV infection, 24 hpi",
+          "\\citep{JeanBeltran:2016} HCMV infection, 48 hpi",
+          "\\citep{JeanBeltran:2016} HCMV infection, 72 hpi",
+          "\\citep{JeanBeltran:2016} HCMV infection, 96 hpi",
+          "\\citep{JeanBeltran:2016} MOCK, 120 hpi",
+          "\\citep{JeanBeltran:2016} MOCK, 24 hpi",
+          "\\citep{JeanBeltran:2016} MOCK, 48 hpi",
+          "\\citep{JeanBeltran:2016} MOCK, 72 hpi",
+          "\\citep{JeanBeltran:2016} MOCK, 96 hpi",
           "\\citep{Dunkley:2006}",
           "\\citep{Foster:2006}",
           "\\citep{Groen:2014}",
@@ -192,6 +205,7 @@ cits <- c("\\citep{Breckels:2016}",
           "\\citep{Hirst:2018}",
           "\\citep{Christoforou:2016}",
           "\\citep{Christoforou:2016}",
+          "\\citep{Thul:2017}",
           "\\citep{Thul:2017}",
           "\\citep{Itzhak:2016}",
           "\\citep{Itzhak:2017}",
@@ -209,6 +223,14 @@ year <- c(2011, ## E14 from Breckels 2016
           2010, ## Andreyev
           2016, ## Beltran 2016
           2016, ## Beltran 2016
+          2016, ## Beltran 2016
+          2016, ## Beltran 2016
+          2016, ## Beltran 2016
+          2016, ## Beltran 2016
+          2016, ## Beltran 2016
+          2016, ## Beltran 2016
+          2016, ## Beltran 2016
+          2016, ## Beltran 2016
           2006, ## Dunkley, re-analysed in Breckels 2013
           2006, ## Foster
           2014, ## Groen
@@ -216,6 +238,7 @@ year <- c(2011, ## E14 from Breckels 2016
           2018, ## Hirst 2017
           2016, ## hyperLOPIT
           2016, ## hyperLOPIT
+          2017, ## Thul 2017
           2017, ## Thul 2017
           2016, ## Itzhak 2016
           2017, ## Itzhak 2017
@@ -237,8 +260,8 @@ proteomics datasets, summarised in table~\ref{tab:pdtab}. These data
 represent a diverse range of species, sample types, instruments and
 quantification methodologies.
 
-\begin{tiny}
-\begin{sidewaystable}
+\begin{footnotesize}
+\begin{landscape}
   \captionsetup{width=\textwidth}
 <<pdtab, results = 'asis'>>=
 toprint <- names(pdtab) != "year"
@@ -250,40 +273,37 @@ print(xtable(pdtab[, toprint],
       floating = FALSE,
       tabular.environment = "longtable")
 @
-\end{sidewaystable}
-\end{tiny}
+\end{landscape}
+\end{footnotesize}
+
 
 We have applied minimal post-processing to the data and have used, as
 far as possible, the data and annotation provided by the original
 authors. The data from \citet{Foster:2006} have been annotated using
 the curated marker list from \citet{Christoforou:2016}, as only a
-limited number of markers was provided by the authors\footnote{This
+limited number of markers were provided by the authors\footnote{This
   results from the fact that they used a simple distance measurement,
   termed $\chi^2$, against very few markers to base their sub-cellular
   localisation prediction}. We have also only considered sub-cellular
-niches (also referred to as protein clusters, or clusters) that
-were defined by at least 7 protein markers\footnote{This number is
+niches (also referred to as protein clusters, or clusters) that were
+defined by at least 7 protein markers\footnote{This number is
   relatively low, and we would typically recommend at least 13 markers
   per class to perform cross-validation when optimising classifier
   parameters. See \citet{Gatto:2014} and the main \Biocpkg{pRoloc}
-  tutorial for details.}. Where a combined dataset of multiple
-replicated experiments are provided by the original authors, we have
-used the combined dataset, rather than individual replicates, as this
-generally refers to the dataset with best sub-cellular resolution
-\citep{Trotter:2010}. If there is no combined dataset, or only a
-single replicate is reported we have taken the (only or) first
-replicate experiment.  In addition, for dimensionality reduction and
-visualisation, we have systematically replaced missing values by
-zeros. When calculating distances between protein profiles (see
-section~\ref{sec:qsep}), however, missing values were retained.
-
+  tutorial for details.}. We used combined dataset of multiple
+replicated experiments, when provided by the original authors, rather
+than individual replicates, as combining data often leads to better
+sub-cellular resolution \citep{Trotter:2010}.  In addition, for
+dimensionality reduction and visualisation, we have systematically
+replaced missing values by zeros. When calculating distances between
+protein profiles (see section~\ref{sec:qsep}), however, missing values
+were retained.
 
 <<foster2006preproc>>=
 mmu <- pRolocmarkers("mmus")
 fData(foster2006)$markers <- NULL
 foster2006 <- addMarkers(foster2006, mmu, fcol = "UniProt",
                          verbose = FALSE)
-
 @
 
 <<minMarkers5>>=
@@ -345,9 +365,9 @@ occupancy profiles into a new space in such a way as to maximise the
 spread of all points (i.e. labelled and unlabelled proteins) along the
 first new dimension (principal component, PC). The second PC is then
 chosen to be perpendicular to the first one while still maximising the
-overall variability. Each PC (there are as many as there are
-channels) accounts for a percentage of the total variability and it
-is not uncommon, in well executed experiments, that the two first PCs
+remaining variability. Each PC (there are as many as there are
+channels) accounts for a percentage of the total variability and it is
+not uncommon, in well executed experiments, that the two first PCs
 summarise over 70\% of the total variance in the data, confirming that
 the resulting visualisation remains a reliable and useful
 simplification of the original multidimensional data.
@@ -414,13 +434,14 @@ the right, an experiment with considerable less resolution
 \end{figure}
 
 Considering that the aim of sub-cellular fractionation is to maximise
-separation of sub-cellular niches, one would expect
-sub-cellular clusters to be separated optimally in a successful
-spatial proteomics experiment. In PCA space, this would equate to the
-location of the annotated spatial clusters along the periphery of the
-data points. In other words, the maximum variability of a successful
-spatial proteomics experiments should be reflected by the separation
-of the expected/annotated spatial clusters.
+separation of sub-cellular niches, one would expect sub-cellular
+clusters to be separated optimally in a successful spatial proteomics
+experiment. In PCA space, this would equate to the location of the
+annotated spatial clusters along the periphery of the data points. In
+other words, the maximum variability of a successful spatial
+proteomics experiments should be reflected by the separation of the
+expected/annotated spatial clusters, as illustrated on figure
+\ref{fig:pcahl}.
 
 As already mentioned in section~\ref{sec:sub-cell-divers},
 sub-cellular niches observed in spatial proteomics are usually
@@ -1018,32 +1039,13 @@ sub-cellular resolution.
 
 \begin{figure}[h]
   \centering
-<<restime, out.width = '65%'>>=
-## re-analysed in Breckels:2013:
-lopit <- c("hyperLOPIT2015", "hyperLOPIT2015ms2", "HEK293T2011",
-           "tan2009r1", "E14TG2aS1", "trotter2010", "dunkley2006",
-           "groen2014cmb", "nikolovski2012imp", "hall2009")
-
-.pos <- rep(3, length(pdataitems))
-.pos[pdataitems == "tan2009r1"] <- 4
-.pos[pdataitems == "trotter2010"] <- 2
-.pos[pdataitems == "hall2009"] <- 1
-.pos[pdataitems == "dunkley2006"] <- 1
-.pos[pdataitems == "beltran2016HCMV24"] <- 2
-.pos[pdataitems == "beltran2016MOCK96"] <- 2
-.pos[pdataitems == "E14TG2aS1"] <- 4
-.pos[pdataitems == "HEK293T2011"] <- 1
-.pos[grep("hyperLOPIT", pdataitems)] <- 1
-.pos[pdataitems == "hyperLOPIT2015ms2"] <- 2
-.pos[pdataitems == "hyperLOPIT2015"] <- 2
-.pos[pdataitems == "hyperLOPITU2OS2017b"] <- 1
-plot(mds ~ pdtab$year,
-     xlim = c(2005, 2018.5),
-     xlab = "Original year of publication",
-     ylab = "Quantitative assessment (medians)")
-grid()
-text(pdtab$year, mds, pdataitems, cex = .8,
-     pos = .pos)
+<<restime, out.width = '80%'>>=
+pdtab$mds <- mds
+ggplot(data = pdtab, aes(x = year, y = mds)) +
+    geom_point() +
+    geom_text_repel(aes(label = Data)) +
+    xlab("Year of publication") +
+    ylab("Quantitative assessment (median)")
 @
 \caption{Resolution of spatial proteomics experiments over time. The
   assigned dates match either the original publication or, when know,
@@ -1078,21 +1080,6 @@ be of direct benefit to the spatial proteomics researchers themselves,
 and will increase the trust and reliance of the cell biology
 community.
 
-\section{Session information}
-
-The software and versions used to produce this document are summarised
-below. In particular, recent versions of \Biocpkg{pRoloc} and
-\Biocexptpkg{pRolocdata} \citep{Gatto:2014a}, which require versions
-1.13.15 and 1.11.9 or later, respectively. The source of this document
-enabling to reproduce all results and figures is available in the
-source of this document in the public manuscript
-repository~\cite{qseprepo}.
-
-
-<<si, results = 'asis'>>=
-toLatex(sessionInfo(), locale = FALSE)
-@
-
 \section*{Acknowledgements}
 
 LG is supported by the BBSRC Strategic Longer and Larger grant (Award
@@ -1104,6 +1091,25 @@ The authors would like to thank Dr Claire M. Mulvey for helpful
 comments on the quantitative assessment.
 
 \section*{Authors' contributions}
+
+
+\begin{appendices}
+
+
+\section{Session information}
+
+The software and versions used to produce this document are summarised
+below. The source of this document enabling to reproduce all results
+and figures is available in the source of this document in the public
+manuscript repository~\cite{qseprepo}
+\url{https://github.com/lgatto/QSep-manuscript/}.
+
+
+<<si, results = 'asis'>>=
+toLatex(sessionInfo(), locale = FALSE)
+@
+
+\end{appendices}
 
 \bibliographystyle{plainnat}
 \bibliography{qsep}
