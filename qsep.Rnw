@@ -1042,7 +1042,7 @@ the \Sexpr{nrow(pdtab)} datasets showcased in this manuscript.
   \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-20.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-21.pdf}
 \end{figure}
-\begin{figure}[htb]\ContinuedFloat
+\begin{figure}[htb]
   \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-22.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-23.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-24.pdf}
@@ -1057,6 +1057,7 @@ the \Sexpr{nrow(pdtab)} datasets showcased in this manuscript.
     according to the median average between cluster distance (see
     figure~\ref{fig:qsep}). Figures have been generated using the
     \texttt{plot2D} function from the \Biocpkg{pRoloc} package.}
+  \ContinuedFloat
   \label{fig:denspca}
 \end{figure}
 
@@ -1090,20 +1091,21 @@ the \Sexpr{nrow(pdtab)} datasets showcased in this manuscript.
   \includegraphics[width = 0.32\textwidth]{./figure/figpca-23.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/figpca-24.pdf}
 \end{figure}
-\begin{figure}[htb]\ContinuedFloat
+\begin{figure}[htb]
   \includegraphics[width = 0.32\textwidth]{./figure/figpca-25.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/figpca-26.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/figpca-27.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/figpca-28.pdf}
-\caption{PCA plots for the \Sexpr{nrow(pdata)} experiments used in
-  this study. PC 1 and 2 were used except for
-  \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform to
-  the original authors figures. The experiments are ordered according
-  to the median average between cluster distance (see
-  figure~\ref{fig:qsep}). The percentage of variance explained along
-  the 2 PCs on the plots can be found in
-  table~\ref{tab:pdtab}. Figures have been generated using the
-  \texttt{plot2D} function from the \Biocpkg{pRoloc} package.}
+  \caption{PCA plots for the \Sexpr{nrow(pdata)} experiments used in
+    this study. PC 1 and 2 were used except for
+    \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform
+    to the original authors figures. The experiments are ordered
+    according to the median average between cluster distance (see
+    figure~\ref{fig:qsep}). The percentage of variance explained along
+    the 2 PCs on the plots can be found in
+    table~\ref{tab:pdtab}. Figures have been generated using the
+    \texttt{plot2D} function from the \Biocpkg{pRoloc} package.}
+  \ContinuedFloat
   \label{fig:pca}
 \end{figure}
 
@@ -1136,7 +1138,7 @@ the \Sexpr{nrow(pdtab)} datasets showcased in this manuscript.
   \includegraphics[width = 0.32\textwidth]{./figure/allqseps-23.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/allqseps-24.pdf}
 \end{figure}
-\begin{figure}[htb]\ContinuedFloat
+\begin{figure}[htb]
   \includegraphics[width = 0.32\textwidth]{./figure/allqseps-25.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/allqseps-26.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/allqseps-27.pdf}
@@ -1145,6 +1147,7 @@ the \Sexpr{nrow(pdtab)} datasets showcased in this manuscript.
     experiments used in this study. The experiments are ordered
     according to the median average between cluster distance (see
     figure~\ref{fig:qsep}). }
+  \ContinuedFloat
   \label{fig:allqseps}
 \end{figure}
 
@@ -1177,7 +1180,7 @@ the \Sexpr{nrow(pdtab)} datasets showcased in this manuscript.
   \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-23.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-24.pdf}
 \end{figure}
-\begin{figure}[htb]\ContinuedFloat
+\begin{figure}[htb]
   \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-25.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-26.pdf}
   \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-27.pdf}
@@ -1186,6 +1189,7 @@ the \Sexpr{nrow(pdtab)} datasets showcased in this manuscript.
     experiments used in this study. The experiments are ordered
     according to the median average between cluster distance (see
     figure~\ref{fig:qsep}). }
+  \ContinuedFloat
   \label{fig:allhmaps}
 \end{figure}
 
