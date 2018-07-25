@@ -19,24 +19,32 @@
 
 \title{Assessing sub-cellular resolution in  spatial proteomics experiments}
 
-\author[]{}
+\author[1,2]{Laurent Gatto\thanks{\url{lg390@cam.ac.uk}}~}
+\author[1,2]{Lisa M. Breckels}
+\author[2]{Kathryn S. Lilley}
 
-%% \author[1,2]{Laurent Gatto\thanks{\url{lg390@cam.ac.uk}}~}
-%% \author[1,2]{Lisa M. Breckels}
-%% \author[2]{Kathryn S. Lilley}
+\affil[1]{\small Computational Proteomics Unit, Department of Biochemistry,
+University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
+\affil[2]{\small Cambridge Centre for Proteomics, Department of Biochemistry,
+University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
 
-%% \affil[1]{Computational Proteomics Unit, Department of Biochemistry,
-%% University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
-%% \affil[2]{Cambridge Centre for Proteomics, Department of Biochemistry,
-%% University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-  A meta-analysis assessing and comparing the sub-cellular resolution
-  of spatial proteomics experiments.
+  The sub-cellular localisation of a protein is paramount in defining
+  its function, and a protein's mis-localisation is known to lead to
+  adverse effect. As a result, numerous experimental techniques and
+  datasets have been published, with the aim to decipher localisation
+  of proteins at various scales and resolutions, including high
+  profile mass spectrometry-based efforts. Here, we present a tool,
+  termed $QSep$, and a meta-analysis assessing and comparing the
+  sub-cellular resolution of 28 such mass spectrometry-based spatial
+  proteomics experiments.
 \end{abstract}
+
+\newpage
 
 <<setup, include=FALSE>>=
 knitr::opts_chunk$set(echo = FALSE, cache = FALSE)
@@ -767,10 +775,10 @@ tmp <- sapply(pdataitems[rev(o)], function(x)
 @
 
 <<figpca, fig.show = 'hide'>>=
-par(mar = c(2, 2, 2, 2))
+par(mar = c(5, 4, 2, 1))
 tmp <- sapply(pdataitems[rev(o)], function(x)
     plot2D(impute(get(x), method = "zero"), main = x,
-           cex.axis = .6, tck = -0.025, cex = .7,
+           cex = 1,
            dims = c(1, ifelse(x == "itzhak2016stcSILAC", 3, 2))))
 @
 <<allqseps, fig.show = 'hide'>>=
@@ -892,11 +900,11 @@ In this manuscript, we have described in great detail how to assess
 and quantify the resolution of spatial proteomics experiments. We have
 applied dimensionality reduction and visualisation, as well as a
 simple and intuitive quantitative metric to explore and compare a
-variety of publicly available spatial proteomics using the annotation
-provided by the original authors. We also have assessed the resolution
-metric itself and observed that it was immune to the number of
-clusters used for its computation and remained consistent to different
-marker annotation.
+variety of publicly available spatial proteomics datasets using the
+annotation provided by the original authors. We have also assessed the
+resolution metric itself and observed that it was immune to the number
+of clusters used for its computation and remained consistent to
+different marker annotation.
 
 The ordering of the quantitative resolution detailed in
 section~\ref{sec:compara} should not be taken as absolute. Its main
@@ -923,7 +931,7 @@ well as the identification of multi- and trans-localisation events.
 Finally, we reflect on the implications of this work on the spatial
 proteomics community, and more generally the cell biology community
 that relies on protein localisation data. We have assessed dataset
-spanning 16 years of spatial proteomics. Since 2006, the community has
+spanning 12 years of spatial proteomics. Since 2006, the community has
 seen many important improvements: tremendous advances in mass
 spectrometry, improvements in spatial proteomics designs, and
 considerable breakthroughs in data analysis. One might then wonder
@@ -931,11 +939,13 @@ whether these benefits have lead to tangible improvements in
 resolution over time?
 
 On figure~\ref{fig:restime}, we have ordered the datasets' resolution
-metric according to their publication year. Other than the recent
-hyperLOPIT experiments \citet{Christoforou:2016}, that combine
-improved high-resolution mass spectrometry and advanced sub-cellular
-fractionation method, one struggles to detect a positive trend in
-sub-cellular resolution.
+metric according to their publication year. We can see that a set of
+recent datasets, including the mouse stem cell
+\citep{Christoforou:2016} and U2OS \citep{Thul:2017} hyperLOPIT
+experiments (published in 2016 and 2017 respectively), and a variation
+thereof, where \citet{JeanBeltran:2016} (published in 2016),
+incorporating a temporal component in their experimental design, show
+a consistent superior resolution.
 
 \begin{figure}[h]
   \centering
@@ -956,28 +966,31 @@ ggplot(data = pdtab, aes(x = year, y = mds)) +
 \end{figure}
 
 
-While it is understandable that progress is not continuous, that it
-takes time for improvements in complex experiments to disseminate
-through the community and that resolution is not the only criterion to
-be considered, one could argue that the stagnation of the sub-cellular
-resolution is somewhat disappointing. Indeed, there are various
-aspects that can be worked on to improve resolution: quantitation
-accuracy at the mass spectrometry level (see
-figures~\ref{fig:density} and~\ref{fig:hexbin1} comparing SPS MS$^3$
-and conventional MS$^2$ for an example), optimisations in sub-cellular
-fractionation (as exemplified by the substantial improvement obtained
-by \citep{Christoforou:2016}), improved data annotation (see for
-example figure~\ref{fig:mrkswtch}), as well as superior data analysis
-(for example using semi-supervised learning \citet{Breckels:2013}).
+While the definition of sub-cellular resolution, as defined by the
+QSep measure, is only one aspect of spatial proteomics, one could
+argue that the community at large would benefit from a more systematic
+approach when considering the resolution of spatial proteomics
+experiments. Indeed, there are various aspects that can be worked on
+to improve resolution: quantitation accuracy at the mass spectrometry
+level (see figures~\ref{fig:density} and~\ref{fig:hexbin1} comparing
+SPS MS$^3$ and conventional MS$^2$ for an example), optimisations in
+sub-cellular fractionation (as exemplified by the substantial
+improvement obtained by \citep{Christoforou:2016}), improved data
+annotation (see for example figure~\ref{fig:mrkswtch}), as well as
+superior data analysis (for example using semi-supervised learning
+\citet{Breckels:2013}).
 
 Maybe there a need for some standardisation, or some general
 guidelines in assessing spatial proteomics data in the community?
 Shouldn't the community as a whole aim for collective improvement and
-some agreement as to what constitutes a good spatial proteomics experiment?
-Better spatial proteomics data and more reliable interpretation will
-be of direct benefit to the spatial proteomics researchers themselves,
-and will increase the trust and reliance of the cell biology
-community.
+some agreement as to what constitutes a good spatial proteomics
+experiment and a reliable protein sub-cellular assignment? The latter
+can assessed using improved probabilistic classifiers such as the
+Bayesian mixture modelling approach proposed by \citet{Crook:2018}. In
+this work, we propose the QSep metric to assess the former. Better
+spatial proteomics data and more reliable interpretation will be of
+direct benefit to the spatial proteomics researchers themselves, and
+will increase the trust and reliance of the cell biology community.
 
 \section*{Acknowledgements}
 
@@ -988,7 +1001,7 @@ development grant (Award BB/N023129/1). The authors would like to
 thank Dr Claire M. Mulvey for helpful comments on the quantitative
 assessment.
 
-\section*{Authors' contributions}
+\section*{Author contributions}
 
 LG conceptualised the method and wrote the initial manuscript
 draft. LG and LMB developed the QSep code. KSL contributed datasets
@@ -1183,9 +1196,8 @@ the \Sexpr{nrow(pdtab)} datasets showcased in this manuscript.
 The software and versions used to produce this document are summarised
 below. The source of this document enabling to reproduce all results
 and figures is available in the source of this document in the public
-manuscript repository~\cite{qseprepo}
+manuscript repository~\cite{qseprepo} available at
 \url{https://github.com/lgatto/QSep-manuscript/}.
-
 
 <<si, results = 'asis'>>=
 toLatex(sessionInfo(), locale = FALSE)
