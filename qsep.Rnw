@@ -922,7 +922,7 @@ estimating and assessing the resolution of spatial proteomics
 experiments (section~\ref{sec:qsepassess}) and, of course, the
 subsequent assignment of proteins to their most likely sub-cellular
 compartments. Sub-cellular resolution is of course only one aspect of
-spatial proteomics, albeit am importatn one, that critically
+spatial proteomics, albeit am important one, that critically
 determines the reliability of protein assignments to spatial niches as
 well as the identification of multi- and trans-localisation events.
 
