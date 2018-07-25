@@ -172,7 +172,7 @@ quantification methodologies.
 \begin{landscape}
   \captionsetup{width=\textwidth}
 % latex table generated in R 3.6.0 by xtable 1.8-2 package
-% Tue Jul 24 19:39:23 2018
+% Wed Jul 25 12:19:23 2018
 \begin{longtable}{lrrrrp{8cm}}
   \toprule
 Data & Proteins & Fractions & Clusters & PC var (\%) & Title \\ 
@@ -181,8 +181,8 @@ hyperLOPIT2015 & 5032 &  20 &  14 & 72.26 & Protein and PMS-level hyperLOPIT dat
   hyperLOPIT2015ms2 & 7114 &  10 &  14 & 74.72 & Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016). \citep{Christoforou:2016} \\ 
   HEK293T2011 & 1371 &   8 &  12 & 65.04 & LOPIT experiment on Human Embryonic Kidney fibroblast HEK293T cells from Breckels et al. (2013) \citep{Breckels:2013} \\ 
   hirst2018 & 2046 &  15 &  12 & 82.50 & Data from Hirst et al. 2018 \citep{Hirst:2018} \\ 
-  hyperLOPITU2OS2017 & 5020 &  40 &  12 & 63.29 & 2017 hyperLOPIT on U2OS cells \citep{Thul:2017} \\ 
-  hyperLOPITU2OS2017b & 5020 &  37 &  12 & 67.68 & 2017 hyperLOPIT on U2OS cells \citep{Thul:2017} \\ 
+  hyperLOPITU2OS2017 & 5020 &  40 &  12 & 63.29 & 2017 hyperLOPIT on U2OS cells \citep{Thul:2017} (all fractions) \\ 
+  hyperLOPITU2OS2017b & 5020 &  37 &  12 & 67.68 & 2017 hyperLOPIT on U2OS cells \citep{Thul:2017} (cleaned) \\ 
   itzhak2016stcSILAC & 5265 &  30 &  12 & 70.61 & Data from Itzhak et al. (2016) \citep{Itzhak:2016} \\ 
   itzhak2017 & 9201 &  30 &  12 & 31.39 & Data from Itzhak et al. 2017 \citep{Itzhak:2017} \\ 
   rodriguez2012r1 & 2215 &  11 &  12 & 38.95 & Spatial proteomics of human inducible goblet-like LS174T cells from Rodriguez-Pineiro et al. (2012) \citep{RodriguezPineiro:2012} \\ 
@@ -625,62 +625,12 @@ values (42.4 \%). Finally, the \textit{andreyev2010rest} dataset suffers from
 very broad sub-cellular clusters (compared to separation between
 clusters).
 
+%% HERE
 
+\bigskip
 
-
-\begin{figure}[p]
-  \centering
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-1.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-2.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-3.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-4.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-5.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-6.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-7.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-8.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-9.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-10.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-11.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-12.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-13.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-14.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-15.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-16.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-17.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-18.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-19.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/fighexpca-20.pdf}
-  \caption{Density PCA plots for the 29 experiments
-    used in this study. PC 1 and 2 were used except for
-    \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform
-    to the original authors figures. The experiments are ordered
-    according to the median average between cluster distance (see
-    figure~\ref{fig:qsep}). Figures have been generated using the
-    \texttt{plot2D} function from the \Biocpkg{pRoloc} package.}
-  \label{fig:denspca}
-\end{figure}
-
-
-\begin{figure}[p]
-  \centering
-\begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
-\includegraphics[width=\maxwidth]{figure/figpca-1} 
-
-\includegraphics[width=\maxwidth]{figure/figpca-2} 
-
-\end{knitrout}
-\caption{PCA plots for the 29 experiments used in
-  this study. PC 1 and 2 were used except for
-  \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform to
-  the original authors figures. The experiments are ordered according
-  to the median average between cluster distance (see
-  figure~\ref{fig:qsep}). The percentage of variance explained along
-  the 2 PCs on the plots can be found in
-  table~\ref{tab:pdtab}. Figures have been generated using the
-  \texttt{plot2D} function from the \Biocpkg{pRoloc} package.}
-  \label{fig:pca}
-\end{figure}
+The PCA plots and QSep heatmaps for all datasets are provided in the
+appendix, section \ref{sec:figs}.
 
 
 
@@ -688,65 +638,8 @@ clusters).
 
 
 
-\begin{figure}[p]
-  \centering
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-1.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-2.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-3.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-4.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-5.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-6.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-7.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-8.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-9.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-10.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-11.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-12.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-13.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-14.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-15.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-16.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-17.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-18.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-19.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allqseps-20.pdf}
-  \caption{Quantitative separation boxplot for the 29
-    experiments used in this study. The experiments are ordered
-    according to the median average between cluster distance (see
-    figure~\ref{fig:qsep}). }
-  \label{fig:allqseps}
-\end{figure}
 
-\begin{figure}[p]
-  \centering
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-1.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-2.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-3.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-4.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-5.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-6.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-7.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-8.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-9.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-10.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-11.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-12.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-13.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-14.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-15.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-16.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-17.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-18.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-19.pdf}
-  \includegraphics[width = 0.24\textwidth]{./figure/allhmaps-20.pdf}
-  \caption{Quantitative separation heatmaps for the 29
-    experiments used in this study. The experiments are ordered
-    according to the median average between cluster distance (see
-    figure~\ref{fig:qsep}). }
-  \label{fig:allhmaps}
-\end{figure}
 
-\clearpage
 
 \section{Assessing the resolution metric}\label{sec:qsepassess}
 
@@ -930,9 +823,189 @@ comments on the quantitative assessment.
 
 \section*{Authors' contributions}
 
+\newpage
 
 \begin{appendices}
 
+\section{Additional figures}\label{sec:figs}
+
+This section shows the density and annotated PCA and QSep plots for
+the 29 datasets showcased in this manuscript.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-1.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-2.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-3.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-4.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-5.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-6.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-7.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-8.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-9.pdf}
+\end{figure}
+\begin{figure}[htb]\ContinuedFloat
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-10.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-11.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-12.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-13.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-14.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-15.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-16.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-17.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-18.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-19.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-20.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-21.pdf}
+\end{figure}
+\begin{figure}[htb]\ContinuedFloat
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-22.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-23.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-24.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-25.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-26.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-27.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/fighexpca-28.pdf}
+  \caption{Density PCA plots for the 29 experiments
+    used in this study. PC 1 and 2 were used except for
+    \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform
+    to the original authors figures. The experiments are ordered
+    according to the median average between cluster distance (see
+    figure~\ref{fig:qsep}). Figures have been generated using the
+    \texttt{plot2D} function from the \Biocpkg{pRoloc} package.}
+  \label{fig:denspca}
+\end{figure}
+
+
+\begin{figure}[htb]
+\centering
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-1.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-2.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-3.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-4.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-5.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-6.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-7.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-8.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-9.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-10.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-11.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-12.pdf}
+\end{figure}
+\begin{figure}[htb]\ContinuedFloat
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-13.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-14.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-15.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-16.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-17.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-18.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-19.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-20.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-21.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-22.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-23.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-24.pdf}
+\end{figure}
+\begin{figure}[htb]\ContinuedFloat
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-25.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-26.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-27.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/figpca-28.pdf}
+\caption{PCA plots for the 29 experiments used in
+  this study. PC 1 and 2 were used except for
+  \textit{itzhak2016stcSILAC}, where PC 1 and 3 were used to conform to
+  the original authors figures. The experiments are ordered according
+  to the median average between cluster distance (see
+  figure~\ref{fig:qsep}). The percentage of variance explained along
+  the 2 PCs on the plots can be found in
+  table~\ref{tab:pdtab}. Figures have been generated using the
+  \texttt{plot2D} function from the \Biocpkg{pRoloc} package.}
+  \label{fig:pca}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-1.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-2.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-3.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-4.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-5.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-6.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-7.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-8.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-9.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-10.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-11.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-12.pdf}
+\end{figure}
+\begin{figure}[htb]\ContinuedFloat
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-13.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-14.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-15.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-16.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-17.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-18.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-19.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-20.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-21.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-22.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-23.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-24.pdf}
+\end{figure}
+\begin{figure}[htb]\ContinuedFloat
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-25.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-26.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-27.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allqseps-28.pdf}
+  \caption{Quantitative separation boxplot for the 29
+    experiments used in this study. The experiments are ordered
+    according to the median average between cluster distance (see
+    figure~\ref{fig:qsep}). }
+  \label{fig:allqseps}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-1.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-2.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-3.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-4.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-5.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-6.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-7.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-8.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-9.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-10.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-11.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-12.pdf}
+\end{figure}
+\begin{figure}[htb]\ContinuedFloat
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-13.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-14.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-15.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-16.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-17.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-18.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-19.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-20.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-21.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-22.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-23.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-24.pdf}
+\end{figure}
+\begin{figure}[htb]\ContinuedFloat
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-25.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-26.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-27.pdf}
+  \includegraphics[width = 0.32\textwidth]{./figure/allhmaps-28.pdf}
+  \caption{Quantitative separation heatmaps for the 29
+    experiments used in this study. The experiments are ordered
+    according to the median average between cluster distance (see
+    figure~\ref{fig:qsep}). }
+  \label{fig:allhmaps}
+\end{figure}
+
+\clearpage
 
 \section{Session information}
 
@@ -955,7 +1028,7 @@ manuscript repository~\cite{qseprepo}
     Biobase~2.40.0, BiocGenerics~0.26.0, BiocParallel~1.14.2,
     cluster~2.0.7-1, ggplot2~3.0.0, ggrepel~0.8.0, hexbin~1.27.2,
     IRanges~2.14.10, MLInterfaces~1.60.1, MSnbase~2.7.3,
-    mzR~2.15.2, pRoloc~1.21.6, pRolocdata~1.18.0,
+    mzR~2.15.2, pRoloc~1.21.7, pRolocdata~1.18.0,
     ProtGenerics~1.12.0, Rcpp~0.12.18, S4Vectors~0.18.3,
     XML~3.98-1.12, xtable~1.8-2
   \item Loaded via a namespace (and not attached): abind~1.4-5,
