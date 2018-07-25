@@ -990,7 +990,9 @@ assessment.
 
 \section*{Authors' contributions}
 
-
+LG conceptualised the method and wrote the initial manuscript
+draft. LG and LMB developed the QSep code. KSL contributed datasets
+and feedback. All authors read and approved the manuscript.
 
 \newpage
 
