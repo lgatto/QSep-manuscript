@@ -674,6 +674,7 @@ res <- pdapply(pdataitems,
 })
 
 o <- order(mds <- sapply(res, median))
+pdtab$mds <- mds
 @
 
 \begin{figure}[ht]
@@ -939,7 +940,6 @@ sub-cellular resolution.
 \begin{figure}[h]
   \centering
 <<restime, out.width = '80%'>>=
-pdtab$mds <- mds
 ggplot(data = pdtab, aes(x = year, y = mds)) +
     geom_point() +
     geom_text_repel(aes(label = Data)) +
