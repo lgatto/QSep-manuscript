@@ -12,6 +12,12 @@ mass spectrometry-based efforts. Here, we present a tool, termed
 a meta-analysis assessing and comparing the sub-cellular resolution of
 28 such mass spectrometry-based spatial proteomics experiments.
 
+## Citation
+
+*Assessing sub-cellular resolution in spatial proteomics experiments*
+Laurent Gatto, Lisa M Breckels, Kathryn S Lilley. bioRxiv 377630; doi:
+[https://doi.org/10.1101/377630](https://www.biorxiv.org/content/early/2018/07/25/377630).
+
 ## Reproducible document
 
 To reproduce this document, you'll need `R` version 3.3.1 or
