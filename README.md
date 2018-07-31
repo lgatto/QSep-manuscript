@@ -18,6 +18,17 @@ a meta-analysis assessing and comparing the sub-cellular resolution of
 Laurent Gatto, Lisa M Breckels, Kathryn S Lilley. bioRxiv 377630; doi:
 [https://doi.org/10.1101/377630](https://www.biorxiv.org/content/early/2018/07/25/377630).
 
+
+See also 
+
+  *LOPIT-DC: A simpler approach to high-resolution spatial proteomics*
+   Aikaterini Geladaki, Nina Kocevar Britovsek, Lisa M. Breckels, Tom
+   S. Smith, Claire M. Mulvey, Oliver M. Crook, Laurent Gatto, Kathryn
+   S. Lilley bioRxiv 378364; doi:
+   [https://doi.org/10.1101/378364](https://doi.org/10.1101/378364).
+
+for an application of QSep.
+
 ## Reproducible document
 
 To reproduce this document, you'll need `R` version 3.3.1 or
