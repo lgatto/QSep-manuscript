@@ -69,14 +69,16 @@
 
 \title{Assessing sub-cellular resolution in  spatial proteomics experiments}
 
-\author[1,2]{Laurent Gatto\thanks{\url{lg390@cam.ac.uk}}~}
+\author[1,2,3]{Laurent Gatto\thanks{\url{lg390@cam.ac.uk}}~}
 \author[1,2]{Lisa M. Breckels}
 \author[2]{Kathryn S. Lilley}
 
 \affil[1]{\small Computational Proteomics Unit, Department of Biochemistry,
-University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
+  University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
 \affil[2]{\small Cambridge Centre for Proteomics, Department of Biochemistry,
-University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
+  University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
+\affil[3]{\small Current address: de Duve Institute, UCLouvain, Avenue
+  Hippocrate 75 bte B1.75.04, 1200 Brussels, Belgium}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 \maketitle
@@ -85,12 +87,15 @@ University of Cambridge, Tennis Court Road, Cambridge, CB2 1QR, UK}
   The sub-cellular localisation of a protein is paramount in defining
   its function, and a protein's mis-localisation is known to lead to
   adverse effect. As a result, numerous experimental techniques and
-  datasets have been published, with the aim to decipher localisation
-  of proteins at various scales and resolutions, including high
-  profile mass spectrometry-based efforts. Here, we present a tool,
-  termed $QSep$, and a meta-analysis assessing and comparing the
-  sub-cellular resolution of 28 such mass spectrometry-based spatial
-  proteomics experiments.
+  datasets have been published, with the aim of deciphering the
+  localisation of proteins at various scales and resolutions,
+  including high profile mass spectrometry-based efforts. Here, we
+  present a tool, termed $QSep$, and a meta-analysis assessing and
+  comparing the sub-cellular resolution of 28 such mass
+  spectrometry-based spatial proteomics experiments. Our goal is to
+  provide a simple quantitative report of how well spatial proteomics
+  resolve the sub-cellular niches they describe to inform and guide
+  developers and users of such methods.
 \end{abstract}
 
 \newpage
@@ -108,8 +113,8 @@ niche is a necessary condition for it to assume its biological
 function. Indeed, the localisation of a protein will determine its
 specific biochemical environment and its unique set of interaction
 partners. As a result, the same protein can assume different functions
-in different biological contexts and its mis-localisation can lead to
-adverse effects and has been implicated in multiple
+in different biological contexts. Protein mis-localisation can lead to
+adverse effects and have been implicated in multiple
 diseases~\citep{Shin:2013,Cody:2013,Siljee:2018}.
 
 
@@ -118,27 +123,27 @@ protein sub-cellular localisation. A wide range of techniques
 (reviewed in \citep{Gatto:2010,Tharkeshwar:2018}) and computational
 methods \citep{Gatto:2014} have been documented, that confidently
 infer the localisation of thousands of proteins. Most techniques rely
-on some form of sub-cellular fractionation, many employing
-differential centrifugation or separation along density gradients, and
-the subsequent quantitative assessment of relative protein occupancy
+on some form of sub-cellular separation, many employing differential
+centrifugation or separation along density gradients, and the
+subsequent quantitative assessment of relative protein occupancy
 profiles in these sub-cellular fractions. Reciprocally, a broad array
 of computational methods have been applied, ranging from unsupervised
 learning e.g. clustering \citep{Tomizioli:2014} and dimensionality
-reduction, and supervised learning e.g. classification (reviewed in
+reduction, and supervised learning such as classification (reviewed in
 \citep{Gatto:2014}), semi-supervised learning and novelty detection
 \citep{Breckels:2013} and, more recently, transfer learning
 \citep{Breckels:2016} and Bayesian modelling \citep{Crook:2018}.
 
 Despite these advances, there is surprisingly little agreement in the
 community as to what constitutes a reliable spatial proteomics
-experiment, i.e a dataset that generates confident protein assignment
-results. Is is however implicit that reliability and trust in the
-results is dependent on adequate sub-cellular resolution,
+experiment, i.e a dataset that generates confident protein
+localisation results. Is is however implicit that reliability and
+trust in the results is dependent on adequate sub-cellular resolution,
 i.e. \textit{enough} separation between the different sub-cellular
-niches being studied to be able to confidently discern protein profiles
-originating from different sub-cellular niches. And yet, every spatial
-proteomics publication will somehow arbitrarily claim to have obtained
-satisfactory resolution.
+niches being studied to be able to confidently discern protein
+profiles originating from different sub-cellular niches. And yet,
+every spatial proteomics publication will somehow arbitrarily claim to
+have obtained satisfactory resolution.
 
 The importance of adequate sub-cellular resolution reaches beyond the
 generation of reliable static spatial maps. It is a necessary property
@@ -149,16 +154,16 @@ proteins upon perturbation \citep{Gatto:2014}.
 
 \bigskip
 
-In this work, we describe how to understand and interpret widely used
-dimensionality reduction methods and visualise spatial
-proteomics data to critically assess their resolution. We propose a
-simple, yet effective method to quantitatively measure resolution and
-compare it across different experiments. Our recommendations should be
-useful to spatial proteomics practitioners, to assess the sub-cellular
-resolution of their experiments and compare it to similar studies
-while setting up and optimising their experiments, as well biologists
-interested in critically assessing spatial proteomics studies and
-their claims.
+In this work, we first describe how to understand and interpret widely
+used dimensionality reduction methods and visualise spatial proteomics
+data to critically assess their resolution. We then propose a simple,
+yet effective method, to quantitatively measure sub-cellular
+resolution and compare it across different experiments. Our
+recommendations should be useful to spatial proteomics practitioners,
+to assess the sub-cellular resolution of their experiments and compare
+it to similar studies while setting up and optimising their
+experiments, as well biologists interested in critically assessing
+spatial proteomics studies and their claims.
 
 All the data and software used in this work is available in the
 \Biocpkg{pRoloc} and \Biocexptpkg{pRolocdata} packages
@@ -179,7 +184,7 @@ quantification methodologies.
 \begin{landscape}
   \captionsetup{width=\textwidth}
 % latex table generated in R 3.6.0 by xtable 1.8-2 package
-% Wed Jul 25 22:25:46 2018
+% Tue Aug  7 21:18:19 2018
 \begin{longtable}{lrrrrp{8cm}}
   \toprule
 Data & Proteins & Fractions & Clusters & PC var (\%) & Title \\ 
@@ -188,8 +193,8 @@ hyperLOPIT2015 & 5032 &  20 &  14 & 72.26 & Protein and PMS-level hyperLOPIT dat
   hyperLOPIT2015ms2 & 7114 &  10 &  14 & 74.72 & Protein and PMS-level hyperLOPIT datasets on Mouse E14TG2a embryonic stem cells from Christoforou et al. (2016). \citep{Christoforou:2016} \\ 
   HEK293T2011 & 1371 &   8 &  12 & 65.04 & LOPIT experiment on Human Embryonic Kidney fibroblast HEK293T cells from Breckels et al. (2013) \citep{Breckels:2013} \\ 
   hirst2018 & 2046 &  15 &  12 & 82.50 & Data from Hirst et al. 2018 \citep{Hirst:2018} \\ 
-  hyperLOPITU2OS2017 & 5020 &  40 &  12 & 63.29 & 2017 hyperLOPIT on U2OS cells \citep{Thul:2017} (all fractions) \\ 
-  hyperLOPITU2OS2017b & 5020 &  37 &  12 & 67.68 & 2017 hyperLOPIT on U2OS cells \citep{Thul:2017} (cleaned) \\ 
+  hyperLOPITU2OS2017 & 5020 &  40 &  12 & 63.29 & 2017 and 2018 hyperLOPIT on U2OS cells \citep{Thul:2017} (all fractions) \\ 
+  hyperLOPITU2OS2017b & 5020 &  37 &  12 & 67.68 & 2017 and 2018 hyperLOPIT on U2OS cells \citep{Thul:2017} (cleaned) \\ 
   itzhak2016stcSILAC & 5265 &  30 &  12 & 70.61 & Data from Itzhak et al. (2016) \citep{Itzhak:2016} \\ 
   itzhak2017 & 9201 &  30 &  12 & 31.39 & Data from Itzhak et al. 2017 \citep{Itzhak:2017} \\ 
   rodriguez2012r1 & 2215 &  11 &  12 & 38.95 & Spatial proteomics of human inducible goblet-like LS174T cells from Rodriguez-Pineiro et al. (2012) \citep{RodriguezPineiro:2012} \\ 
@@ -262,15 +267,43 @@ sub-cellular map. While the works of \citet{Dunkley:2006}
 experiments such as \citet{Groen:2014} (\textit{Identification of
   trans-golgi network proteins in Arabidopsis thaliana root tissue})
 or \citet{Nikolovski:2014} (\textit{Label free protein quantification
-  for plant Golgi protein localisation and abundance}) have a
-more targeted goal (identification of trans-Golgi -network and Golgi
+  for plant Golgi protein localisation and abundance}) have a more
+targeted goal (identification of trans-Golgi -network and Golgi
 apparatus proteins, respectively). When an experiment is targeted at
 resolving a particular niche, it is often the case that other
 sub-compartments are less well-resolved and hence, it is important to
 keep the overall aim of the studies in mind when assessing their
-resolution.
+overall resolution.
 
 \section{Assessment}
+
+
+While never performed in a systematic way as in this work, authors
+have provided some metrics to demonstrate the quality of their
+data.
+
+
+One such metric is the macro-F1 score, calculated during
+classification parameter optimisation (see the \Biocpkg{pRoloc}
+\cite{Gatto:2014a} documentation or \cite{Gatto:2014} for details
+about this procedure). The macro-F1 is computed as the harmonic mean
+of the precision (a measure of exactness) and recall (a measure of
+completeness) on marker proteins to infer a set of credible model
+parameters to be used subsequently, when infering the localisation of
+proteins of unknown location. The scores are computed during a number
+of iteration, where some markers are used as validation test, and
+other are used for parameter selection using cross-validation. These
+optimisation metrics are however computed on different sets of
+parameters, each over-optimised for the subset of markers used at each
+iteration, and hence are likely to provide a overfitted view of the
+data.
+
+
+
+
+
+
+
 
 \subsection{Sub-cellular diversity}\label{sec:sub-cell-divers}
 
@@ -811,17 +844,18 @@ annotation (see for example figure~\ref{fig:mrkswtch}), as well as
 superior data analysis (for example using semi-supervised learning
 \citet{Breckels:2013}).
 
-Maybe there a need for some standardisation, or some general
-guidelines in assessing spatial proteomics data in the community?
-Shouldn't the community as a whole aim for collective improvement and
-some agreement as to what constitutes a good spatial proteomics
-experiment and a reliable protein sub-cellular assignment? The latter
-can assessed using improved probabilistic classifiers such as the
-Bayesian mixture modelling approach proposed by \citet{Crook:2018}. In
-this work, we propose the QSep metric to assess the former. Better
-spatial proteomics data and more reliable interpretation will be of
-direct benefit to the spatial proteomics researchers themselves, and
-will increase the trust and reliance of the cell biology community.
+As already suggested \cite{Lund-Johansen:2016}, there is arguably a
+need for standardisation, or for general guidelines in assessing
+spatial proteomics data in the community?  Shouldn't the community as
+a whole aim for collective improvement and some agreement as to what
+constitutes a good spatial proteomics experiment and a reliable
+protein sub-cellular assignment? The latter can assessed using
+improved probabilistic classifiers such as the Bayesian mixture
+modelling approach proposed by \citet{Crook:2018}. In this work, we
+propose the QSep metric to assess the former. Better spatial
+proteomics data and more reliable interpretation will be of direct
+benefit to the spatial proteomics researchers themselves, and will
+increase the trust and reliance of the cell biology community.
 
 \section*{Acknowledgements}
 
@@ -1046,7 +1080,7 @@ manuscript repository~\cite{qseprepo} available at
     Biobase~2.40.0, BiocGenerics~0.26.0, BiocParallel~1.14.2,
     cluster~2.0.7-1, ggplot2~3.0.0, ggrepel~0.8.0, hexbin~1.27.2,
     IRanges~2.14.10, MLInterfaces~1.60.1, MSnbase~2.7.3,
-    mzR~2.15.2, pRoloc~1.21.7, pRolocdata~1.18.0,
+    mzR~2.15.2, pRoloc~1.21.7, pRolocdata~1.19.3,
     ProtGenerics~1.12.0, Rcpp~0.12.18, S4Vectors~0.18.3,
     XML~3.98-1.12, xtable~1.8-2
   \item Loaded via a namespace (and not attached): abind~1.4-5,
