@@ -2,6 +2,7 @@ library("pRoloc")
 library("pRolocdata")
 data(itzhak2016stcSILAC)
 data(hyperLOPIT2015)
+fData(hyperLOPIT2015)$TAGM <- NULL
 
 library("readr")
 library("dplyr")
@@ -41,6 +42,7 @@ fd2 <- fData(hyperLOPIT2015)
 fd2$fn <- featureNames(hyperLOPIT2015)
 fd2$ID <- sub("MOUSE", "HUMAN", fData(hyperLOPIT2015)[, 1])
 fd2 <- dplyr::left_join(fd2, map)
+
 rownames(fd2) <- fd2$fn
 fData(hyperLOPIT2015) <- fd2
 
@@ -53,10 +55,13 @@ names(hlmm) <- fData(hlm)$Entry
 itzhak2016stcSILAC <- addMarkers(itzhak2016stcSILAC, hlmm,
                                  mcol = "markers2", verbose = FALSE)
 
+## rename makers to save space
 hyperLOPIT2015 <- fDataToUnknown(hyperLOPIT2015,
-                                 from = "Endoplasmic reticulum/Golgi apparatus", to = "ER/Golgi")
+                                 from = "Endoplasmic reticulum/Golgi apparatus",
+                                 to = "ER/Golgi")
 itzhak2016stcSILAC <- fDataToUnknown(itzhak2016stcSILAC, fcol = "markers2",
-                                 from = "Endoplasmic reticulum/Golgi apparatus", to = "ER/Golgi")
+                                     from = "Endoplasmic reticulum/Golgi apparatus",
+                                     to = "ER/Golgi")
 
 
 pdf("mrkswtch-pca.pdf", width = 10, height = 10)
@@ -73,18 +78,20 @@ dev.off()
 
 mrkswtch <- list(dhl.mhl = summary(QSep(hyperLOPIT2015, fcol = "markers"), verbose = FALSE),
                  dhl.mit = summary(QSep(hyperLOPIT2015, fcol = "markers2"), verbose = FALSE),
-                 dit.mit = summary(QSep(itzhak2016stcSILAC, fcol = "markers"), verbose = FALSE),
-                 dit.mhl = summary(QSep(itzhak2016stcSILAC, fcol = "markers2"), verbose = FALSE))
+                 dit.mhl = summary(QSep(itzhak2016stcSILAC, fcol = "markers2"), verbose = FALSE),
+                 dit.mit = summary(QSep(itzhak2016stcSILAC, fcol = "markers"), verbose = FALSE))
+
 
 save(mrkswtch, file = "mrkswtch.rda")
 
-mrkdf <- rbind(data_frame(QSep = mrkswtch[["dhl.mhl"]], data = "d:hyperLOPIT2015", markers = "m:hyperLOPIT2015"),
-               data_frame(QSep = mrkswtch[["dhl.mit"]], data = "d:hyperLOPIT2015", markers = "m:itzhak2016stcSILAC"),
-               data_frame(QSep = mrkswtch[["dit.mit"]], data = "d:itzhak2016stcSILAC", markers = "m:itzhak2016stcSILAC"),
-               data_frame(QSep = mrkswtch[["dit.mhl"]], data = "d:itzhak2016stcSILAC", markers = "m:hyperLOPIT2015"))
+mrkdf <- rbind(data_frame(QSep = mrkswtch[["dhl.mhl"]], data = "Data: hyperLOPIT2015", markers = "hyperLOPIT2015"),
+               data_frame(QSep = mrkswtch[["dhl.mit"]], data = "Data: hyperLOPIT2015", markers = "itzhak2016stcSILAC"),
+               data_frame(QSep = mrkswtch[["dit.mhl"]], data = "Data: itzhak2016stcSILAC", markers = "hyperLOPIT2015"),
+               data_frame(QSep = mrkswtch[["dit.mit"]], data = "Data: itzhak2016stcSILAC", markers = "itzhak2016stcSILAC"))
 
 pdf("mrkswtch-qsep.pdf")
 ggplot(aes(markers, QSep), data = mrkdf) +
-    geom_boxplot() + facet_wrap(~ data) +
-    xlab("") + ylim(c(0, 15))
+     geom_boxplot() +
+    facet_wrap(~ data) +
+    xlab("Markers")
 dev.off()

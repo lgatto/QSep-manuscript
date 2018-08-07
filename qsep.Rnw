@@ -41,7 +41,7 @@
   localisation of proteins at various scales and resolutions,
   including high profile mass spectrometry-based efforts. Here, we
   present a tool, termed $QSep$, and a meta-analysis assessing and
-  comparing the sub-cellular resolution of 28 such mass
+  comparing the sub-cellular resolution of 29 such mass
   spectrometry-based spatial proteomics experiments. Our goal is to
   provide a simple quantitative report of how well spatial proteomics
   resolve the sub-cellular niches they describe to inform and guide
@@ -296,20 +296,26 @@ the curated marker list from \citet{Christoforou:2016}, as only a
 limited number of markers were provided by the authors\footnote{This
   results from the fact that they used a simple distance measurement,
   termed $\chi^2$, against very few markers to base their sub-cellular
-  localisation prediction}. We have also only considered sub-cellular
-niches (also referred to as protein clusters, or clusters) that were
-defined by at least 7 protein markers\footnote{This number is
-  relatively low, and we would typically recommend at least 13 markers
-  per class to perform cross-validation when optimising classifier
-  parameters. See \citet{Gatto:2014} and the main \Biocpkg{pRoloc}
-  tutorial for details.}. We used combined dataset of multiple
-replicated experiments, when provided by the original authors, rather
-than individual replicates, as combining data often leads to better
-sub-cellular resolution \citep{Trotter:2010}.  In addition, for
-dimensionality reduction and visualisation, we have systematically
-replaced missing values by zeros. When calculating distances between
-protein profiles (see section~\ref{sec:qsep}), however, missing values
-were retained.
+  localisation prediction}. Marker proteins are well-known and
+trusted, generally manually curated residents of sub-cellular niches,
+for the species and condition of interest, and are used to annotate
+the spatial proteomics experiment. These annotations are then used for
+visualisation and quality control (see section \ref{sec:vis}) and
+supervised machine learning.
+
+We have also only considered sub-cellular niches (also referred to as
+protein clusters, or clusters) that were defined by at least 7 protein
+markers\footnote{This number is relatively low, and we would typically
+  recommend at least 13 markers per class to perform cross-validation
+  when optimising classifier parameters. See \citet{Gatto:2014} and
+  the main \Biocpkg{pRoloc} tutorial for details.}. We used combined
+dataset of multiple replicated experiments, when provided by the
+original authors, rather than individual replicates, as combining data
+often leads to better sub-cellular resolution \citep{Trotter:2010}.
+In addition, for dimensionality reduction and visualisation, we have
+systematically replaced missing values by zeros. When calculating
+distances between protein profiles (see section~\ref{sec:qsep}),
+however, missing values were retained.
 
 <<foster2006preproc>>=
 mmu <- pRolocmarkers("mmus")
@@ -358,29 +364,34 @@ overall resolution.
 
 While never performed in a systematic way as in this work, authors
 have provided some metrics to demonstrate the quality of their
-data.
-
-
-One such metric is the macro-F1 score, calculated during
+data. One such metric is the macro-F1 score, calculated during
 classification parameter optimisation (see the \Biocpkg{pRoloc}
 \cite{Gatto:2014a} documentation or \cite{Gatto:2014} for details
-about this procedure). The macro-F1 is computed as the harmonic mean
-of the precision (a measure of exactness) and recall (a measure of
-completeness) on marker proteins to infer a set of credible model
-parameters to be used subsequently, when infering the localisation of
-proteins of unknown location. The scores are computed during a number
-of iteration, where some markers are used as validation test, and
-other are used for parameter selection using cross-validation. These
-optimisation metrics are however computed on different sets of
-parameters, each over-optimised for the subset of markers used at each
-iteration, and hence are likely to provide a overfitted view of the
-data.
+about this procedure). Briefly, the macro-F1 is computed as the
+harmonic mean of the precision (a measure of exactness) and recall (a
+measure of completeness) on marker proteins to infer a set of credible
+model parameters to be used subsequently, when inferring the
+localisation of proteins of unknown location. The scores are computed
+during a number of iteration, where some markers are used as
+validation test, and other are used for parameter selection using
+cross-validation. These optimisation metrics are computed over a range
+of parameters on different subsets of marker proteins, and optimal
+parameters are over-optimised for the subset of markers used at each
+iteration, and hence are likely to provide an over-fitted view of the
+data. Note that while each iteration is over-fitted, the goal of the
+iterative procedure is to identify recurring best parameters, in the
+hope that these will subsequently generalise to new, non-marker
+proteins.
 
-
-
-
-
-
+\citet{Itzhak:2016} have used the Pearson correlation between
+replicates to demonstrate the replicability of their
+experiments. While useful within an experiment, correlation cannot be
+compared between experiments, as the precision of these values will
+depend on the number of proteins in the experiment. More generally,
+correlation isn't a good measure of reproducibility
+\cite{Irizarry:2015}; it focuses on values without context. A possible
+better approach would be to compare classification results and
+demonstrate that these agree across different replicates.
 
 
 \subsection{Sub-cellular diversity}\label{sec:sub-cell-divers}
@@ -402,22 +413,22 @@ underestimating the biological sub-cellular diversity.
 Principal component analysis (PCA) is a widely used dimensionality
 reduction technique in spatial proteomics. It projects the protein
 occupancy profiles into a new space in such a way as to maximise the
-spread of all points (i.e. labelled and unlabelled proteins) along the
-first new dimension (principal component, PC). The second PC is then
-chosen to be perpendicular to the first one while still maximising the
-remaining variability. Each PC (there are as many as there are
-channels) accounts for a percentage of the total variability and it is
-not uncommon, in well executed experiments, that the two first PCs
+spread of all points (i.e. marker proteins and proteins of unknown
+localisation) along the first new dimension (principal component,
+PC). The second PC is then chosen to be perpendicular to the first one
+while still maximising the remaining variability, and so on. Each PC
+accounts for a percentage of the total variability and it is not
+uncommon, in well executed experiments, that the two first PCs
 summarise over 70\% of the total variance in the data, confirming that
 the resulting visualisation remains a reliable and useful
-simplification of the original multidimensional data.
+simplification of the original, multidimensional data.
 
 By firstly summarising the occupancy profiles along PC1 and PC2 (and,
-possibly, other PCs of interest if necessary), it becomes
-possible to visualise the complete dataset in a single figure (as
-opposed to individual sets of profiles - see for example figure 5 in
+possibly, other PCs of interest if necessary), it becomes possible to
+visualise the complete dataset in a single figure (as opposed to
+individual sets of profiles - see for example figure 5 in
 \citet{Gatto:2010}). In a first instance, it is advised to visualise
-the data without annotation to confirm the presence of discrete
+the data without marker annotation to confirm the presence of discrete
 clusters, i.e. dense clouds of points that are well separated from the
 rest of the data (see for example data from \citet{Christoforou:2016}
 on figure~\ref{fig:density}, left). Such patterns can further be
@@ -449,12 +460,11 @@ plot2D(hall2009, method = "hexbin")
 @
 
 In figure~\ref{fig:hexbin1} we compare three datasets to illustrate
-different levels of cluster density and separation. We see
-areas of high density (many proteins per hexagon)
-are highlighted by dark blue, and less
-dense areas are white/grey, as indicated by the count key on
-the right-hand side of each plot. The figure on the
-left is the hyperLOPIT data from \citet{Christoforou:2016} (as on
+different levels of cluster density and separation. We see areas of
+high density (many proteins per hexagon) are highlighted by dark blue
+bins, and less dense areas are white/grey, as indicated by the count
+key on the right-hand side of each plot. The figure on the left is the
+hyperLOPIT data from \citet{Christoforou:2016} (as on
 figure~\ref{fig:density}) that used synchronous precursor selection
 (SPS) MS$^3$ on an Orbitrap Fusion. The middle figure represents the
 same experiment and same proteins, analysed using conventional MS$^2$,
@@ -477,17 +487,11 @@ Considering that the aim of sub-cellular fractionation is to maximise
 separation of sub-cellular niches, one would expect sub-cellular
 clusters to be separated optimally in a successful spatial proteomics
 experiment. In PCA space, this would equate to the location of the
-annotated spatial clusters along the periphery of the data points. In
-other words, the maximum variability of a successful spatial
-proteomics experiments should be reflected by the separation of the
-expected/annotated spatial clusters, as illustrated on figure
-\ref{fig:pcahl}.
-
-As already mentioned in section~\ref{sec:sub-cell-divers},
-sub-cellular niches observed in spatial proteomics are usually
-annotated. This annotation comes in the form of marker proteins,
-i.e. well-known and trusted residents of a specific niche, for the
-species and condition of interest.
+marker clusters along the periphery of the data points. In other
+words, the maximum variability of a successful spatial proteomics
+experiments should be reflected by the separation of genuine
+(i.e. expected/annotated marker) spatial clusters, as illustrated on
+figure \ref{fig:pcahl}.
 
 \begin{figure}[ht]
   \centering
@@ -511,24 +515,24 @@ one or more organelles have been preferentially separated.
 \bigskip
 
 It is important to highlight that these representations, while
-reflecting a major fraction of the variability in the data, are only a
-summary of the total variability. Some sub-cellular niches that
-overlap in 2 dimensions can be separated along further components. It
-is sometimes useful to visualise data in three dimensions (using for
-example the \texttt{plot3D} function in the \Biocpkg{pRoloc} package),
-which still, however, only reflect part of the total variability. When
-assessing the resolution of some organelles of interest, one should
-compare the full protein profiles of the marker proteins
-(\Biocpkg{pRoloc}'s \texttt{plotDist} function can be used for this, or
-the interactive application \texttt{pRolocVis} in the \Biocpkg{pRolocGUI}
-package) or visualise a dendrogram representing the average distance between
-cluster profiles (the \texttt{mrkHClust} function from
-\Biocpkg{pRoloc} offers this functionality). While detailed
-exploration of a dataset using these and other visualisation
-approaches is crucial before analysing and interpreting a new spatial
-proteomics experiment, a detailed exploration of each of the
-\Sexpr{nrow(pdtab)} datasets used in this meta-analysis is out of the
-scope of this analysis.
+generally reflecting a major proportion of the variability in the
+data, are only a summary of the total variability. Some sub-cellular
+niches that overlap in 2 dimensions can be separated along further
+components. It is sometimes useful to visualise data in three
+dimensions (using for example the \texttt{plot3D} function in the
+\Biocpkg{pRoloc} package), which still, however, only reflect part of
+the total variability. When assessing the resolution of some
+organelles of interest, one should compare the full protein profiles
+of the marker proteins (\Biocpkg{pRoloc}'s \texttt{plotDist} function
+can be used for this, or the interactive application
+\texttt{pRolocVis} in the \Biocpkg{pRolocGUI} package) or visualise a
+dendrogram representing the average distance between cluster profiles
+(the \texttt{mrkHClust} function from \Biocpkg{pRoloc} offers this
+functionality). While detailed exploration of a dataset using these
+and other visualisation approaches is crucial before analysing and
+interpreting a new spatial proteomics experiment, a detailed
+exploration of each of the \Sexpr{nrow(pdtab)} datasets used in this
+meta-analysis is out of the scope of this work.
 
 \subsection{Quantifying resolution}\label{sec:qsep}
 
@@ -536,24 +540,25 @@ While visualisation of spatial proteomics data remains essential to
 assess the resolution, and hence the success, of a spatial proteomics
 experiment, it is useful to be able to objectively quantify the
 resolution and directly compare different experiments. Here, we
-present a new infrastructure, termed \texttt{QSep}, available in the
-\Biocpkg{pRoloc} package \citet{Gatto:2014a}, to quantify the
+present a new infrastructure, termed QSep, available in the
+\Biocpkg{pRoloc} package \cite{Gatto:2014a}, to quantify the
 separation of clusters in spatial proteomics experiments. It relies on
 the comparison of the average euclidean distance \textit{within} and
-\textit{between} sub-cellular clusters. As illustrated on the heatmaps
-in figure~\ref{fig:qsep0} for the \textit{hyperLOPIT2015} data, these
-distances always refer to one reference marker cluster.
+\textit{between} sub-cellular marker clusters. As illustrated on the
+heatmaps in figure~\ref{fig:qsep0} for the \textit{hyperLOPIT2015}
+data, these distances always refer to one reference marker cluster.
 
 The raw distance matrix (figure~\ref{fig:qsep0}, top-left) is
 symmetrical (i.e. the distance between cluster 1 and 2 is the same as
-between cluster 2 and 1). Within distances are generally the smallest
-ones, except when two clusters overlap, as the lysosome and endosome
-in our example. To enable the comparison of these distances within and
-between experiments (see section~\ref{sec:compara} for the latter), we
-further divide each distance by the reference within cluster average
-distance (figure~\ref{fig:qsep0}, top-right). This thus informs us as
-how much the average distance between cluster 1 and 2 is greater than
-the average distance within cluster 1 (i.e. the tightness of that
+between cluster 2 and 1). Within cluster distances, along the
+diagonal, are generally the smallest ones, except when two clusters
+overlap, as the lysosome and endosome in our example. To enable the
+comparison of these distances within and between experiments (see
+section~\ref{sec:compara} for the latter), we further divide each
+distance by the reference within cluster average distance
+(figure~\ref{fig:qsep0}, top-right). This thus informs us as how much
+the average distance between cluster 1 and 2 is greater than the
+average distance within cluster 1 (i.e. the tightness of that
 cluster). At this stage, the distance matrix is no longer
 symmetrical. To facilitate the comparison of distances between
 organelles, the distance distributions can also be visualised as
@@ -664,8 +669,8 @@ majority of small normalised distances (blue cells) and with only a
 limited number of large distances (red cells), along the mitochondrial
 reference cluster. Conversely, the bottom heatmap displays a majority
 of average (white cells) and large distances (red cells) across all
-sub-cellular clusters. The boxplots allow a more direct comparison of the
-distances across the two datasets. On the top boxplot, we detect
+sub-cellular clusters. The boxplots allow a more direct comparison of
+the distances across the two datasets. On the top boxplot, we detect
 relatively short distances for most clusters, with most large
 distances stemming from the mitochondria, leading to a median distance
 of \Sexpr{round(qimed, 2)}. The distributions on the bottom boxplot
@@ -694,12 +699,12 @@ median distance of \Sexpr{round(qhmed, 2)}.
 
 We next apply the quantitative assessment of spatial resolution
 described in section~\ref{sec:qsep} to compare the \Sexpr{nrow(pdata)}
-experiments presented in section~\ref{sec:pdata}. On
-figure~\ref{fig:qsep}, we show, for each dataset, a boxplot
-illustrating the distribution of the global average normalised
-distances for all spatial clusters. The datasets have been ordered
-using the experiment-wide median between distance. It is important to
-always refer back to the original data when considering
+experiments presented in
+section~\ref{sec:pdata}. Figure~\ref{fig:qsep} shows, for each
+dataset, a boxplot illustrating the distribution of the global average
+normalised distances for all spatial clusters. The datasets have been
+ordered using the experiment-wide median between distance. It is
+important to always refer back to the original data when considering
 summarising metrics like these, to put the resolution into context;
 the density and annotated PCA plots discussed in section~\ref{sec:vis}
 are provided in figures~\ref{fig:denspca} and~\ref{fig:pca} and the
@@ -731,14 +736,11 @@ abline(v = 1, lty = "dotted")
 \end{figure}
 
 
-The hyperLOPIT experiments \textit{hyperLOPIT2015} and
-\textit{hyperLOPIT2015ms2} \citep{Christoforou:2016} using SPS MS$^3$
-and conventional MS$^2$ show the best global, experiment-wide
-resolution. As documented by the authors and illustrated in
-section~\ref{sec:vis}, the increased quantitation accuracy of the
-former result in better sub-cellular resolution.
-
-The next set of experiment are \textit{tan2009r1},
+The individual LOPIT-based experiments from \citet{JeanBeltran:2016}
+and the embryonic mouse stem cell \citep{Christoforou:2016} and U2OS
+\citep{Thul:2017} hyperLOPIT experiments (using SPS MS$^3$ and
+conventional MS$^2$) show the best global, experiment-wide
+resolution. The next set of experiment are \textit{tan2009r1},
 \textit{trotter2010}, \textit{dunkley2006}, \textit{hall2009} and
 \textit{E14TG2aS1}. It is important to highlight that most of datasets
 (as well as \textit{HEK293T2011}, discussed later) have either been
@@ -759,9 +761,8 @@ network (TGN) in \textit{dunkley2006}, or proteasome and nucleus in
 resolution scores. The \textit{hall2009} dataset is relatively poorly
 annotated (only 5 sub-cellular clusters, which is the lowest in all
 test datasets). As long as these few clusters are well separated, poor
-annotation will not negatively influence the resolution scoring,
-emphasising the importance of data visualisation
-(section~\ref{sec:vis}).
+annotation will however not negatively influence the resolution
+scoring.
 
 <<nitz>>=
 nitz <- pdtab[pdtab$Data == "itzhak2016stcSILAC", "Clusters"]
@@ -841,18 +842,18 @@ e14lm <- lm(median ~ as.numeric(n), data = e14sim$dd)
 e14slope <- e14lm$coefficients[[2]]
 @
 
-We find that the number of classes does not have any effect the resolution
-assessment scoring. Indeed, dropping any class will result in a
-sub-sample of normalised inter-cluster distances, with random
+We find that the number of classes does not have any effect the
+resolution assessment scoring. Indeed, dropping any class will result
+in a sub-sample of normalised inter-cluster distances, with random
 variations around the overall median inter-cluster distance. On
 figure~\ref{fig:simn}, we show the distribution of the resolution
 metrics when removing all possibly combinations of 1 to 3 sub-cellular
 classes for the \textit{E14TG2aS1} dataset, that displays an average
-overall resolution, and \textit{hyperLOPIT2015}, that has a highest
-resolution. In both cases, we see that the number of removed classes
-does not influence the overall score distributions. When modelling the
-linear relation between the median scores and the number of removed
-classes, the slopes are \Sexpr{round(e14slope, 3)} and
+overall resolution, and \textit{hyperLOPIT2015}, that has among the
+highest resolution. In both cases, we see that the number of removed
+classes does not influence the overall score distributions. When
+modelling the linear relation between the median scores and the number
+of removed classes, the slopes are \Sexpr{round(e14slope, 3)} and
 \Sexpr{round(hlslope, 3)} respectively.
 
 \begin{figure}[h]
@@ -872,12 +873,11 @@ classes, the slopes are \Sexpr{round(e14slope, 3)} and
 The definition of marker proteins has of course an effect on the
 assessment metric. Tighter clusters will result in smaller intra-class
 distances and, as a result, in larger normalised inter-class
-distances. To assess the effect of marker definition, we transferred
-the marker annotation between the \textit{hyperLOPIT2015} and
-\textit{itzhak2016stcSILAC} datasets (see PCA plots on
+distances. To illustrate the effect of marker definition, we
+transferred the marker annotation between the \textit{hyperLOPIT2015}
+and \textit{itzhak2016stcSILAC} datasets (see PCA plots on
 figure~\ref{fig:mrkswtch}, left) and calculated the quantitative
-resolution metrics (see boxplots on figure~\ref{fig:mrkswtch},
-right).
+resolution metrics (see boxplots on figure~\ref{fig:mrkswtch}, right).
 
 \begin{figure}[h]
   \centering
@@ -891,40 +891,44 @@ right).
     right columns display the markers from \textit{hyperLOPIT2015} and
     \textit{itzhak2016stcSILAC} respectively. On the right, the
     resolution scores have been calculated for the same markers (along
-    the $x$ axis) data (left and right panels). Note that the $y$
-    scale has been cut at 15, ignoring outlying scores, to focus on
-    the bulk of the distribution. }
+    the $x$ axis) data (left and right panels). }
   \label{fig:mrkswtch}
 \end{figure}
 
 <<mrkswtchstats>>=
 load("mrkswtch.rda")
-## +-------------p3-------------+
-## | +---p1----+     +---p2---+ |
-## | |         |     |        | |
-## dhl.mhl dhl.mit dit.mit dit.mhl
-##     182   | 132  |  132     144  (lengths)
-##           |      |
-##           +--p4--+
+mrkswtch <- lapply(mrkswtch, log)
+## From figure
+## +-------p3-------+
+## | +---p1----+    | +---p2---+
+## | |         |    | |        |
+## dhl.mhl dhl.mit dit.mhl dit.mit
+##           |                |
+##           +-------p4-------+
 p1 <- t.test(mrkswtch[["dhl.mhl"]], mrkswtch[["dhl.mit"]])$p.value
-p2 <- t.test(mrkswtch[["dit.mhl"]], mrkswtch[["dth.mit"]])$p.value
-p3 <- t.test(mrkswtch[["dhl.mhl"]], mrkswtch[["dit.mhl"]])$p.value
-p4 <- t.test(mrkswtch[["dhl.mit"]], mrkswtch[["dit.mit"]])$p.value
+p2 <- t.test(mrkswtch[["dit.mhl"]], mrkswtch[["dit.mit"]])$p.value
+## p3 <- t.test(mrkswtch[["dhl.mhl"]], mrkswtch[["dit.mhl"]])$p.value
+## p4 <- t.test(mrkswtch[["dhl.mit"]], mrkswtch[["dit.mit"]])$p.value
 @
 
 
-As can be seen on figure~\ref{fig:mrkswtch}, transferring the
+As expected from the PCA plots on figure~\ref{fig:mrkswtch} and the
+diffuse \textit{Large Protein Complex} cluster, and as can be seen on
+QSep distribution boxplots, transferring the
 \textit{itzhak2016stcSILAC} markers to the \textit{hyperLOPIT2015}
-dataset has a detrimental effect on the separation (testing the two
-distributions with a t-test produces a p-value of \Sexpr{signif(p1,
-  2)}). Conversely, annotating \textit{itzhak2016stcSILAC} with the
-\textit{hyperLOPIT2015} markers significantly improves its resolution
-metric (p-value of \Sexpr{signif(p2, 2)}). Comparing both dataset
-with the \textit{hyperLOPIT2015} marker set favours the resolution of
-the \textit{hyperLOPIT2015} data (p-value of \Sexpr{signif(p3, 2)})
-while using the \textit{itzhak2016stcSILAC} markers with the two
-datasets substantially reduces their difference in resolution score
-(p-value of \Sexpr{signif(p4, 2)}).
+dataset (distributions in the left panel) has a detrimental effect on
+the separation (testing the log-transformed distributions with a
+t-test produces a p-value of \Sexpr{signif(p1, 2)}). Annotating
+\textit{itzhak2016stcSILAC} with the \textit{hyperLOPIT2015} markers
+(distributions in the right panel) hardly improves its resolution
+metric (p-value of \Sexpr{signif(p2, 2)}, log-transformed QSep
+scores). The main effect here is to emphasise the separation between
+the mitochondrion and other spatial niches, in particular the very
+tight 40S and 60S ribosomal clusters. These examples illustrate the
+importance and impact of marker curation and annotation for individual
+experiments. In particular, the \textit{Large Protein Complex} cluster
+from \textit{itzhak2016stcSILAC}, while also diffuse in its original
+dataset, has a severe effect on a dataset that it was not curated for.
 
 \section{Conclusions}
 
@@ -935,8 +939,8 @@ simple and intuitive quantitative metric to explore and compare a
 variety of publicly available spatial proteomics datasets using the
 annotation provided by the original authors. We have also assessed the
 resolution metric itself and observed that it was immune to the number
-of clusters used for its computation and remained consistent to
-different marker annotation.
+of clusters used for its computation and showed the possible influence
+of different marker annotation on the metric itself.
 
 The ordering of the quantitative resolution detailed in
 section~\ref{sec:compara} should not be taken as absolute. Its main
