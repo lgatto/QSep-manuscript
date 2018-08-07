@@ -510,7 +510,10 @@ separation of marker classes by maximising the between class variance
 to the within class variance ratio. As opposed to the
 \textit{unsupervised} PCA, the \textit{supervised} LDA should not be
 used as an experiment quality control, but can be useful to assess if
-one or more organelles have been preferentially separated.
+one or more organelles have been preferentially separated. LDA and
+many other dimensionality reduction techniques (such as t-SNE
+\cite{Maaten:2008} for instance) are readily available in
+\Biocpkg{pRoloc}.
 
 \bigskip
 
@@ -942,25 +945,29 @@ resolution metric itself and observed that it was immune to the number
 of clusters used for its computation and showed the possible influence
 of different marker annotation on the metric itself.
 
+\bigskip
+
 The ordering of the quantitative resolution detailed in
 section~\ref{sec:compara} should not be taken as absolute. Its main
 purpose is to provide a guide to compare different experiments. It
 will be useful for laboratories that do spatial studies on different
 models and with different fractionation and/or quantitation methods,
 to assess the impact of these variables (such as, for example
-hyperLOPIT MS$^2$ and MS$^3$). It is also useful to compare separation
-between different labs, as demonstrated in our comparative study
-(section~\ref{sec:compara}). We anticipate that it will also prove
-useful for the researcher wanting to assess the resolution of newly
-published studies, and put them into a wider context. It is necessary
-to emphasise that the importance and effect of marker definition on
-estimating and assessing the resolution of spatial proteomics
-experiments (section~\ref{sec:qsepassess}) and, of course, the
-subsequent assignment of proteins to their most likely sub-cellular
-compartments. Sub-cellular resolution is of course only one aspect of
-spatial proteomics, albeit am important one, that critically
-determines the reliability of protein assignments to spatial niches as
-well as the identification of multi- and trans-localisation events.
+hyperLOPIT MS$^2$ and MS$^3$ experiments). It is also useful to
+compare separation between different labs, as demonstrated in our
+comparative study (section~\ref{sec:compara}). We anticipate that it
+will also prove useful for the researcher wanting to assess the
+resolution of newly published studies, and put them into a wider
+context. It is necessary to emphasise the importance and effect of
+marker definition and curation on estimating and assessing the
+resolution of spatial proteomics experiments
+(section~\ref{sec:qsepassess}) and, of course, the impact of markers
+on the subsequent assignment of proteins to their most likely
+sub-cellular compartments. Sub-cellular resolution is of course only
+one aspect of spatial proteomics, albeit am important one, that
+critically determines the reliability of protein assignments to
+spatial niches as well as the identification of multi- and
+trans-localisation events.
 
 \bigskip
 
@@ -1008,16 +1015,15 @@ argue that the community at large would benefit from a more systematic
 approach when considering the resolution of spatial proteomics
 experiments. Indeed, there are various aspects that can be worked on
 to improve resolution: quantitation accuracy at the mass spectrometry
-level (see figures~\ref{fig:density} and~\ref{fig:hexbin1} comparing
-SPS MS$^3$ and conventional MS$^2$ for an example), optimisations in
-sub-cellular fractionation (as exemplified by the substantial
-improvement obtained by \citep{Christoforou:2016}), improved data
-annotation (see for example figure~\ref{fig:mrkswtch}), as well as
-superior data analysis (for example using semi-supervised learning
-\citet{Breckels:2013}).
+level (see figure~\ref{fig:hexbin1} comparing SPS MS$^3$ and
+conventional MS$^2$ for an example), optimisations in sub-cellular
+fractionation (as exemplified by the substantial improvement obtained
+by hyperLOPIT \citep{Christoforou:2016}), careful data annotation and
+marker curation, as well as superior data analysis (for example using
+semi-supervised learning \citet{Breckels:2013}).
 
-As already suggested \cite{Lund-Johansen:2016}, there is arguably a
-need for standardisation, or for general guidelines in assessing
+As already suggested by \citet{Lund-Johansen:2016}, there is arguably
+a need for standardisation, or for general guidelines in assessing
 spatial proteomics data in the community?  Shouldn't the community as
 a whole aim for collective improvement and some agreement as to what
 constitutes a good spatial proteomics experiment and a reliable
