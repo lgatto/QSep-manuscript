@@ -370,14 +370,14 @@ classification parameter optimisation (see the \Biocpkg{pRoloc}
 \cite{Gatto:2014a} documentation or \cite{Gatto:2014} for details
 about this procedure). Briefly, the macro-F1 is computed as the
 harmonic mean of the precision (a measure of exactness) and recall (a
-measure of completeness) on marker proteins to infer a set of credible
+measure of completeness) on marker proteins to infer a set of good
 model parameters to be used subsequently, when inferring the
 localisation of proteins of unknown location. The scores are computed
 during a number of iteration, where some markers are used as
 validation test, and other are used for parameter selection using
 cross-validation. These optimisation metrics are computed over a range
 of parameters on different subsets of marker proteins, and optimal
-parameters are over-optimised for the subset of markers used at each
+parameters are optimised for the subset of markers used at each
 iteration, and hence are likely to provide an over-fitted view of the
 data. Note that while each iteration is over-fitted, the goal of the
 iterative procedure is to identify recurring best parameters, in the
@@ -390,9 +390,9 @@ experiments. While useful within an experiment, correlation cannot be
 compared between experiments, as the precision of these values will
 depend on the number of proteins in the experiment. More generally,
 correlation isn't a good measure of reproducibility
-\cite{Irizarry:2015}; it focuses on values without context. A possible
-better approach would be to compare classification results and
-demonstrate that these agree across different replicates.
+\cite{Irizarry:2015}; it focuses on values without context. A better
+approach would be to compare classification results and demonstrate
+that these agree across different replicates.
 
 
 \subsection{Sub-cellular diversity}\label{sec:sub-cell-divers}
