@@ -84,6 +84,10 @@ ymds <- data.frame(data = c("hyperLOPIT2015", "E14TG2aS1"),
 pdf("simn.pdf", width = 12, height = 6)
 ggplot(data = dd, aes(y = median, x = n)) + geom_boxplot() +
     geom_jitter() + facet_grid(. ~ data) +
-    geom_hline(aes(yintercept = mds), ymds, col = "red")
+    geom_hline(aes(yintercept = mds), ymds, col = "red") +
+    xlab("Number of removed classes") +
+    ylab("Median QSep score") +
+    theme(axis.text = element_text(size = 14),
+          axis.title = element_text(size = 16),
+          strip.text.x = element_text(size = 14))
 dev.off()
-

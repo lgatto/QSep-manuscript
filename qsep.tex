@@ -84,18 +84,18 @@
 \maketitle
 
 \begin{abstract}
-  The sub-cellular localisation of a protein is paramount in defining
-  its function, and a protein's mis-localisation is known to lead to
+  The sub-cellular localisation of a protein is vital in defining its
+  function, and a protein's mis-localisation is known to lead to
   adverse effect. As a result, numerous experimental techniques and
   datasets have been published, with the aim of deciphering the
   localisation of proteins at various scales and resolutions,
   including high profile mass spectrometry-based efforts. Here, we
-  present a tool, termed $QSep$, and a meta-analysis assessing and
-  comparing the sub-cellular resolution of 29 such mass
-  spectrometry-based spatial proteomics experiments. Our goal is to
-  provide a simple quantitative report of how well spatial proteomics
-  resolve the sub-cellular niches they describe to inform and guide
-  developers and users of such methods.
+  present a meta-analysis assessing and comparing the sub-cellular
+  resolution of 29 such mass spectrometry-based spatial proteomics
+  experiments using a newly developed tool termed $QSep$. Our goal is
+  to provide a simple quantitative report of how well spatial
+  proteomics resolve the sub-cellular niches they describe to inform
+  and guide developers and users of such methods.
 \end{abstract}
 
 \newpage
@@ -134,8 +134,8 @@ reduction, and supervised learning such as classification (reviewed in
 \citep{Breckels:2013} and, more recently, transfer learning
 \citep{Breckels:2016} and Bayesian modelling \citep{Crook:2018}.
 
-Despite these advances, there is surprisingly little agreement in the
-community as to what constitutes a reliable spatial proteomics
+Despite these advances, there has been a surprising lack of discussion
+in the community as to what constitutes a reliable spatial proteomics
 experiment, i.e a dataset that generates confident protein
 localisation results. Is is however implicit that reliability and
 trust in the results is dependent on adequate sub-cellular resolution,
@@ -158,12 +158,15 @@ In this work, we first describe how to understand and interpret widely
 used dimensionality reduction methods and visualise spatial proteomics
 data to critically assess their resolution. We then propose a simple,
 yet effective method, to quantitatively measure sub-cellular
-resolution and compare it across different experiments. Our
-recommendations should be useful to spatial proteomics practitioners,
-to assess the sub-cellular resolution of their experiments and compare
-it to similar studies while setting up and optimising their
-experiments, as well biologists interested in critically assessing
-spatial proteomics studies and their claims.
+resolution and compare it across different experiments. We introduce
+QSep, a tool to assess the resolution of sub-cellular niches within
+spatial proteomics experiments, giving a metric of success of desired
+sub-cellular separations. Our approach fills an important gap in
+analysis of spatial proteomics data and will be useful to spatial
+proteomics practitioners to (1) assess the sub-cellular resolution of
+their experiments, (2) compare it to similar studies, (3) help set up
+and optimise their experiments, and additionally (4) to aid biologists
+in critically assessing spatial proteomics studies and their claims.
 
 All the data and software used in this work is available in the
 \Biocpkg{pRoloc} and \Biocexptpkg{pRolocdata} packages
@@ -185,7 +188,7 @@ quantification methodologies.
 \begin{landscape}
   \captionsetup{width=\textwidth}
 % latex table generated in R 3.6.0 by xtable 1.8-2 package
-% Wed Aug  8 01:14:33 2018
+% Thu Aug  9 22:42:54 2018
 \begin{longtable}{lrrrrp{8cm}}
   \toprule
 Data & Proteins & Fractions & Clusters & PC var (\%) & Title \\ 
@@ -247,11 +250,11 @@ protein clusters, or clusters) that were defined by at least 7 protein
 markers\footnote{This number is relatively low, and we would typically
   recommend at least 13 markers per class to perform cross-validation
   when optimising classifier parameters. See \citet{Gatto:2014} and
-  the main \Biocpkg{pRoloc} tutorial for details.}. We used combined
-dataset of multiple replicated experiments, when provided by the
-original authors, rather than individual replicates, as combining data
-often leads to better sub-cellular resolution \citep{Trotter:2010}.
-In addition, for dimensionality reduction and visualisation, we have
+  the main \Biocpkg{pRoloc} tutorial for details.}. Where studies
+include multiple replicated experiments, we used the combined dataset,
+rather than using the individual replicates, as combining data often
+leads to better sub-cellular resolution \citep{Trotter:2010}. In
+addition, for dimensionality reduction and visualisation, we have
 systematically replaced missing values by zeros. When calculating
 distances between protein profiles (see section~\ref{sec:qsep}),
 however, missing values were retained.
@@ -262,41 +265,36 @@ however, missing values were retained.
 
 
 It is important to highlight that not all experiments used in this
-study have as main goal the generation of a global (or near global)
-sub-cellular map. While the works of \citet{Dunkley:2006}
-(\textit{Mapping the Arabidopsis organelle proteome}),
-\citet{Tan:2009} (\textit{Mapping organelle proteins and protein
-  complexes in Drosophila melanogaster}) and more recently
-\citet{Christoforou:2016} (\textit{A draft map of the mouse
-  pluripotent stem cell spatial proteome}) and \citet{Itzhak:2016}
-(\textit{Global, quantitative and dynamic mapping of protein
-  subcellular localization}) explicitly state such goal, other
-experiments such as \citet{Groen:2014} (\textit{Identification of
-  trans-golgi network proteins in Arabidopsis thaliana root tissue})
-or \citet{Nikolovski:2014} (\textit{Label free protein quantification
-  for plant Golgi protein localisation and abundance}) have a more
-targeted goal (identification of trans-Golgi -network and Golgi
-apparatus proteins, respectively). When an experiment is targeted at
-resolving a particular niche, it is often the case that other
-sub-compartments are less well-resolved and hence, it is important to
-keep the overall aim of the studies in mind when assessing their
-overall resolution.
+study have as a main goal the generation of a global (or near global)
+sub-cellular map. While the works \citet{Christoforou:2016} (\textit{A
+  draft map of the mouse pluripotent stem cell spatial proteome}) and
+\citet{Itzhak:2016} (\textit{Global, quantitative and dynamic mapping
+  of protein subcellular localization}) explicitly state such goal,
+other experiments such as \citet{Groen:2014} (\textit{Identification
+  of trans-golgi network proteins in Arabidopsis thaliana root
+  tissue}) or \citet{Nikolovski:2014} (\textit{Label free protein
+  quantification for plant Golgi protein localisation and abundance})
+have a more targeted goal (identification of trans-Golgi -network and
+Golgi apparatus proteins, respectively). When an experiment is
+targeted at resolving one or two particular niche, it is often the
+case that other sub-compartments are less well-resolved and hence, it
+is important to keep the overall aim of the studies in mind when
+assessing their overall resolution.
 
 \section{Assessment}
 
-
-While never performed in a systematic way as in this work, authors
-have provided some metrics to demonstrate the quality of their
-data. One such metric is the macro-F1 score, calculated during
-classification parameter optimisation (see the \Biocpkg{pRoloc}
-\cite{Gatto:2014a} documentation or \cite{Gatto:2014} for details
-about this procedure). Briefly, the macro-F1 is computed as the
-harmonic mean of the precision (a measure of exactness) and recall (a
-measure of completeness) on marker proteins to infer a set of good
-model parameters to be used subsequently, when inferring the
+While never performed in a systematic way as in the work presented
+here, some authors have provided some metrics to demonstrate the
+quality of their data. One such metric is the macro-F1 score,
+calculated during classification parameter optimisation (see the
+\Biocpkg{pRoloc} \cite{Gatto:2014a} documentation or \cite{Gatto:2014}
+for details about this procedure). Briefly, the macro-F1 is computed
+as the harmonic mean of the precision (a measure of exactness) and
+recall (a measure of completeness) on marker proteins to infer a set
+of good model parameters to be used subsequently, when inferring the
 localisation of proteins of unknown location. The scores are computed
-during a number of iteration, where some markers are used as
-validation test, and other are used for parameter selection using
+during a number of iterations, where some markers are used for a
+validation test, and others are used for parameter selection using
 cross-validation. These optimisation metrics are computed over a range
 of parameters on different subsets of marker proteins, and optimal
 parameters are optimised for the subset of markers used at each
@@ -306,7 +304,7 @@ iterative procedure is to identify recurring best parameters, in the
 hope that these will subsequently generalise to new, non-marker
 proteins.
 
-\citet{Itzhak:2016} have used the Pearson correlation between
+One study \citep{Itzhak:2016} used the Pearson correlation between
 replicates to demonstrate the replicability of their
 experiments. While useful within an experiment, correlation cannot be
 compared between experiments, as the precision of these values will
@@ -326,10 +324,13 @@ datasets used in this study, this number ranged from
 5 (dataset
 \textit{hall2009}) to
 14 (dataset
-\textit{hyperLOPIT2015}). These numbers should be
-assessed in the light of about 25 different sub-cellular niches that
-are documented in all 29 datasets, which are still
-underestimating the biological sub-cellular diversity.
+\textit{hyperLOPIT2015}). These numbers
+should be assessed in the light of about 25 different sub-cellular
+niches that are documented in all 29 datasets, which
+are still underestimating the biological sub-cellular complexity.  The
+Human Protein Atlas \citep{Thul:2017}
+(\url{https://www.proteinatlas.org}), for example, classified 33
+sub-cellular organelles and fine structures.
 
 \subsection{Dimensionality reduction and visualisation}\label{sec:vis}
 
@@ -373,7 +374,7 @@ density.
 
 
 
-In figure~\ref{fig:hexbin1} we compare three datasets to illustrate
+In figure~\ref{fig:hexbin1}, three datasets are compared to illustrate
 different levels of cluster density and separation. We see areas of
 high density (many proteins per hexagon) are highlighted by dark blue
 bins, and less dense areas are white/grey, as indicated by the count
@@ -418,17 +419,16 @@ figure \ref{fig:pcahl}.
   \label{fig:pcahl}
 \end{figure}
 
-Another dimensionality reduction method that is worth mentioning here
-is linear discriminant analysis (LDA). LDA will project the protein
-occupancy profiles in a new set of dimensions using as a criterion the
-separation of marker classes by maximising the between class variance
-to the within class variance ratio. As opposed to the
-\textit{unsupervised} PCA, the \textit{supervised} LDA should not be
-used as an experiment quality control, but can be useful to assess if
-one or more organelles have been preferentially separated. LDA and
-many other dimensionality reduction techniques (such as t-SNE
-\cite{Maaten:2008} for instance) are readily available in
-\Biocpkg{pRoloc}.
+Another dimensionality reduction method of note is linear discriminant
+analysis (LDA). LDA will project the protein occupancy profiles in a
+new set of dimensions using as a criterion the separation of marker
+classes by maximising the between class variance to the within class
+variance ratio. As opposed to the \textit{unsupervised} PCA, the
+\textit{supervised} LDA should not be used as an experiment quality
+control, but can be useful to assess if one or more organelles have
+been preferentially separated. LDA and many other dimensionality
+reduction techniques (such as t-SNE \cite{Maaten:2008} for instance)
+are readily available in \Biocpkg{pRoloc}.
 
 \bigskip
 
@@ -450,7 +450,7 @@ functionality). While detailed exploration of a dataset using these
 and other visualisation approaches is crucial before analysing and
 interpreting a new spatial proteomics experiment, a detailed
 exploration of each of the 29 datasets used in this
-meta-analysis is out of the scope of this work.
+meta-analysis is out of the scope of the study presented here.
 
 \subsection{Quantifying resolution}\label{sec:qsep}
 
@@ -461,10 +461,11 @@ resolution and directly compare different experiments. Here, we
 present a new infrastructure, termed QSep, available in the
 \Biocpkg{pRoloc} package \cite{Gatto:2014a}, to quantify the
 separation of clusters in spatial proteomics experiments. It relies on
-the comparison of the average euclidean distance \textit{within} and
-\textit{between} sub-cellular marker clusters. As illustrated on the
-heatmaps in figure~\ref{fig:qsep0} for the \textit{hyperLOPIT2015}
-data, these distances always refer to one reference marker cluster.
+the comparison of the average Euclidean distance of the full,
+n-dimensional protein profiles \textit{within} and \textit{between}
+sub-cellular marker clusters. As illustrated on the heatmaps in
+figure~\ref{fig:qsep0} for the \textit{hyperLOPIT2015} data, these
+distances always refer to one reference marker cluster.
 
 The raw distance matrix (figure~\ref{fig:qsep0}, top-left) is
 symmetrical (i.e. the distance between cluster 1 and 2 is the same as
@@ -474,9 +475,9 @@ overlap, as the lysosome and endosome in our example. To enable the
 comparison of these distances within and between experiments (see
 section~\ref{sec:compara} for the latter), we further divide each
 distance by the reference within cluster average distance
-(figure~\ref{fig:qsep0}, top-right). This thus informs us as how much
-the average distance between cluster 1 and 2 is greater than the
-average distance within cluster 1 (i.e. the tightness of that
+(figure~\ref{fig:qsep0}, top-right). This thus gives information about
+how much the average distance between cluster 1 and 2 is greater than
+the average distance within cluster 1 (i.e. the tightness of that
 cluster). At this stage, the distance matrix is no longer
 symmetrical. To facilitate the comparison of distances between
 organelles, the distance distributions can also be visualised as
@@ -594,9 +595,12 @@ dataset, a boxplot illustrating the distribution of the global average
 normalised distances for all spatial clusters. The datasets have been
 ordered using the experiment-wide median between distance. It is
 important to always refer back to the original data when considering
-summarising metrics like these, to put the resolution into context;
-the density and annotated PCA plots discussed in section~\ref{sec:vis}
-are provided in figures~\ref{fig:denspca} and~\ref{fig:pca} and the
+summarising metrics like these, to put the resolution into context. In
+particular, while high global resolution is essential for experiments
+that aim for a cell wide exploration, it will not be a useful metric
+in experiments that focus on a limited sub-cellular niches. The
+density and annotated PCA plots discussed in section~\ref{sec:vis} are
+provided in figures~\ref{fig:denspca} and~\ref{fig:pca} and the
 quantitative assessment boxplots and heatmaps are shown in
 figures~\ref{fig:allqseps} and~\ref{fig:allhmaps}.
 
@@ -619,30 +623,29 @@ figures~\ref{fig:allqseps} and~\ref{fig:allhmaps}.
 The individual LOPIT-based experiments from \citet{JeanBeltran:2016}
 and the embryonic mouse stem cell \citep{Christoforou:2016} and U2OS
 \citep{Thul:2017} hyperLOPIT experiments (using SPS MS$^3$ and
-conventional MS$^2$) show the best global, experiment-wide
-resolution. The next set of experiment are \textit{tan2009r1},
-\textit{trotter2010}, \textit{dunkley2006}, \textit{hall2009} and
-\textit{E14TG2aS1}. It is important to highlight that most of datasets
-(as well as \textit{HEK293T2011}, discussed later) have either been
-directly re-analysed using a semi-supervised novelty detection
-algorithm \textit{phenoDisco} \citep{Breckels:2013} (the only
-exception here being \textit{hall2009}), or, in the case of
-\textit{trotter2010}, have been annotated using markers based on the
-\textit{phenoDisco} re-analysis. The novelty detection algorithm,
-\textit{phenoDisco}, searches for new clusters of unlabelled proteins,
-using the marker proteins to guide the clustering of unlabelled
-features. These new clusters, termed \textit{phenotypes}, are then
-validated by the user for coherence with known sub-cellular niches.
-This re-analysis has proven successful \citep{Breckels:2013} and has
-identified previously undetected sub-cellular niches that form tight
-and well-resolved clusters (see for example ribosomial and trans-Golgi
-network (TGN) in \textit{dunkley2006}, or proteasome and nucleus in
-\textit{tan2009r1} to cite only a few), which in turn favour good
-resolution scores. The \textit{hall2009} dataset is relatively poorly
-annotated (only 5 sub-cellular clusters, which is the lowest in all
-test datasets). As long as these few clusters are well separated, poor
-annotation will however not negatively influence the resolution
-scoring.
+conventional MS$^2$) show the best experiment-wide resolution. The
+next set of experiment are \textit{tan2009r1}, \textit{trotter2010},
+\textit{dunkley2006}, \textit{hall2009} and \textit{E14TG2aS1}. It is
+important to highlight that most of the datasets (as well as
+\textit{HEK293T2011}, discussed later) have either been directly
+re-analysed using a semi-supervised novelty detection algorithm
+\textit{phenoDisco} \citep{Breckels:2013} (the only exception here
+being \textit{hall2009}), or, in the case of \textit{trotter2010},
+have been annotated using markers based on the \textit{phenoDisco}
+re-analysis. The novelty detection algorithm, \textit{phenoDisco},
+searches for new clusters of unlabelled proteins, using the marker
+proteins to guide the clustering of unlabelled features. These new
+clusters, termed \textit{phenotypes}, are then validated by the user
+for coherence with known sub-cellular niches.  This re-analysis has
+proven successful \citep{Breckels:2013} and has identified previously
+undetected sub-cellular niches that form tight and well-resolved
+clusters (see for example ribosomial and trans-Golgi network (TGN) in
+\textit{dunkley2006}, or proteasome and nucleus in \textit{tan2009r1}
+to cite only a few), which in turn favour good resolution scores. The
+\textit{hall2009} dataset is relatively poorly annotated (only 5
+sub-cellular clusters, which is the lowest in all test datasets). As
+long as these few clusters are well separated, poor annotation will
+however not negatively influence the resolution scoring.
 
 
 
@@ -659,10 +662,10 @@ out of 144 distances) and as such it would not change its
 rank among the test datasets.
 
 As mentioned earlier, the \textit{groen2014cmb} and
-\textit{nikolovski2014} are targeted experiments, focusing on the
-trans-Golgi-network and Golgi niches respectively. Such experiments do
-not aim for the best global resolution, which is reflected by relatively
-low resolution.
+\textit{nikolovski2014} datasets are targeted experiments, focusing on
+the trans-Golgi-network and Golgi niches respectively. Such
+experiments do not aim for the best global resolution, which is
+reflected by relatively low global resolution.
 
 The \textit{foster2006} experiment displays relatively poor
 separation. This might be due to the relatively high number of missing
@@ -685,21 +688,19 @@ appendix, section \ref{sec:figs}.
 
 
 
-
 \section{Assessing the resolution metric}\label{sec:qsepassess}
 
-In this section, we assess the resolution metric, and how the
-annotation of the spatial proteomics data influences the metric
-itself.
+Next, we assess the resolution metric, and how the annotation of the
+spatial proteomics data influences the metric itself.
 
 
 
 We find that the number of classes does not have any effect the
 resolution assessment scoring. Indeed, dropping any class will result
 in a sub-sample of normalised inter-cluster distances, with random
-variations around the overall median inter-cluster distance. On
+variations around the overall median inter-cluster distance. In
 figure~\ref{fig:simn}, we show the distribution of the resolution
-metrics when removing all possibly combinations of 1 to 3 sub-cellular
+metrics when removing all possible combinations of 1 to 3 sub-cellular
 classes for the \textit{E14TG2aS1} dataset, that displays an average
 overall resolution, and \textit{hyperLOPIT2015}, that has among the
 highest resolution. In both cases, we see that the number of removed
@@ -770,8 +771,8 @@ dataset, has a severe effect on a dataset that it was not curated for.
 
 \section{Conclusions}
 
-In this manuscript, we have described in great detail how to assess
-and quantify the resolution of spatial proteomics experiments. We have
+In this manuscript, we have described in detail how to assess and
+quantify the resolution of spatial proteomics experiments. We have
 applied dimensionality reduction and visualisation, as well as a
 simple and intuitive quantitative metric to explore and compare a
 variety of publicly available spatial proteomics datasets using the
@@ -810,20 +811,19 @@ Finally, we reflect on the implications of this work on the spatial
 proteomics community, and more generally the cell biology community
 that relies on protein localisation data. We have assessed dataset
 spanning 12 years of spatial proteomics. Since 2006, the community has
-seen many important improvements: tremendous advances in mass
-spectrometry, improvements in spatial proteomics designs, and
-considerable breakthroughs in data analysis. One might then wonder
-whether these benefits have lead to tangible improvements in
-resolution over time?
+seen many important improvements: significant advances in mass
+spectrometry quantification methodologies, improvements in biochemical
+fractionation methods and spatial proteomics designs, and considerable
+breakthroughs in data analysis. One might then wonder to what extend
+benefits have lead to tangible improvements in resolution over time?
 
 On figure~\ref{fig:restime}, we have ordered the datasets' resolution
 metric according to their publication year. We can see that a set of
 recent datasets, including the mouse stem cell
 \citep{Christoforou:2016} and U2OS \citep{Thul:2017} hyperLOPIT
 experiments (published in 2016 and 2017 respectively), and a variation
-thereof, where \citet{JeanBeltran:2016} (published in 2016),
-incorporating a temporal component in their experimental design, show
-a consistent superior resolution.
+thereof, \citep{JeanBeltran:2016} (published in 2016), show a superior
+resolution.
 
 \begin{figure}[h]
   \centering
@@ -857,16 +857,17 @@ semi-supervised learning \citet{Breckels:2013}).
 
 As already suggested by \citet{Lund-Johansen:2016}, there is arguably
 a need for standardisation, or for general guidelines in assessing
-spatial proteomics data in the community?  Shouldn't the community as
-a whole aim for collective improvement and some agreement as to what
-constitutes a good spatial proteomics experiment and a reliable
-protein sub-cellular assignment? The latter can assessed using
-improved probabilistic classifiers such as the Bayesian mixture
-modelling approach proposed by \citet{Crook:2018}. In this work, we
-propose the QSep metric to assess the former. Better spatial
+spatial proteomics data in the community? As interest in the spatial
+organisation of the proteome is increasing, it is imperative for the
+community to better define and assess the quality of spatial
+proteomics experiments and the reliability of protein sub-cellular
+assignments? The latter can assessed using improved probabilistic
+classifiers such as the Bayesian mixture modelling approach proposed
+by \citet{Crook:2018}. In this work, we propose the QSep metric to
+assess the former. Future improvements in the quality of spatial
 proteomics data and more reliable interpretation will be of direct
 benefit to the spatial proteomics researchers themselves, and will
-increase the trust and reliance of the cell biology community.
+increase the usefulness of the data to the cell biology community.
 
 \section*{Acknowledgements}
 
@@ -881,7 +882,8 @@ assessment.
 
 LG conceptualised the method and wrote the initial manuscript
 draft. LG and LMB developed the QSep code. KSL contributed datasets
-and feedback. All authors read and approved the manuscript.
+and feedback. All authors contributed to the manuscript and approved
+it.
 
 \newpage
 

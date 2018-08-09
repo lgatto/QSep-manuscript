@@ -65,15 +65,16 @@ itzhak2016stcSILAC <- fDataToUnknown(itzhak2016stcSILAC, fcol = "markers2",
 
 
 pdf("mrkswtch-pca.pdf", width = 10, height = 10)
+.cex <- 0.9
 par(mfrow = c(2, 2), oma = c(0, 0, 0, 0), mar = c(2, 2, 1, 1))
 plot2D(hyperLOPIT2015, fcol = "markers")
-addLegend(hyperLOPIT2015, cex = .7)
+addLegend(hyperLOPIT2015, cex = .cex)
 plot2D(hyperLOPIT2015, fcol = "markers2")
-addLegend(hyperLOPIT2015, fcol = "markers2", cex = .7)
+addLegend(hyperLOPIT2015, fcol = "markers2", cex = .cex)
 plot2D(impute(itzhak2016stcSILAC, "zero"), fcol = "markers2")
-addLegend(itzhak2016stcSILAC, fcol = "markers2", cex = .7)
+addLegend(itzhak2016stcSILAC, fcol = "markers2", cex = .cex)
 plot2D(impute(itzhak2016stcSILAC, "zero"), fcol = "markers")
-addLegend(itzhak2016stcSILAC, cex = .7)
+addLegend(itzhak2016stcSILAC, cex = .cex)
 dev.off()
 
 mrkswtch <- list(dhl.mhl = summary(QSep(hyperLOPIT2015, fcol = "markers"), verbose = FALSE),
@@ -93,5 +94,10 @@ pdf("mrkswtch-qsep.pdf")
 ggplot(aes(markers, QSep), data = mrkdf) +
      geom_boxplot() +
     facet_wrap(~ data) +
-    xlab("Markers")
+    xlab("Markers") +
+    ylab("QSep scores") +
+    theme(axis.text = element_text(size = 12),
+          axis.title = element_text(size = 16),
+          strip.text.x =
+              element_text(size = 14))
 dev.off()
