@@ -527,21 +527,36 @@ dimensions (using for example the \texttt{plot3D} function in the
 \Biocpkg{pRoloc} package), which still, however, only reflect part of
 the total variability. When assessing the resolution of some
 organelles of interest, one should compare the full protein profiles
-of the marker proteins (\Biocpkg{pRoloc}'s \texttt{plotDist} function
-can be used for this, or the interactive application
-\texttt{pRolocVis} in the \Biocpkg{pRolocGUI} package) or visualise a
-dendrogram representing the average distance between cluster profiles
-(the \texttt{mrkHClust} function from \Biocpkg{pRoloc} offers this
-functionality). While detailed exploration of a dataset using these
-and other visualisation approaches is crucial before analysing and
-interpreting a new spatial proteomics experiment, a detailed
-exploration of each of the \Sexpr{nrow(pdtab)} datasets used in this
-meta-analysis is out of the scope of the study presented here.
+of the marker proteins as illustrated on figure~\ref{fig:plotDist}
+(\Biocpkg{pRoloc}'s \texttt{plotDist} function can be used for this,
+or the interactive application \texttt{pRolocVis} in the
+\Biocpkg{pRolocGUI} package), or visualise a dendrogram representing
+the average distance between cluster profiles (the \texttt{mrkHClust}
+function from \Biocpkg{pRoloc} offers this functionality). While
+detailed exploration of a dataset using these and other visualisation
+approaches is crucial before analysing and interpreting a new spatial
+proteomics experiment, a detailed exploration of each of the
+\Sexpr{nrow(pdtab)} datasets used in this meta-analysis is out of the
+scope of the study presented here.
 
 \begin{figure}
   \centering
-
-  \caption{Comparison }
+<<plotDist, fig.width = 12, fig.height = 6>>=
+par(mfrow = c(1, 2))
+m <- markerMSnSet(hyperLOPIT2015)
+plot2D(m)
+par(las = 2, cex.axis = .7)
+plotDist(m[, order(m$TMT.Reagent)], fcol = "markers",
+         fractions = "TMT.Reagent")
+addLegend(m, where = "top", ncol = 2, cex = .8)
+@
+  \caption{Marker proteins of the \textit{hyperLOPIT2015} data set
+    along PC 1 and 2 (left), and visualising the full proteins
+    profiles (right). We see that while the mitochondrion and
+    peroxisome clusters aren't separated along the two first principal
+    components (they are along PC 7), line plots displaying the
+    n-dimensional protein profiles show immediately that while
+    similar, these two compartments differ along fractions X129C.}
   \label{fig:plotDist}
 \end{figure}
 
@@ -1043,6 +1058,8 @@ assess the former. Future improvements in the quality of spatial
 proteomics data and more reliable interpretation will be of direct
 benefit to the spatial proteomics researchers themselves, and will
 increase the usefulness of the data to the cell biology community.
+
+\clearpage
 
 \section*{Acknowledgements}
 
