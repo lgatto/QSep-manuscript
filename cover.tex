@@ -1,0 +1,124 @@
+\documentclass[12pt,a4paper]{letter}
+
+\usepackage[british]{babel}
+\usepackage{lipsum}
+\usepackage{fancyhdr}
+\usepackage{graphics}
+\usepackage{fullpage}
+%% \usepackage[utf8]{inputenc}
+%% \usepackage[T1]{fontenc}
+%% \usepackage{graphicx}
+%% \usepackage{longtable}
+%% \usepackage{float}
+%% \usepackage{wrapfig}
+%% \usepackage{soul}
+%% \usepackage{amssymb}
+
+
+%% \usepackage{sabon}
+
+% \usepackage{helvet}
+% \renewcommand{\familydefault}{\sfdefault}
+
+
+\pagestyle{fancy}
+
+\lhead{} %% \includegraphics{/home/lg390/Documents/Letters/ucl_logo.png}
+\chead{}
+\rhead{\parbox[b][24mm][t]{0.5\textwidth}{\raggedleft
+%% I want to vertically align THIS text
+Professor Laurent Gatto\\
+de Duve Institute\\
+UCLouvain
+}}
+
+
+\lfoot{}
+\cfoot{}
+\rfoot{
+  \scriptsize
+  Avenue Hippocrate 75\\
+  B-1200 Brussels\\
+  Belgium\\
+  E-mail: \url{lg390@cam.ac.uk}\\
+  URL: \url{http://lgatto.github.io/about}%
+}
+
+\renewcommand{\headrulewidth}{0.0pt}
+\renewcommand{\footrulewidth}{0.0pt}
+
+\headheight 30pt
+\headsep 10pt
+\footskip 5pt
+\textheight 23cm
+
+%% Preamble to remove the initial top space
+%% \makeatletter
+%% \let\@texttop\relax
+%% \makeatother
+
+\usepackage{url}
+
+\usepackage[pdftex,hyperindex,hyperfootnotes,bookmarks,plainpages=false]{hyperref}
+\hypersetup{
+  colorlinks=true,
+  breaklinks=true,
+  urlcolor= blue,
+  linkcolor= blue,
+  filecolor= blue,
+  citecolor= blue,
+  bookmarksopen=true,
+  pdfauthor={Laurent Gatto},
+  pdfcreator=pdfLaTeX
+}
+
+% \signature{Dr Laurent Gatto}
+
+\address{} %% is placed in header
+
+\begin{document}
+
+\begin{letter}{
+    % \textbf{Presubmission inquiry}
+}
+
+\opening{Dear Editors,}
+
+\thispagestyle{fancy}
+
+
+We would like you to consider our manuscript, \textit{Assessing
+  sub-cellular resolution in spatial proteomics experiments} for
+publication in the Omics section of Current Opinion in Chemical
+Biology. The manuscript is currently available on the bioR$\chi$iv
+preprint server\footnote{\url{https://doi.org/10.1101/377630}}.
+
+In our manuscript, we describe a meta-analysis of 29 spatial
+proteomics experiments, quantitatively comparing and contrasting the
+their sub-cellular resolution using a newly developed software tool
+termed \textit{QSep}. Our analyses and all the figures in our
+manuscript are fully reproducible using the code available in a
+dedicated Github
+repository\footnote{\url{https://github.com/lgatto/QSep-manuscript/}}.
+
+% \thispagestyle{empty}
+
+\bigskip
+
+Thanking you very much in advance for considering our manuscript for
+submission.
+
+\bigskip
+
+
+On behalf of the authors,
+
+\closing{Yours sincerely, \\
+  \fromsig{\includegraphics{/home/lg390/Pictures/signature.png}} \\
+  \fromname{Laurent Gatto}
+}
+
+
+\end{letter}
+
+\end{document}
