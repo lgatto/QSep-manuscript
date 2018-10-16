@@ -90,6 +90,18 @@ mrkdf <- rbind(data_frame(QSep = mrkswtch[["dhl.mhl"]], data = "Data: hyperLOPIT
                data_frame(QSep = mrkswtch[["dit.mhl"]], data = "Data: itzhak2016stcSILAC", markers = "hyperLOPIT2015"),
                data_frame(QSep = mrkswtch[["dit.mit"]], data = "Data: itzhak2016stcSILAC", markers = "itzhak2016stcSILAC"))
 
+## Added to calculate the quantiles, as asked by a reviewer
+mrkdf %>% group_by(data, markers) %>% summarise(median(QSep))
+## # A tibble: 4 x 3
+## # Groups:   data [?]
+##   data                     markers            `median(QSep)`
+##   <chr>                    <chr>                       <dbl>
+## 1 Data: hyperLOPIT2015     hyperLOPIT2015               4.91
+## 2 Data: hyperLOPIT2015     itzhak2016stcSILAC           2.15
+## 3 Data: itzhak2016stcSILAC hyperLOPIT2015               2.71
+## 4 Data: itzhak2016stcSILAC itzhak2016stcSILAC           2.48
+
+
 pdf("mrkswtch-qsep.pdf")
 ggplot(aes(markers, QSep), data = mrkdf) +
      geom_boxplot() +
