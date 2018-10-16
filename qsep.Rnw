@@ -115,7 +115,7 @@ reduction, and supervised learning such as classification (reviewed in
 Despite these advances, there has been a surprising lack of discussion
 in the community as to what constitutes a reliable spatial proteomics
 experiment, i.e a dataset that generates confident protein
-localisation results. Is is however implicit that reliability and
+localisation results. It is however implicit that reliability and
 trust in the results is dependent on adequate sub-cellular resolution,
 i.e. \textit{enough} separation between the different sub-cellular
 niches being studied to be able to confidently discern protein
@@ -591,6 +591,29 @@ symmetrical. To facilitate the comparison of distances between
 organelles, the distance distributions can also be visualised as
 boxplots (figure~\ref{fig:qsep0}, bottom).
 
+<<qsepplot, echo=FALSE>>=
+## To address a reviewers suggestion to use the same scale across
+## different QSep heatmaps, this function, which is based on the
+## levelPlot,QSep method, allows to pass a range of values to be used
+## on the colour scale.
+.qsepLevelPlot <- function(object, norm = TRUE, ..., rr) {
+    pal <- colorRampPalette(c("blue", "white", "red"))
+    myPanel <- function(x, y, z, ...) {
+        panel.levelplot(x, y, z, ...)
+        panel.text(x, y, ifelse(is.na(z), "", round(z, 2)))
+    }
+    n <- 50
+    levelplot(t(qsep(object, norm = norm)),
+              col.regions = pal(n),
+              panel = myPanel,
+              xlab = "Reference cluster", ylab = "",
+              scales = list(x = list(cex = .8, rot = 45),
+                            y = list(cex = .8)),
+              at = seq(min(rr), max(rr), length.out = n),
+              ...)
+}
+@
+
 <<qsep0>>=
 qh <- QSep(hyperLOPIT2015)
 names(qh) <- sub("/", "\n", names(qh))
@@ -600,9 +623,10 @@ qimed <- median(summary(qi, verbose = FALSE))
 @
 
 <<qsep0lv, fig.width = 9, fig.height = 9, fig.show = 'hide'>>=
+rr <- range(c(qsep(qi), qsep(qh)))
 print(levelPlot(qh, norm = FALSE))
-print(levelPlot(qh, norm = TRUE))
-print(levelPlot(qi))
+print(.qsepLevelPlot(qh, norm = TRUE, rr = rr))
+print(.qsepLevelPlot(qi, rr = rr))
 @
 
 <<qsep0bx, fig.show = 'hide'>>=
@@ -869,7 +893,7 @@ e14lm <- lm(median ~ as.numeric(n), data = e14sim$dd)
 e14slope <- e14lm$coefficients[[2]]
 @
 
-We find that the number of classes does not have any effect the
+We find that the number of classes does not have any effect on the
 resolution assessment scoring. Indeed, dropping any class will result
 in a sub-sample of normalised inter-cluster distances, with random
 variations around the overall median inter-cluster distance. In
@@ -918,7 +942,8 @@ resolution metrics (see boxplots on figure~\ref{fig:mrkswtch}, right).
     right columns display the markers from \textit{hyperLOPIT2015} and
     \textit{itzhak2016stcSILAC} respectively. On the right, the
     resolution scores have been calculated for the same markers (along
-    the $x$ axis) data (left and right panels). }
+    the $x$ axis) data (left and right panels). The respective median
+    scores are, from left to right, 4.91, 2.15, 2.71 and 2.48.}
   \label{fig:mrkswtch}
 \end{figure}
 
@@ -1009,9 +1034,9 @@ On figure~\ref{fig:restime}, we have ordered the datasets' resolution
 metric according to their publication year. We can see that a set of
 recent datasets, including the mouse stem cell
 \citep{Christoforou:2016} and U2OS \citep{Thul:2017} hyperLOPIT
-experiments (published in 2016 and 2017 respectively), and a variation
-thereof, \citep{JeanBeltran:2016} (published in 2016), show a superior
-resolution.
+experiments (published in 2016 and 2017 respectively), and
+\citep{JeanBeltran:2016} (published in 2016), a variation of the LOPIT
+experiment, show a superior resolution.
 
 \begin{figure}[h]
   \centering
@@ -1051,7 +1076,7 @@ spatial proteomics data in the community? As interest in the spatial
 organisation of the proteome is increasing, it is imperative for the
 community to better define and assess the quality of spatial
 proteomics experiments and the reliability of protein sub-cellular
-assignments? The latter can assessed using improved probabilistic
+assignments? The latter can be assessed using improved probabilistic
 classifiers such as the Bayesian mixture modelling approach proposed
 by \citet{Crook:2018}. In this work, we propose the QSep metric to
 assess the former. Future improvements in the quality of spatial
