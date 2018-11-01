@@ -19,7 +19,7 @@
 
 \title{Assessing sub-cellular resolution in  spatial proteomics experiments}
 
-\author[1,2,3]{Laurent Gatto\thanks{\url{lg390@cam.ac.uk}}~}
+\author[1,2,3]{Laurent Gatto\thanks{\url{laurent.gatto@uclouvain.be}}~}
 \author[1,2]{Lisa M. Breckels}
 \author[2]{Kathryn S. Lilley}
 
@@ -64,6 +64,7 @@ stopifnot(packageVersion("pRolocdata") >= "1.17.2")
 stopifnot(packageVersion("pRoloc") >= "1.13.15")
 suppressPackageStartupMessages(library("ggrepel"))
 suppressPackageStartupMessages(library("ggplot2"))
+suppressPackageStartupMessages(library("lattice"))
 @
 
 <<myfuns>>=
@@ -91,7 +92,7 @@ niche is a necessary condition for it to assume its biological
 function. Indeed, the localisation of a protein will determine its
 specific biochemical environment and its unique set of interaction
 partners. As a result, the same protein can assume different functions
-in different biological contexts. Protein mis-localisation can lead to
+in different biological contexts. Protein mis-localisations can lead to
 adverse effects and have been implicated in multiple
 diseases~\citep{Shin:2013,Cody:2013,Siljee:2018}.
 
@@ -119,9 +120,11 @@ localisation results. It is however implicit that reliability and
 trust in the results is dependent on adequate sub-cellular resolution,
 i.e. \textit{enough} separation between the different sub-cellular
 niches being studied to be able to confidently discern protein
-profiles originating from different sub-cellular niches. And yet,
-every spatial proteomics publication will somehow arbitrarily claim to
-have obtained satisfactory resolution.
+profiles originating from different sub-cellular niches. There are
+however currently no tools that enable estimating whether an
+experiment has been adequately resolved, and that would help data
+producers and consumers, to assess the adequacy of a dataset.
+
 
 The importance of adequate sub-cellular resolution reaches beyond the
 generation of reliable static spatial maps. It is a necessary property
@@ -146,11 +149,12 @@ their experiments, (2) compare it to similar studies, (3) help set up
 and optimise their experiments, and additionally (4) to aid biologists
 in critically assessing spatial proteomics studies and their claims.
 
-All the data and software used in this work is available in the
+All the data and software used in this work are available in the
 \Biocpkg{pRoloc} and \Biocexptpkg{pRolocdata} packages
 \citep{Gatto:2014a}. The code to reproduce all results and figures
-presented here are available in the source of the document, available
-in the manuscript public repository~\cite{qseprepo} available at
+presented here is available in the source of the reproducible
+document, available in the manuscript's public
+repository~\cite{qseprepo} available at
 \url{https://github.com/lgatto/QSep-manuscript/}.
 
 \section{Spatial proteomics datasets}\label{sec:pdata}
@@ -266,6 +270,37 @@ year <- c(2011, ## E14 from Breckels 2016
 stopifnot(identical(length(year), nrow(pdtab)))
 pdtab$year <- paste(pdtab$year, year)
 
+mstech <- c("iTRAQ", ## E14 from Breckels 2016
+            "iTRAQ", ## HEK293T2011, from Breckels 2013
+            "iTRAQ", ## Andreyev
+            "TMT", ## Beltran 2016
+          "TMT", ## Beltran 2016
+          "TMT", ## Beltran 2016
+          "TMT", ## Beltran 2016
+          "TMT", ## Beltran 2016
+          "TMT", ## Beltran 2016
+          "TMT", ## Beltran 2016
+          "TMT", ## Beltran 2016
+          "TMT", ## Beltran 2016
+          "TMT", ## Beltran 2016
+          2006, ## Dunkley, re-analysed in Breckels 2013
+          2006, ## Foster
+          2014, ## Groen
+          2009, ## Hall
+          2018, ## Hirst 2017
+          2016, ## hyperLOPIT
+          2016, ## hyperLOPIT
+          2017, ## Thul 2017
+          2017, ## Thul 2017
+          2016, ## Itzhak 2016
+          2017, ## Itzhak 2017
+          2007, ## Nikolovski 2012
+          2014, ## Nikolovski 2014
+          2012, ## Rodriguez Pineiro
+          2009, ## Tan, re-analised in Breckels 2013
+          2009) ## Trotter (dunkley/sadowski), with Breckels 2013 clusters
+
+
 o <- order(pdtab[, "Clusters"], decreasing = TRUE)
 pdataitems <- pdataitems[o]
 pdtab <- pdtab[o, ]
@@ -371,26 +406,26 @@ as the harmonic mean of the precision (a measure of exactness) and
 recall (a measure of completeness) on marker proteins to infer a set
 of good model parameters to be used subsequently, when inferring the
 localisation of proteins of unknown location. The scores are computed
-during a number of iterations, where some markers are used for a
-validation test, and others are used for parameter selection using
-cross-validation. These optimisation metrics are computed over a range
-of parameters on different subsets of marker proteins, and optimal
-parameters are optimised for the subset of markers used at each
-iteration, and hence are likely to provide an over-fitted view of the
-data. Note that while each iteration is over-fitted, the goal of the
-iterative procedure is to identify recurring best parameters, in the
-hope that these will subsequently generalise to new, non-marker
+during a number of iterations, where some markers are used as part of
+a validation partition, and others are used for parameter selection
+using cross-validation. These optimisation metrics are computed over a
+range of parameters on different subsets of marker proteins, and
+optimal parameters are optimised for the subset of markers used at
+each iteration, and hence are likely to provide an over-fitted view of
+the data. Note that while each iteration is over-fitted, the goal of
+the iterative procedure is to identify recurring best parameters, in
+the hope that these will subsequently generalise to new, non-marker
 proteins.
 
 One study \citep{Itzhak:2016} used the Pearson correlation between
 replicates to demonstrate the replicability of their
 experiments. While useful within an experiment, correlation cannot be
-compared between experiments, as the precision of these values will
-depend on the number of proteins in the experiment. More generally,
-correlation isn't a good measure of reproducibility
-\cite{Irizarry:2015}; it focuses on values without context. A better
-approach would be to compare classification results and demonstrate
-that these agree across different replicates.
+compared between experiments, as the correlation values will depend on
+the number of proteins in the experiment. More generally, correlation
+isn't a good measure of reproducibility \cite{Irizarry:2015}; it
+focuses on values without context. A better here approach would be to
+compare classification results and demonstrate that these agree across
+different replicates.
 
 
 \subsection{Sub-cellular diversity}\label{sec:sub-cell-divers}
@@ -417,7 +452,7 @@ reduction technique in spatial proteomics. It projects the protein
 occupancy profiles into a new space in such a way as to maximise the
 spread of all points (i.e. marker proteins and proteins of unknown
 localisation) along the first new dimension (principal component,
-PC). The second PC is then chosen to be perpendicular to the first one
+PC). The second PC is then chosen to be orthogonal to the first one
 while still maximising the remaining variability, and so on. Each PC
 accounts for a percentage of the total variability and it is not
 uncommon, in well executed experiments, that the two first PCs
@@ -463,16 +498,16 @@ plot2D(hall2009, method = "hexbin")
 
 In figure~\ref{fig:hexbin1}, three datasets are compared to illustrate
 different levels of cluster density and separation. We see areas of
-high density (many proteins per hexagon) are highlighted by dark blue
-bins, and less dense areas are white/grey, as indicated by the count
-key on the right-hand side of each plot. The figure on the left is the
-hyperLOPIT data from \citet{Christoforou:2016} (as on
-figure~\ref{fig:density}) that used synchronous precursor selection
-(SPS) MS$^3$ on an Orbitrap Fusion. The middle figure represents the
-same experiment and same proteins, analysed using conventional MS$^2$,
-illustrating the effect of reduced quantitation accuracy. Finally, on
-the right, an experiment with considerable less resolution
-\citep{Hall:2009}.
+high density (many proteins per hexagon), that are highlighted by dark
+blue bins, and less dense areas, displayed as white/grey regions, as
+indicated by the count key on the right-hand side of each plot. The
+figure on the left is the hyperLOPIT data from
+\citet{Christoforou:2016} (as on figure~\ref{fig:density}) that used
+synchronous precursor selection (SPS) MS$^3$ on an Orbitrap
+Fusion. The middle figure represents the same experiment and same
+proteins, analysed using conventional MS$^2$, illustrating the effect
+of reduced quantitation accuracy. Finally, on the right, an experiment
+with considerable less resolution \citep{Hall:2009}.
 
 \begin{figure}[ht]
   \centering
@@ -505,16 +540,17 @@ addLegend(hyperLOPIT2015, where = "bottomleft", cex = .6)
   \label{fig:pcahl}
 \end{figure}
 
-Another dimensionality reduction method of note is linear discriminant
-analysis (LDA). LDA will project the protein occupancy profiles in a
-new set of dimensions using as a criterion the separation of marker
-classes by maximising the between class variance to the within class
-variance ratio. As opposed to the \textit{unsupervised} PCA, the
-\textit{supervised} LDA should not be used as an experiment quality
-control, but can be useful to assess if one or more organelles have
-been preferentially separated. LDA and many other dimensionality
-reduction techniques (such as t-SNE \cite{Maaten:2008} for instance)
-are readily available in \Biocpkg{pRoloc}.
+Another dimensionality reduction method of interest is linear
+discriminant analysis (LDA). LDA will project the protein occupancy
+profiles in a new set of dimensions using as a criterion the
+separation of marker classes by maximising the between class variance
+to the within class variance ratio. As opposed to the
+\textit{unsupervised} PCA, the \textit{supervised} LDA should not be
+used as an experiment quality control, but can be useful to assess if
+one or more organelles have been preferentially separated. LDA and
+many other dimensionality reduction techniques (such as t-SNE
+\cite{Maaten:2008} for instance) are readily available in
+\Biocpkg{pRoloc}.
 
 \bigskip
 
@@ -525,15 +561,17 @@ niches that overlap in 2 dimensions can be separated along further
 components. It is sometimes useful to visualise data in three
 dimensions (using for example the \texttt{plot3D} function in the
 \Biocpkg{pRoloc} package), which still, however, only reflect part of
-the total variability. When assessing the resolution of some
-organelles of interest, one should compare the full protein profiles
-of the marker proteins as illustrated on figure~\ref{fig:plotDist}
-(\Biocpkg{pRoloc}'s \texttt{plotDist} function can be used for this,
-or the interactive application \texttt{pRolocVis} in the
-\Biocpkg{pRolocGUI} package), or visualise a dendrogram representing
-the average distance between cluster profiles (the \texttt{mrkHClust}
-function from \Biocpkg{pRoloc} offers this functionality). While
-detailed exploration of a dataset using these and other visualisation
+the total variability.
+
+When assessing the resolution of some specific organelles of interest,
+one should compare the full protein profiles of the marker proteins as
+illustrated on figure~\ref{fig:plotDist} (\Biocpkg{pRoloc}'s
+\texttt{plotDist} function can be used for this, or the interactive
+application \texttt{pRolocVis} in the \Biocpkg{pRolocGUI} package), or
+visualise a dendrogram representing the average distance between
+cluster profiles (the \texttt{mrkHClust} function from
+\Biocpkg{pRoloc} offers this functionality). While detailed
+exploration of a dataset using these and other visualisation
 approaches is crucial before analysing and interpreting a new spatial
 proteomics experiment, a detailed exploration of each of the
 \Sexpr{nrow(pdtab)} datasets used in this meta-analysis is out of the
@@ -555,8 +593,8 @@ addLegend(m, where = "top", ncol = 2, cex = .8)
     profiles (right). We see that while the mitochondrion and
     peroxisome clusters aren't separated along the two first principal
     components (they are along PC 7), line plots displaying the
-    n-dimensional protein profiles show immediately that while
-    similar, these two compartments differ along fractions X129C.}
+    n-dimensional protein profiles show that while similar, these two
+    compartments differ along fractions X129C.}
   \label{fig:plotDist}
 \end{figure}
 
@@ -603,14 +641,14 @@ boxplots (figure~\ref{fig:qsep0}, bottom).
         panel.text(x, y, ifelse(is.na(z), "", round(z, 2)))
     }
     n <- 50
-    levelplot(t(qsep(object, norm = norm)),
-              col.regions = pal(n),
-              panel = myPanel,
-              xlab = "Reference cluster", ylab = "",
-              scales = list(x = list(cex = .8, rot = 45),
-                            y = list(cex = .8)),
-              at = seq(min(rr), max(rr), length.out = n),
-              ...)
+    lattice::levelplot(t(qsep(object, norm = norm)),
+                       col.regions = pal(n),
+                       panel = myPanel,
+                       xlab = "Reference cluster", ylab = "",
+                       scales = list(x = list(cex = .8, rot = 45),
+                                     y = list(cex = .8)),
+                       at = seq(min(rr), max(rr), length.out = n),
+                       ...)
 }
 @
 
@@ -689,10 +727,16 @@ high protein coverage (\Sexpr{nrh} and \Sexpr{nri} proteins
 respectively) and good sub-cellular diversity (\Sexpr{nmh} and
 \Sexpr{nmi} annotated clusters respectively). The former contains
 duplicated experiments, each made of 10 fractions and the latter
-contains 6 replicates with 5 fractions each. Figure~\ref{fig:pcacmp}
-shows the PCA plots applying transparency to identify the underlying
-structure in the quantitative data and the annotated versions using
-the markers provided by the respective authors.
+contains 6 replicates with 5 fractions each. The
+\textit{itzhak2016stcSILAC} dataset has been produced using the
+\textit{Dynamic Organellar Maps} design, which confers the ability to
+determine relative abundances across proteins, an important feature
+that is however not considered here, when computing the QSep scores.
+
+Figure~\ref{fig:pcacmp} shows the PCA plots applying transparency to
+identify the underlying structure in the quantitative data and the
+annotated versions using the markers provided by the respective
+authors.
 
 \begin{figure}[!h]
   \centering
@@ -714,15 +758,16 @@ plot2D(hyperLOPIT2015)
 
 Figure~\ref{fig:qsepcmp} illustrates the normalised distance heatmaps
 and boxplots for the two datasets (\textit{itzhak2016stcSILAC} at the
-top and \textit{hyperLOPIT2015} at the bottom). The two heatmaps
-display strikingly different colour patterns. The top heatmap shows a
-majority of small normalised distances (blue cells) and with only a
-limited number of large distances (red cells), along the mitochondrial
-reference cluster. Conversely, the bottom heatmap displays a majority
-of average (white cells) and large distances (red cells) across all
-sub-cellular clusters. The boxplots allow a more direct comparison of
-the distances across the two datasets. On the top boxplot, we detect
-relatively short distances for most clusters, with most large
+top and \textit{hyperLOPIT2015} at the bottom). The two heatmaps, that
+have been rendered using the same colour-scale, display strikingly
+different colour patterns. The top heatmap shows a majority of small
+normalised distances (dark blue cells) and with only a limited number
+of large distances (red cells), along the mitochondrial reference
+cluster. Conversely, the bottom heatmap displays a majority of average
+(light blue and white cells) and larger distances (red cells) across
+all sub-cellular clusters. The boxplots allow a more direct comparison
+of the distances across the two datasets. On the top boxplot, we
+detect relatively short distances for most clusters, with most large
 distances stemming from the mitochondria, leading to a median distance
 of \Sexpr{round(qimed, 2)}. The distributions on the bottom boxplot
 show larger distances, equally spread among all clusters, with an
@@ -1056,6 +1101,8 @@ ggplot(data = pdtab, aes(x = year, y = mds)) +
   \label{fig:restime}
 \end{figure}
 
+%% MORE DISCUSSION ABOUT MARKERS, SPECIES, QUANTITATION TECHNOLOGY,
+%% ... see reviewer 2 comments.
 
 While the definition of sub-cellular resolution, as defined by the
 QSep measure, is only one aspect of spatial proteomics, one could
