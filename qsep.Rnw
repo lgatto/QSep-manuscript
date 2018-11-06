@@ -234,7 +234,7 @@ cits <- c("\\citep{Breckels:2016}",
           "\\citep{RodriguezPineiro:2012}",
           "\\citep{Tan:2009}",
           "\\citep{Trotter:2010}")
-
+npubs <- length(unique(sub("}.+$", "}", cits)))
 stopifnot(identical(length(cits), nrow(pdtab)))
 pdtab$Title <- paste(pdtab$Title, cits)
 
@@ -262,43 +262,47 @@ year <- c(2011, ## E14 from Breckels 2016
           2017, ## Thul 2017
           2016, ## Itzhak 2016
           2017, ## Itzhak 2017
-          2007, ## Nikolovski 2012
+          2012, ## Nikolovski 2012
           2014, ## Nikolovski 2014
           2012, ## Rodriguez Pineiro
           2009, ## Tan, re-analised in Breckels 2013
           2009) ## Trotter (dunkley/sadowski), with Breckels 2013 clusters
 stopifnot(identical(length(year), nrow(pdtab)))
-pdtab$year <- paste(pdtab$year, year)
+pdtab$year <- year
 
 mstech <- c("iTRAQ", ## E14 from Breckels 2016
             "iTRAQ", ## HEK293T2011, from Breckels 2013
             "iTRAQ", ## Andreyev
             "TMT", ## Beltran 2016
-          "TMT", ## Beltran 2016
-          "TMT", ## Beltran 2016
-          "TMT", ## Beltran 2016
-          "TMT", ## Beltran 2016
-          "TMT", ## Beltran 2016
-          "TMT", ## Beltran 2016
-          "TMT", ## Beltran 2016
-          "TMT", ## Beltran 2016
-          "TMT", ## Beltran 2016
-          2006, ## Dunkley, re-analysed in Breckels 2013
-          2006, ## Foster
-          2014, ## Groen
-          2009, ## Hall
-          2018, ## Hirst 2017
-          2016, ## hyperLOPIT
-          2016, ## hyperLOPIT
-          2017, ## Thul 2017
-          2017, ## Thul 2017
-          2016, ## Itzhak 2016
-          2017, ## Itzhak 2017
-          2007, ## Nikolovski 2012
-          2014, ## Nikolovski 2014
-          2012, ## Rodriguez Pineiro
-          2009, ## Tan, re-analised in Breckels 2013
-          2009) ## Trotter (dunkley/sadowski), with Breckels 2013 clusters
+            "TMT", ## Beltran 2016
+            "TMT", ## Beltran 2016
+            "TMT", ## Beltran 2016
+            "TMT", ## Beltran 2016
+            "TMT", ## Beltran 2016
+            "TMT", ## Beltran 2016
+            "TMT", ## Beltran 2016
+            "TMT", ## Beltran 2016
+            "TMT", ## Beltran 2016
+            "iTRAQ", ## Dunkley, re-analysed in Breckels 2013
+            "LF", ## Foster
+            "iTRAQ", ## Groen
+            "iTRAQ", ## Hall
+            "SILAC", ## Hirst 2017
+            "TMT", ## hyperLOPIT
+            "TMT", ## hyperLOPIT
+            "TMT", ## Thul 2017
+            "TMT", ## Thul 2017
+            "SILAC", ## Itzhak 2016
+            "LF", ## Itzhak 2017
+            "iTRAQ", ## Nikolovski 2012
+            "LF", ## Nikolovski 2014
+            "LF", ## Rodriguez Pineiro
+            "iTRAQ", ## Tan, re-analised in Breckels 2013
+            "iTRAQ") ## Trotter (dunkley/sadowski), with Breckels 2013 clusters
+## mstech <- sub("iTRAQ", "isobaric", mstech)
+## mstech <- sub("TMT", "isobaric", mstech)
+stopifnot(identical(length(mstech), nrow(pdtab)))
+pdtab$MS <- mstech
 
 
 o <- order(pdtab[, "Clusters"], decreasing = TRUE)
@@ -315,7 +319,7 @@ quantification methodologies.
 \begin{landscape}
   \captionsetup{width=\textwidth}
 <<pdtab, results = 'asis'>>=
-toprint <- names(pdtab) != "year"
+toprint <- !names(pdtab) %in% c("year", "MS")
 print(xtable(pdtab[, toprint],
              label = "tab:pdtab",
              caption = "Summary of the datasets used in this study. The percentage of variance along the principal components (PC) is related to the PCA plots on figure~\\ref{fig:pca}. All datasets are available in the \\Biocexptpkg{pRolocdata} package."),
@@ -1085,24 +1089,46 @@ experiment, show a superior resolution.
 
 \begin{figure}[h]
   \centering
-<<restime, out.width = '80%'>>=
+<<restime, out.width = '100%'>>=
 ggplot(data = pdtab, aes(x = year, y = mds)) +
-    geom_point() +
+    geom_point(aes(colour = MS, size = I(3), alpha = I(0.5))) +
     geom_text_repel(aes(label = Data)) +
     xlab("Year of publication") +
-    ylab("Quantitative assessment (median)")
+    ylab("Quantitative assessment (median)") +
+    theme(legend.position = "top")
 @
 \caption{Resolution of spatial proteomics experiments over time. The
   assigned dates match either the original publication or, when know,
   the actual date the data was generated. For publications that
   re-analysed data, the date of the original publication of generation
   was used. When publications used several datasets, the date of the
-  most recent one was used.}
+  most recent one was used. Experiments are colour-coloded based on
+  whether they used label-free (LF), SILAC or isobaric tagging (TMT or
+  iTRAQ) for quantitation. }
   \label{fig:restime}
 \end{figure}
 
+
 %% MORE DISCUSSION ABOUT MARKERS, SPECIES, QUANTITATION TECHNOLOGY,
 %% ... see reviewer 2 comments.
+
+
+It is very difficult to draw conclusion whether any quantitation
+technologies, instruments or species correlate with better resolution
+due to the limited number of datasets (\Sexpr{nrow(pdtab)} dataset,
+out of \Sexpr{npubs} individual publications), as well as confounding
+factors such as the laboratory the data originates from and time. As
+an example of the latter, the distinction between iTRAQ and TMT
+tagging would falsly suggest that the latter (used in the
+better-performing \texttt{beltran} and \texttt{hyperLOPIT} expriments)
+are better, while this trend is rather a result of the field moving
+towards systems with more tags.
+
+%% TODO species
+
+%% ----------------------------------------------------------------
+
+\bigskip
 
 While the definition of sub-cellular resolution, as defined by the
 QSep measure, is only one aspect of spatial proteomics, one could

@@ -1,5 +1,6 @@
 all:
 	make qsep.pdf
+	make qsep.R
 	make reviewers.pdf
 
 qsep.tex: qsep.Rnw
@@ -22,6 +23,9 @@ reviewers.pdf: reviewers.Rmd
 	R --vanilla -e "rmarkdown::render('reviewers.Rmd', output_format = rmarkdown::pdf_document())"
 
 .PHONY: clean all
+
+qsep.R: qsep.Rnw
+	R --vanilla -e "knitr::purl('qsep.Rnw')"
 
 clean:
 	rm -f .Rhistory qsep-blx.bib qsep.aux qsep.bbl qsep.blg qsep.log qsep.run.xml qsep.tex qsep.out qsep.tx
