@@ -12,6 +12,8 @@ stopifnot(packageVersion("pRoloc") >= "1.13.15")
 suppressPackageStartupMessages(library("ggrepel"))
 suppressPackageStartupMessages(library("ggplot2"))
 suppressPackageStartupMessages(library("lattice"))
+suppressPackageStartupMessages(library("patchwork"))
+
 
 ## ----myfuns--------------------------------------------------------------
 ## a wrapper around sapply to avoid having to 'get' the actual data at
@@ -126,7 +128,7 @@ year <- c(2011, ## E14 from Breckels 2016
           2006, ## Foster
           2014, ## Groen
           2009, ## Hall
-          2018, ## Hirst 2017
+          2018, ## Hirst 2018
           2016, ## hyperLOPIT
           2016, ## hyperLOPIT
           2017, ## Thul 2017
@@ -158,7 +160,7 @@ mstech <- c("iTRAQ", ## E14 from Breckels 2016
             "LF", ## Foster
             "iTRAQ", ## Groen
             "iTRAQ", ## Hall
-            "SILAC", ## Hirst 2017
+            "SILAC", ## Hirst 2018
             "TMT", ## hyperLOPIT
             "TMT", ## hyperLOPIT
             "TMT", ## Thul 2017
@@ -174,6 +176,38 @@ mstech <- c("iTRAQ", ## E14 from Breckels 2016
 ## mstech <- sub("TMT", "isobaric", mstech)
 stopifnot(identical(length(mstech), nrow(pdtab)))
 pdtab$MS <- mstech
+
+sp <- c("Mouse", ## E14 from Breckels 2016
+        "Human", ## HEK293T2011, from Breckels 2013
+        "Mouse", ## Andreyev
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Arabidopsis", ## Dunkley, re-analysed in Breckels 2013
+        "Mouse", ## Foster
+        "Arabidopsis", ## Groen
+        "Chicken", ## Hall
+        "Human", ## Hirst 2018
+        "Mouse", ## hyperLOPIT
+        "Mouse", ## hyperLOPIT
+        "Human", ## Thul 2017
+        "Human", ## Thul 2017
+        "Human", ## Itzhak 2016
+        "Mouse", ## Itzhak 2017
+        "Arabidopsis", ## Nikolovski 2012
+        "Arabidopsis", ## Nikolovski 2014
+        "Human", ## Rodriguez Pineiro
+        "Fly", ## Tan, re-analised in Breckels 2013
+        "Arabidopsis") ## Trotter (dunkley/sadowski), with Breckels 2013 clusters
+stopifnot(identical(length(sp), nrow(pdtab)))
+pdtab$Species <- sp
 
 
 o <- order(pdtab[, "Clusters"], decreasing = TRUE)
@@ -357,13 +391,35 @@ p2 <- t.test(mrkswtch[["dit.mhl"]], mrkswtch[["dit.mit"]])$p.value
 ## p3 <- t.test(mrkswtch[["dhl.mhl"]], mrkswtch[["dit.mhl"]])$p.value
 ## p4 <- t.test(mrkswtch[["dhl.mit"]], mrkswtch[["dit.mit"]])$p.value
 
-## ----restime, out.width = '100%'-----------------------------------------
+## ----restime, out.width = '60%'------------------------------------------
 ggplot(data = pdtab, aes(x = year, y = mds)) +
+  geom_point() +
+  geom_text_repel(aes(label = Data)) +
+  xlab("Year of publication") +
+  ylab("Quantitative assessment (median)")
+
+## ----ref2, fig.width = 13, fig.height = 13-------------------------------
+p1 <- ggplot(data = pdtab, aes(x = year, y = mds)) +
     geom_point(aes(colour = MS, size = I(3), alpha = I(0.5))) +
     geom_text_repel(aes(label = Data)) +
     xlab("Year of publication") +
     ylab("Quantitative assessment (median)") +
     theme(legend.position = "top")
+p2 <- ggplot(data = pdtab, aes(x = year, y = mds)) +
+    geom_point(aes(colour = Species, size = I(3), alpha = I(0.5))) +
+    geom_text_repel(aes(label = Data)) +
+    xlab("Year of publication") +
+    ylab("") +
+    theme(legend.position = "top")
+p3 <- ggplot(data = pdtab, aes(x = MS, y = mds)) +
+    geom_boxplot(aes(fill = MS)) +
+    ylab("Quantitative assessment (median)") +
+    theme(legend.position = "none")
+p4 <- ggplot(data = pdtab, aes(x = Species, y = mds)) +
+    geom_boxplot(aes(fill = Species)) +
+    ylab("") +
+    theme(legend.position = "none")
+p1 + p2 + p3 + p4 + plot_layout(ncol = 2)
 
 ## ----si, results = 'asis'------------------------------------------------
 toLatex(sessionInfo(), locale = FALSE)

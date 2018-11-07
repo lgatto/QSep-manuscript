@@ -65,6 +65,8 @@ stopifnot(packageVersion("pRoloc") >= "1.13.15")
 suppressPackageStartupMessages(library("ggrepel"))
 suppressPackageStartupMessages(library("ggplot2"))
 suppressPackageStartupMessages(library("lattice"))
+suppressPackageStartupMessages(library("patchwork"))
+
 @
 
 <<myfuns>>=
@@ -255,7 +257,7 @@ year <- c(2011, ## E14 from Breckels 2016
           2006, ## Foster
           2014, ## Groen
           2009, ## Hall
-          2018, ## Hirst 2017
+          2018, ## Hirst 2018
           2016, ## hyperLOPIT
           2016, ## hyperLOPIT
           2017, ## Thul 2017
@@ -287,7 +289,7 @@ mstech <- c("iTRAQ", ## E14 from Breckels 2016
             "LF", ## Foster
             "iTRAQ", ## Groen
             "iTRAQ", ## Hall
-            "SILAC", ## Hirst 2017
+            "SILAC", ## Hirst 2018
             "TMT", ## hyperLOPIT
             "TMT", ## hyperLOPIT
             "TMT", ## Thul 2017
@@ -303,6 +305,38 @@ mstech <- c("iTRAQ", ## E14 from Breckels 2016
 ## mstech <- sub("TMT", "isobaric", mstech)
 stopifnot(identical(length(mstech), nrow(pdtab)))
 pdtab$MS <- mstech
+
+sp <- c("Mouse", ## E14 from Breckels 2016
+        "Human", ## HEK293T2011, from Breckels 2013
+        "Mouse", ## Andreyev
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Human", ## Beltran 2016
+        "Arabidopsis", ## Dunkley, re-analysed in Breckels 2013
+        "Mouse", ## Foster
+        "Arabidopsis", ## Groen
+        "Chicken", ## Hall
+        "Human", ## Hirst 2018
+        "Mouse", ## hyperLOPIT
+        "Mouse", ## hyperLOPIT
+        "Human", ## Thul 2017
+        "Human", ## Thul 2017
+        "Human", ## Itzhak 2016
+        "Mouse", ## Itzhak 2017
+        "Arabidopsis", ## Nikolovski 2012
+        "Arabidopsis", ## Nikolovski 2014
+        "Human", ## Rodriguez Pineiro
+        "Fly", ## Tan, re-analised in Breckels 2013
+        "Arabidopsis") ## Trotter (dunkley/sadowski), with Breckels 2013 clusters
+stopifnot(identical(length(sp), nrow(pdtab)))
+pdtab$Species <- sp
 
 
 o <- order(pdtab[, "Clusters"], decreasing = TRUE)
@@ -1089,22 +1123,19 @@ experiment, show a superior resolution.
 
 \begin{figure}[h]
   \centering
-<<restime, out.width = '100%'>>=
+  <<restime, out.width = '60%'>>=
 ggplot(data = pdtab, aes(x = year, y = mds)) +
-    geom_point(aes(colour = MS, size = I(3), alpha = I(0.5))) +
+    geom_point() +
     geom_text_repel(aes(label = Data)) +
     xlab("Year of publication") +
-    ylab("Quantitative assessment (median)") +
-    theme(legend.position = "top")
+    ylab("Quantitative assessment (median)")
 @
 \caption{Resolution of spatial proteomics experiments over time. The
   assigned dates match either the original publication or, when know,
   the actual date the data was generated. For publications that
   re-analysed data, the date of the original publication of generation
   was used. When publications used several datasets, the date of the
-  most recent one was used. Experiments are colour-coloded based on
-  whether they used label-free (LF), SILAC or isobaric tagging (TMT or
-  iTRAQ) for quantitation. }
+  most recent one was used. }
   \label{fig:restime}
 \end{figure}
 
@@ -1112,36 +1143,103 @@ ggplot(data = pdtab, aes(x = year, y = mds)) +
 %% MORE DISCUSSION ABOUT MARKERS, SPECIES, QUANTITATION TECHNOLOGY,
 %% ... see reviewer 2 comments.
 
-
-It is very difficult to draw conclusion whether any quantitation
-technologies, instruments or species correlate with better resolution
-due to the limited number of datasets (\Sexpr{nrow(pdtab)} dataset,
-out of \Sexpr{npubs} individual publications), as well as confounding
-factors such as the laboratory the data originates from and time. As
-an example of the latter, the distinction between iTRAQ and TMT
-tagging would falsly suggest that the latter (used in the
-better-performing \texttt{beltran} and \texttt{hyperLOPIT} expriments)
-are better, while this trend is rather a result of the field moving
-towards systems with more tags.
-
-%% TODO species
-
-%% ----------------------------------------------------------------
-
-\bigskip
+\begin{figure}[h]
+  \centering
+  <<ref2, fig.width = 13, fig.height = 13>>=
+  p1 <- ggplot(data = pdtab, aes(x = year, y = mds)) +
+      geom_point(aes(colour = MS, size = I(3), alpha = I(0.5))) +
+      geom_text_repel(aes(label = Data)) +
+      xlab("Year of publication") +
+      ylab("Quantitative assessment (median)") +
+      theme(legend.position = "top")
+  p2 <- ggplot(data = pdtab, aes(x = year, y = mds)) +
+      geom_point(aes(colour = Species, size = I(3), alpha = I(0.5))) +
+      geom_text_repel(aes(label = Data)) +
+      xlab("Year of publication") +
+      ylab("") +
+      theme(legend.position = "top")
+  p3 <- ggplot(data = pdtab, aes(x = MS, y = mds)) +
+      geom_boxplot(aes(fill = MS)) +
+      ylab("Quantitative assessment (median)") +
+      theme(legend.position = "none")
+  p4 <- ggplot(data = pdtab, aes(x = Species, y = mds)) +
+      geom_boxplot(aes(fill = Species)) +
+      ylab("") +
+      theme(legend.position = "none")
+  p1 + p2 + p3 + p4 + plot_layout(ncol = 2)
+@
+\caption{Resolution of spatial proteomics experiments over time (top
+  panels), as presented on figure \ref{fig:restime}. Experiments are
+  colour-coded based on the quantitation methodology (left) and
+  species (right). The bottom panels show the median QSep resolutions
+  for the quantitation technology (left) and species (right)
+  respectively.}
+  \label{fig:ref2}
+\end{figure}
 
 While the definition of sub-cellular resolution, as defined by the
 QSep measure, is only one aspect of spatial proteomics, one could
 argue that the community at large would benefit from a more systematic
 approach when considering the resolution of spatial proteomics
 experiments. Indeed, there are various aspects that can be worked on
-to improve resolution: quantitation accuracy at the mass spectrometry
-level (see figure~\ref{fig:hexbin1} comparing SPS MS$^3$ and
-conventional MS$^2$ for an example), optimisations in sub-cellular
-fractionation (as exemplified by the substantial improvement obtained
-by hyperLOPIT \citep{Christoforou:2016}), careful data annotation and
-marker curation, as well as superior data analysis (for example using
-semi-supervised learning \citet{Breckels:2013}).
+to improve it: quantitation accuracy at the mass spectrometry level
+(see figure~\ref{fig:hexbin1} comparing SPS MS$^3$ and conventional
+MS$^2$ for an example), optimisations in sub-cellular fractionation
+(as exemplified by the substantial improvement obtained by hyperLOPIT
+\citep{Christoforou:2016}), careful data annotation and marker
+curation, as well as superior data analysis (for example using
+semi-supervised learning \cite{Breckels:2013}).
+
+It is however difficult to draw general conclusion whether any
+experimental properties correlate with better resolution due to the
+limited number of datasets (\Sexpr{nrow(pdtab)} dataset, out of
+\Sexpr{npubs} individual publications, some including data
+re-analyses), as well as confounding factors such as the laboratory of
+origin and time of publication. As an example of the latter (figure
+\ref{fig:ref2}, left panels), the distinction between iTRAQ and TMT
+tagging would falsely suggest that the latter (used in the
+high-performing \texttt{beltran} and \texttt{hyperLOPIT} experiments)
+are better, when this trend is rather the result of the field moving
+towards isobaric systems with more tags to quantify more fractions
+along the gradient (leading to better resolution \cite{Gatto:2014})
+irrespective of the quantitation technology. Similarly, no pattern
+based on the species is visible (figure \ref{fig:ref2}, right
+panels). In our experience, sample-specific factors such as the
+heterogeneity of cells or tissue (such as for example the U2OS or HeLa
+cell lines used in \cite{Thul:2017} or \cite{Itzhak:2016}
+vs. \textit{Drosophila} embryos in \cite{Tan:2009} or
+\textit{Arabidopsis} root tissue in \cite{Groen:2014}), the efficiency
+of cell separation (in solution vs. adherent cultures) and membrane
+fractionation (requiring careful sample-specific optimisations) will
+have a crucial effect of the final resolution of the data. The species
+will however play an important role in the availability of reliable
+marker proteins: well annotated species (for example human and mouse
+vs. chicken in our study) will be easier to find markers for. We
+provide the markers for all the experiments available in
+\texttt{pRolocdata} as well as curated sets for 7 species, based on
+these same experiments (available in the \texttt{pRoloc} package
+\cite{Gatto:2014a}) to help researchers with their annotation. While
+we have shown that QSep is robust to different marker sets (figure
+\ref{fig:mrkswtch}), the availability of markers is a pre-requisite,
+and automated (i.e. that do not rely on visualising individual
+datasets such as documented in figure \ref{fig:hexbin1}) and
+unsupervised (i.e. that do not rely on any annotation) methods, would
+be welcome.
+
+Finally, we anticipate that many laboratory-specific best practices,
+including various data processing and analysis steps, will influence
+the overall quality of the MS data and, ultimately, the resolution of
+the spatial proteomics experiment. As long as some best practice
+principles are applied (such as, for spatial proteomics in particular,
+adequate classification hyper-parameter optimisation and data
+normalisation \cite{Gatto:2014}), the exact software shouldn't
+matter. We however recommend to use \texttt{pRoloc} \cite{Gatto:2014a}
+for robust and reproducible spatial proteomics data analysis, as it is
+thoroughly tested and documented, and offers a growing set of
+state-of-the-art visualisation and machine learning functions.
+
+\bigskip
+
 
 As already suggested by \citet{Lund-Johansen:2016}, there is arguably
 a need for standardisation, or for general guidelines in assessing
