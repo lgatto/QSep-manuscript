@@ -215,7 +215,7 @@ pdataitems <- pdataitems[o]
 pdtab <- pdtab[o, ]
 
 ## ----pdtab, results = 'asis'---------------------------------------------
-toprint <- !names(pdtab) %in% c("year", "MS")
+toprint <- !names(pdtab) %in% c("year", "MS", "Species")
 print(xtable(pdtab[, toprint],
              label = "tab:pdtab",
              caption = "Summary of the datasets used in this study. The percentage of variance along the principal components (PC) is related to the PCA plots on figure~\\ref{fig:pca}. All datasets are available in the \\Biocexptpkg{pRolocdata} package."),
