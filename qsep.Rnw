@@ -8,6 +8,7 @@
 \usepackage{hyperref}
 \usepackage[numbers]{natbib}
 \usepackage[affil-it]{authblk}
+\usepackage{xcolor}
 
 %% adapted from BiocStyle
 \newcommand{\Rpackage}[1]{\texttt{#1}}
@@ -929,7 +930,6 @@ values (\Sexpr{100*round(sum(is.na(foster2006))/prod(dim(foster2006)),
 very broad sub-cellular clusters (compared to separation between
 clusters).
 
-%% HERE
 
 \bigskip
 
@@ -1084,22 +1084,20 @@ section~\ref{sec:compara} should not be taken as absolute. Its main
 purpose is to provide a guide to compare different experiments. It
 will be useful for laboratories that do spatial studies on different
 models and with different fractionation and/or quantitation methods,
-to assess the impact of these variables (such as, for example
-hyperLOPIT MS$^2$ and MS$^3$ experiments). It is also useful to
-compare separation between different labs, as demonstrated in our
-comparative study (section~\ref{sec:compara}). We anticipate that it
-will also prove useful for the researcher wanting to assess the
-resolution of newly published studies, and put them into a wider
-context. It is necessary to emphasise the importance and effect of
-marker definition and curation on estimating and assessing the
-resolution of spatial proteomics experiments
-(section~\ref{sec:qsepassess}) and, of course, the impact of markers
-on the subsequent assignment of proteins to their most likely
-sub-cellular compartments. Sub-cellular resolution is of course only
-one aspect of spatial proteomics, albeit am important one, that
-critically determines the reliability of protein assignments to
-spatial niches as well as the identification of multi- and
-trans-localisation events.
+to assess the impact of these variables. It is also useful to compare
+resolution between different labs, as demonstrated in our comparative
+study (section~\ref{sec:compara}). We anticipate that it will also
+prove useful for the researcher wanting to assess the resolution of
+newly published studies, and put them into a wider context. It is
+necessary to emphasise the importance and effect of marker definition
+and curation on estimating and assessing the resolution of spatial
+proteomics experiments (section~\ref{sec:qsepassess}) and, of course,
+the impact of markers on the subsequent assignment of proteins to
+their most likely sub-cellular compartments. Sub-cellular resolution
+is of course only one aspect of spatial proteomics, albeit an
+important one, that critically determines the reliability of protein
+assignments to spatial niches as well as the identification of multi-
+and trans-localisation events.
 
 \bigskip
 
@@ -1108,9 +1106,15 @@ proteomics community, and more generally the cell biology community
 that relies on protein localisation data. We have assessed dataset
 spanning 12 years of spatial proteomics. Since 2006, the community has
 seen many important improvements: significant advances in mass
-spectrometry quantification methodologies, improvements in biochemical
-fractionation methods and spatial proteomics designs, and considerable
-breakthroughs in data analysis. One might then wonder to what extend
+spectrometry quantification methodologies (see
+figure~\ref{fig:hexbin1} comparing SPS MS$^3$ and conventional MS$^2$
+for an example), improvements in biochemical fractionation methods and
+spatial proteomics designs (as exemplified by the substantial
+improvement obtained by hyperLOPIT \citep{Christoforou:2016}), careful
+data annotation and marker curation, as well as considerable
+breakthroughs in data analysis (for example using semi-supervised
+learning \cite{Breckels:2013} or a Bayesian spatial proteomics
+framework \cite{Crook:2018}). One might then wonder to what extend
 benefits have lead to tangible improvements in resolution over time?
 
 On figure~\ref{fig:restime}, we have ordered the datasets' resolution
@@ -1181,62 +1185,56 @@ While the definition of sub-cellular resolution, as defined by the
 QSep measure, is only one aspect of spatial proteomics, one could
 argue that the community at large would benefit from a more systematic
 approach when considering the resolution of spatial proteomics
-experiments. Indeed, there are various aspects that can be worked on
-to improve it: quantitation accuracy at the mass spectrometry level
-(see figure~\ref{fig:hexbin1} comparing SPS MS$^3$ and conventional
-MS$^2$ for an example), optimisations in sub-cellular fractionation
-(as exemplified by the substantial improvement obtained by hyperLOPIT
-\citep{Christoforou:2016}), careful data annotation and marker
-curation, as well as superior data analysis (for example using
-semi-supervised learning \cite{Breckels:2013}).
+experiments. \textcolor{red}{It is however difficult to draw general
+  conclusions whether any experimental properties correlate with
+  better resolution due to the limited number of datasets
+  (\Sexpr{nrow(pdtab)} dataset, out of \Sexpr{npubs} individual
+  publications, some including data re-analyses), as well as
+  confounding factors such as the laboratory of origin and time of
+  publication. As an example of the latter (figure \ref{fig:ref2},
+  left panels), the distinction between iTRAQ and TMT tagging would
+  falsely suggest that the latter (used in the high-performing
+  \texttt{beltran} and \texttt{hyperLOPIT} experiments) is better,
+  when this trend is purely the result of the field moving towards
+  isobaric systems with more tags to quantify more fractions along the
+  gradient (leading to better resolution \cite{Gatto:2014})
+  irrespective of the quantitation technology. Similarly, no pattern
+  based on the species is visible (figure \ref{fig:ref2}, right
+  panels). In our experience, sample-specific factors such as the
+  heterogeneity of cells or tissue (such as for example the U2OS or
+  HeLa cell lines used in \cite{Thul:2017} or \cite{Itzhak:2016}
+  vs. \textit{Drosophila} embryos in \cite{Tan:2009} or
+  \textit{Arabidopsis} root tissue in \cite{Groen:2014}), the
+  efficiency of cell separation (in solution vs. adherent cultures)
+  and membrane fractionation (requiring careful sample-specific
+  optimisations) will have a crucial effect of the final resolution of
+  the data. The species will however play an important role in the
+  availability of reliable marker proteins: well annotated species
+  (for example human and mouse vs. chicken in our study) will be
+  easier to find markers for. We provide the markers for all the
+  experiments available in \texttt{pRolocdata} as well as curated sets
+  for 7 species, based on these same experiments (available in the
+  \texttt{pRoloc} package \cite{Gatto:2014a}) to help researchers with
+  their annotation. While we have shown that QSep is robust to
+  different marker sets (figure \ref{fig:mrkswtch}), the availability
+  of markers is a pre-requisite, and automated (i.e. that do not rely
+  on visualising individual datasets such as documented in figure
+  \ref{fig:hexbin1}) and unsupervised (i.e. that do not rely on any
+  annotation) methods, would be welcome.}
 
-It is however difficult to draw general conclusion whether any
-experimental properties correlate with better resolution due to the
-limited number of datasets (\Sexpr{nrow(pdtab)} dataset, out of
-\Sexpr{npubs} individual publications, some including data
-re-analyses), as well as confounding factors such as the laboratory of
-origin and time of publication. As an example of the latter (figure
-\ref{fig:ref2}, left panels), the distinction between iTRAQ and TMT
-tagging would falsely suggest that the latter (used in the
-high-performing \texttt{beltran} and \texttt{hyperLOPIT} experiments)
-are better, when this trend is rather the result of the field moving
-towards isobaric systems with more tags to quantify more fractions
-along the gradient (leading to better resolution \cite{Gatto:2014})
-irrespective of the quantitation technology. Similarly, no pattern
-based on the species is visible (figure \ref{fig:ref2}, right
-panels). In our experience, sample-specific factors such as the
-heterogeneity of cells or tissue (such as for example the U2OS or HeLa
-cell lines used in \cite{Thul:2017} or \cite{Itzhak:2016}
-vs. \textit{Drosophila} embryos in \cite{Tan:2009} or
-\textit{Arabidopsis} root tissue in \cite{Groen:2014}), the efficiency
-of cell separation (in solution vs. adherent cultures) and membrane
-fractionation (requiring careful sample-specific optimisations) will
-have a crucial effect of the final resolution of the data. The species
-will however play an important role in the availability of reliable
-marker proteins: well annotated species (for example human and mouse
-vs. chicken in our study) will be easier to find markers for. We
-provide the markers for all the experiments available in
-\texttt{pRolocdata} as well as curated sets for 7 species, based on
-these same experiments (available in the \texttt{pRoloc} package
-\cite{Gatto:2014a}) to help researchers with their annotation. While
-we have shown that QSep is robust to different marker sets (figure
-\ref{fig:mrkswtch}), the availability of markers is a pre-requisite,
-and automated (i.e. that do not rely on visualising individual
-datasets such as documented in figure \ref{fig:hexbin1}) and
-unsupervised (i.e. that do not rely on any annotation) methods, would
-be welcome.
 
-Finally, we anticipate that many laboratory-specific best practices,
-including various data processing and analysis steps, will influence
-the overall quality of the MS data and, ultimately, the resolution of
-the spatial proteomics experiment. As long as some best practice
-principles are applied (such as, for spatial proteomics in particular,
-adequate classification hyper-parameter optimisation and data
-normalisation \cite{Gatto:2014}), the exact software shouldn't
-matter. We however recommend to use \texttt{pRoloc} \cite{Gatto:2014a}
-for robust and reproducible spatial proteomics data analysis, as it is
-thoroughly tested and documented, and offers a growing set of
-state-of-the-art visualisation and machine learning functions.
+\textcolor{red}{We anticipate that many laboratory-specific best
+  practices, including various data processing and analysis steps,
+  will influence the overall quality of the MS data and, ultimately,
+  the resolution of the spatial proteomics experiment. As long as some
+  best practice principles are applied (such as, for spatial
+  proteomics in particular, adequate classification hyper-parameter
+  optimisation and data normalisation \cite{Gatto:2014}), the exact
+  software shouldn't matter. We however recommend to use
+  \texttt{pRoloc} \cite{Gatto:2014a} for robust and reproducible
+  spatial proteomics data analysis, as it is thoroughly tested and
+  documented, and offers a growing set of state-of-the-art
+  visualisation and machine learning functions.}
 
 \bigskip
 
