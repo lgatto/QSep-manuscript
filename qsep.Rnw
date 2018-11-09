@@ -768,7 +768,7 @@ respectively) and good sub-cellular diversity (\Sexpr{nmh} and
 duplicated experiments, each made of 10 fractions and the latter
 contains 6 replicates with 5 fractions each. The
 \textit{itzhak2016stcSILAC} dataset has been produced using the
-\textit{Dynamic Organellar Maps} design, which confers the ability to
+\textit{Dynamic Organellar Maps} design, which goes some way to also
 determine relative abundances across proteins, an important feature
 that is however not considered here, when computing the QSep scores.
 
