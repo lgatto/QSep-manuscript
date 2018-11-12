@@ -19,7 +19,7 @@ Laurent Gatto, Lisa M Breckels, Kathryn S Lilley. bioRxiv 377630; doi:
 [https://doi.org/10.1101/377630](https://www.biorxiv.org/content/early/2018/07/25/377630).
 
 
-See also 
+See also
 
   *LOPIT-DC: A simpler approach to high-resolution spatial proteomics*
    Aikaterini Geladaki, Nina Kocevar Britovsek, Lisa M. Breckels, Tom
@@ -35,8 +35,9 @@ To reproduce this document, you'll need `R` version 3.3.1 or
 later. Install all packages with
 
 ```r
-source("http://www.bioconductor.org/biocLite.R")
-bioLite(c("pRoloc", "pRolocdata", "knitr"))
+if (!requireNamespace("BiocManager", quietly = TRUE))
+	install.packages("BiocManager")
+BiocManager::install(c("pRoloc", "pRolocdata", "knitr"))
 ```
 
 Clone the git repository
