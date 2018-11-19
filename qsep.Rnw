@@ -822,7 +822,7 @@ median distance of \Sexpr{round(qhmed, 2)}.
     \textit{itzhak2016stcSILAC} \citep{Itzhak:2016} (top) and
     \textit{hyperLOPIT2015} \citep{Christoforou:2016} (bottom)
     datasets. The dashed vertical lines on the boxplots represent the
-    overall media between cluster distance, \Sexpr{round(qimed, 2)} and
+    overall median between cluster distance, \Sexpr{round(qimed, 2)} and
     \Sexpr{round(qhmed, 2)} for \textit{itzhak2016stcSILAC} and
     \textit{hyperLOPIT2015} respectively. }
   \label{fig:qsepcmp}
@@ -1185,7 +1185,7 @@ While the definition of sub-cellular resolution, as defined by the
 QSep measure, is only one aspect of spatial proteomics, one could
 argue that the community at large would benefit from a more systematic
 approach when considering the resolution of spatial proteomics
-experiments. \textcolor{red}{It is however difficult to draw general
+experiments. \textcolor{black}{It is however difficult to draw general
   conclusions whether any experimental properties correlate with
   better resolution due to the limited number of datasets
   (\Sexpr{nrow(pdtab)} dataset, out of \Sexpr{npubs} individual
@@ -1223,7 +1223,7 @@ experiments. \textcolor{red}{It is however difficult to draw general
   annotation) methods, would be welcome.}
 
 
-\textcolor{red}{We anticipate that many laboratory-specific best
+\textcolor{black}{We anticipate that many laboratory-specific best
   practices, including various data processing and analysis steps,
   will influence the overall quality of the MS data and, ultimately,
   the resolution of the spatial proteomics experiment. As long as some
