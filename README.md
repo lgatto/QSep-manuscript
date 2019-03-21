@@ -21,7 +21,7 @@ a meta-analysis assessing and comparing the sub-cellular resolution of
 has been reviewed and published as 
 
 > *Assessing sub-cellular resolution in spatial proteomics experiments*
-> Laurent Gatto, Lisa M Breckels, Kathryn S Lilley. bioRxiv 377630; doi:
+> Laurent Gatto, Lisa M Breckels, Kathryn S Lilley (2019) Current Opinion in Chemical Biology, 48, pages 123-149 doi:
 > [https://doi.org/10.1016/j.cbpa.2018.11.015](https://doi.org/10.1016/j.cbpa.2018.11.015).
 
 
