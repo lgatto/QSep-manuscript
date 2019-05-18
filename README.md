@@ -16,7 +16,7 @@ a meta-analysis assessing and comparing the sub-cellular resolution of
 
 > *Assessing sub-cellular resolution in spatial proteomics experiments* 
 > Laurent Gatto, Lisa M Breckels, Kathryn S Lilley. bioRxiv 377630; doi:
-> [https://doi.org/10.1101/377630](https://www.biorxiv.org/content/early/2018/08/10/377630).
+> [https://doi.org/10.1101/377630](https://www.biorxiv.org/content/10.1101/377630v3).
 
 has been reviewed and published as 
 
