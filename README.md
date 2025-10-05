@@ -61,7 +61,7 @@ make qsep.pdf
 Otherwise, in `R`
 
 ```r
-bioLite("rmarkdown")
+BiocManager::install("rmarkdown")
 rmarkdown::render("qsep.Rnw", output_format = pdf_document)
 ```
 
